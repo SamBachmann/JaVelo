@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5d8953b6-ac2b-42ae-99e8-e0f074402ec1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/ch/epfl/javelo/Math2.java" afterDir="false" />
+    <list default="true" id="5d8953b6-ac2b-42ae-99e8-e0f074402ec1" name="Changes" comment="fichiers xml">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ch/epfl/javelo/Math2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ch/epfl/javelo/Math2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ch/epfl/javelo/Preconditions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ch/epfl/javelo/Preconditions.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +51,7 @@
       <updated>1645516459955</updated>
       <workItem from="1645516463215" duration="932000" />
       <workItem from="1645517426367" duration="74000" />
-      <workItem from="1645517561240" duration="1815000" />
+      <workItem from="1645517561240" duration="2698000" />
     </task>
     <task id="LOCAL-00001" summary="ça marche">
       <created>1645516572469</created>
@@ -58,7 +60,21 @@
       <option name="project" value="LOCAL" />
       <updated>1645516572469</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="fichiers xml">
+      <created>1645519406443</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1645519406443</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fichiers xml">
+      <created>1645519475499</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1645519475499</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -66,6 +82,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="ça marche" />
-    <option name="LAST_COMMIT_MESSAGE" value="ça marche" />
+    <MESSAGE value="fichiers xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="fichiers xml" />
   </component>
 </project>
