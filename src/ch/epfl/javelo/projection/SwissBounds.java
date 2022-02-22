@@ -1,6 +1,6 @@
 package ch.epfl.javelo.projection;
 
-public class SwissBounds {
+public final class SwissBounds {
 
     public static final double MIN_E = 2485000;
     public static final double MAX_E = 2834000;
