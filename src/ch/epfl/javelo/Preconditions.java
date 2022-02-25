@@ -7,7 +7,6 @@ package ch.epfl.javelo;
  *
  * Le 25/02/2022
  */
-
 public final class Preconditions {
 
     // Un constructeur privé pour cette classe non instantiable.
@@ -21,7 +20,6 @@ public final class Preconditions {
      *                     exception ne soit pas levée.
      * @throws IllegalArgumentException Si l'argument est faux.
      */
-
     public static void checkArgument(boolean shouldBeTrue) {
         if (!shouldBeTrue) {
             throw new IllegalArgumentException();

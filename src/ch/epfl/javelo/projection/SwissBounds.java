@@ -7,7 +7,6 @@ package ch.epfl.javelo.projection;
  *
  * Le 25/02/2022
  */
-
 public final class SwissBounds {
 
     // Valeurs constantes permettant de délimiter les frontières de la Suisse.
@@ -30,5 +29,4 @@ public final class SwissBounds {
 
         return e <= MAX_E && e >= MIN_E && n <= MAX_N && n >= MIN_N;
     }
-
 }

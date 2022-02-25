@@ -1,7 +1,22 @@
 package ch.epfl.javelo.projection;
 
+/**
+ *
+ * @author Samuel Bachmann (340373)
+ * @author Cyrus Giblain (312042)
+ *
+ * Le 25/02/2022
+ */
 public final class Ch1903 {
 
+    /**
+     *
+     * Méthode permettant de passer des coordonnées WGS 84 aux coordonnées suisses.
+     *
+     * @param lon La longitude dans les coordonnées WGS 84
+     * @param lat La latitude dans les coordonnées WGS 84
+     * @return La coordonnée E (est) du point de longitude et latitude données.
+     */
     public static double e(double lon, double lat) {
 
         double lon1 = (Math.pow(10, -4)) * ((3600 * Math.toDegrees(lon)) - 26782.5);
@@ -11,6 +26,14 @@ public final class Ch1903 {
                 - (44.54 * Math.pow(lon1, 3));
     }
 
+    /**
+     *
+     * Méthode permettant de passer des coordonnées WGS 84 aux coordonnées suisses.
+     *
+     * @param lon La longitude dans les coordonnées WGS 84
+     * @param lat La latitude dans les coordonnées WGS 84
+     * @return La coordonnée N (nord) du point de longitude et latitude données.
+     */
     public static double n(double lon, double lat) {
 
         double lon1 = (Math.pow(10, -4)) * ((3600 * Math.toDegrees(lon)) - 26782.5);
@@ -20,6 +43,14 @@ public final class Ch1903 {
                 - (194.56 * lon1 * lon1 * lat1) + (119.79 * Math.pow(lat1, 3));
     }
 
+    /**
+     *
+     * Méthode permettant de passer des coordonnées suisses aux coordonnées WGS 84.
+     *
+     * @param e La valeur de l'abscisse dans les coordonnées suisses.
+     * @param n La valeur de l'ordonnée dans les coordonnées suisses.
+     * @return La longitude (lon) du point donné en coordonnées suisses.
+     */
     public static double lon(double e, double n) {
 
         double x = Math.pow(10, -6) * (e - 2600000);
@@ -30,6 +61,14 @@ public final class Ch1903 {
         return Math.toRadians(lon0) * (100.0/36);
     }
 
+    /**
+     *
+     * Méthode permettant de passer des coordonnées suisses aux coordonnées WGS 84.
+     *
+     * @param e La valeur de l'abscisse dans les coordonnées suisses.
+     * @param n La valeur de l'ordonnée dans les coordonnées suisses.
+     * @return La latitude (lat) du point donné en coordonnées suisses.
+     */
     public static double lat(double e, double n) {
 
         double x = Math.pow(10, -6) * (e - 2600000);
