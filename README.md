@@ -2,13 +2,13 @@
 Repository for the PPOO JaVelo project
 
 
-Cyrus:
+Cyrus: <br>
 -[ ] 3.1
 -[ ] 3.2
 -[ ] 3.6
 -[ ] 3.7
 
-Samuel:
+Samuel:<br>
 -[ ] 3.3
 -[ ] 3.4
 -[ ] 3.5
