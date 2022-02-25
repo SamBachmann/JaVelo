@@ -19,6 +19,7 @@ public final class Preconditions {
      *
      * @param shouldBeTrue L'argument qui doit être vrai pour qu'une
      *                     exception ne soit pas levée.
+     * @throws IllegalArgumentException Si l'argument est faux.
      */
 
     public static void checkArgument(boolean shouldBeTrue) {

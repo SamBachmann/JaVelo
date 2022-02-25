@@ -1,6 +1,16 @@
 package ch.epfl.javelo.projection;
 
+/**
+ *
+ * @author Samuel Bachmann (340373)
+ * @author Cyrus Giblain (312042)
+ *
+ * Le 25/02/2022
+ */
+
 public final class SwissBounds {
+
+    // Valeurs constantes permettant de délimiter
 
     public static final double MIN_E = 2485000;
     public static final double MAX_E = 2834000;
