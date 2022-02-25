@@ -22,6 +22,16 @@ public final class Math2 {
         return v;
     }
 
+    public static double clamp(double min, double v, double max){
+        Preconditions.checkArgument(min <= max);
+        if (v < min){
+            return min;
+        }else if (v > max){
+            return max;
+        }
+        return v;
+    }
+
     public static double asinh(double x){
         return Math.log(x + Math.sqrt(1 + x*x));
     }
