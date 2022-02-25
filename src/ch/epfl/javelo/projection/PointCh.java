@@ -4,7 +4,7 @@ import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 
 /**
- *
+ * test
  *  Enregistrement permettant de représenter un point dans le système de coordonnée suisse (CH1903+)
  *
  *  @author Samuel Bachmann (340373)
