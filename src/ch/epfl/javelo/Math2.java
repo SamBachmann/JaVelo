@@ -5,7 +5,7 @@ public final class Math2 {
 
     public static int ceilDiv(int x, int y){
         Preconditions.checkArgument((x >= 0) && (y > 0));
-        return x + y - 1 / y ;
+        return (x + y - 1) / y ;
     }
 
     public static double interpolate(double y0, double y1, double x){
@@ -37,7 +37,7 @@ public final class Math2 {
     }
 
     public static double dotProduct (double uX, double uY, double vX, double vY){
-        return Math.fma(uX, uY, vX * vY);
+        return Math.fma(uX, vX, uY * vY);
     }
 
     public static double squaredNorm(double uX, double uY){
