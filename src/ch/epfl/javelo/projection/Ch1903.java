@@ -6,22 +6,18 @@ public final class Ch1903 {
 
         double lon1 = (Math.pow(10, -4)) * ((3600 * Math.toDegrees(lon)) - 26782.5);
         double lat1 = (Math.pow(10, -4)) * ((3600 * Math.toDegrees(lat)) - 169028.66);
-        double lon2 = Math.toRadians(lon1);
-        double lat2 = Math.toRadians(lat1);
 
-        return 2600072.37 + (211455.93 * lon2) - (10938.51 * lon2 * lat2) - (0.36 * lon2 * lat2 * lat2)
-                - (44.54 * Math.pow(lon2, 3));
+        return 2600072.37 + (211455.93 * lon1) - (10938.51 * lon1 * lat1) - (0.36 * lon1 * lat1 * lat1)
+                - (44.54 * Math.pow(lon1, 3));
     }
 
     public static double n(double lon, double lat) {
 
         double lon1 = (Math.pow(10, -4)) * ((3600 * Math.toDegrees(lon)) - 26782.5);
         double lat1 = (Math.pow(10, -4)) * ((3600 * Math.toDegrees(lat)) - 169028.66);
-        double lon2 = Math.toRadians(lon1);
-        double lat2 = Math.toRadians(lat1);
 
-        return 1200147.07 + (308807.95 * lat2) + (3745.25 * lon2 * lon2) + (76.63 * lat2 * lat2)
-                - (194.56 * lon2 * lon2 * lat2) + (119.79 * Math.pow(lat2, 3));
+        return 1200147.07 + (308807.95 * lat1) + (3745.25 * lon1 * lon1) + (76.63 * lat1 * lat1)
+                - (194.56 * lon1 * lon1 * lat1) + (119.79 * Math.pow(lat1, 3));
     }
 
     public static double lon(double e, double n) {
