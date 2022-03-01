@@ -21,11 +21,15 @@ public final class Bits {
      * @return La séquence de bits sélectionnée (signée).
      */
     public static int extractSigned(int value, int start, int length){
+        Preconditions.checkArgument(start >= 0 && start < 32
+                                    && length > 0 && length <= 32 - start);
+
         int decalGauche = 32 - length - start;
         int decalDroite = 32 - length;
-        // reste à lancer les exceptions.
+
         return  (value << decalGauche) >> decalDroite;
     }
+
     /**
      * Extrait d'un entier considéré comme un vecteur de bits la plage de bits d'une longueur et depuis
      * un point de départ donnés en arguments.
@@ -37,6 +41,8 @@ public final class Bits {
      * @return La séquence de bits sélectionnée (non-signée)
      */
     public static int extractUnsigned(int value, int start, int length){
+        Preconditions.checkArgument(start >= 0 && start < 32
+                                    && length > 0 && length < 32 - start);
         int decalGauche = 32 - length - start;
         int decalDroite = 32 - length;
 
