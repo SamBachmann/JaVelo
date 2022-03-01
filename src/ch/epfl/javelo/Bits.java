@@ -23,7 +23,7 @@ public final class Bits {
     public static int extractSigned(int value, int start, int length){
         int decalGauche = 32 - length - start;
         int decalDroite = 32 - length;
-
+        // reste à lancer les exceptions.
         return  (value << decalGauche) >> decalDroite;
     }
     /**
