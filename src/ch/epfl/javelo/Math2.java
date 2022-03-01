@@ -79,7 +79,7 @@ public final class Math2 {
     }
 
     /**
-     * Calcul le produit scalaire entre 2 vecteurs u et v à 2 composantes.
+     * Calcule le produit scalaire entre 2 vecteurs u et v à 2 composantes.
      * @param uX Composante X de u
      * @param uY Composante Y de u
      * @param vX Composante X de v
