@@ -16,16 +16,20 @@ public final class Q28_4 {
      * @return le nombre i représenté selon Q28.4
      */
     public static int ofInt(int i){
-        return i << 4;
+        return i * 16;
     }
 
     /**
-     * Converti un nombre représenté en Q28.4 en double
+     * Converti un nombre représenté en Q28.4 en double.
+     * On prend en compte que Q28.4 représente un nombre signé
+     *
      * @param q28_4 Nombre représenté en Q28.4
      * @return Le même nombre représenté de manière décimale, en double.
      */
     public static double asDouble(int q28_4){
-        return (double) q28_4 / 16.0;
+        int sgn = (q28_4 >>> 31) * -1;
+        int unsignedNumber = q28_4 << 1 >>> 1;
+        return /*sgn * Math.pow(2, 28)*/ unsignedNumber / 16.0;
     }
 
     public static float asFloat(int q28_4){
