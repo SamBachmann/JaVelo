@@ -111,8 +111,8 @@ public record PointWebMercator(double x, double y) {
      */
     public PointCh toPointCh() {
 
-        double lon = (2 * Math.PI * x) - Math.PI;
-        double lat = Math.atan(Math.sinh(Math.PI - (2 * Math.PI * y)));
+        double lon = WebMercator.lon(x);
+        double lat = WebMercator.lat(y);
 
         double e = Ch1903.e(lon, lat);
         double n = Ch1903.n(lon, lat);
