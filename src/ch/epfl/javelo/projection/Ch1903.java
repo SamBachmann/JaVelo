@@ -9,12 +9,15 @@ package ch.epfl.javelo.projection;
  */
 public final class Ch1903 {
 
+    // Un constructeur privé pour cette classe non instantiable.
+    private Ch1903() {}
+
     /**
      *
      * Méthode permettant de passer des coordonnées WGS 84 aux coordonnées suisses.
      *
-     * @param lon La longitude dans les coordonnées WGS 84
-     * @param lat La latitude dans les coordonnées WGS 84
+     * @param lon La longitude dans les coordonnées WGS 84.
+     * @param lat La latitude dans les coordonnées WGS 84.
      * @return La coordonnée E (est) du point de longitude et latitude données.
      */
     public static double e(double lon, double lat) {
@@ -30,8 +33,8 @@ public final class Ch1903 {
      *
      * Méthode permettant de passer des coordonnées WGS 84 aux coordonnées suisses.
      *
-     * @param lon La longitude dans les coordonnées WGS 84
-     * @param lat La latitude dans les coordonnées WGS 84
+     * @param lon La longitude dans les coordonnées WGS 84.
+     * @param lat La latitude dans les coordonnées WGS 84.
      * @return La coordonnée N (nord) du point de longitude et latitude données.
      */
     public static double n(double lon, double lat) {

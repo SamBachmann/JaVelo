@@ -9,6 +9,9 @@ package ch.epfl.javelo.projection;
  */
 public final class SwissBounds {
 
+    // Un constructeur privé pour cette classe non instantiable.
+    private SwissBounds() {}
+
     // Valeurs constantes permettant de délimiter les frontières de la Suisse.
     public static final double MIN_E = 2485000;
     public static final double MAX_E = 2834000;

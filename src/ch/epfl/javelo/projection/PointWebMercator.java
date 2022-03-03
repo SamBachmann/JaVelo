@@ -14,6 +14,7 @@ import ch.epfl.javelo.Preconditions;
 public record PointWebMercator(double x, double y) {
 
     /**
+     *
      * Constructeur vérifiant que les coordonnées e et n sont dans la zone suisse.
      *
      * @param x Valeur de l'abscisse dans les coordonnées Web Mercator.
@@ -107,7 +108,7 @@ public record PointWebMercator(double x, double y) {
      * Méthode nous donnant le point de coordonnées suisses à partir du point
      * en coordonnées Web Mercator.
      *
-     * @return Le point en coordonnées suisses
+     * @return Le point en coordonnées suisses.
      */
     public PointCh toPointCh() {
 

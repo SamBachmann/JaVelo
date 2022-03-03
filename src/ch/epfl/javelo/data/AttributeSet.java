@@ -6,7 +6,7 @@ import java.util.StringJoiner;
 
 /**
  *
- * Enregistrement permettant de représenter un ensemble d'attributs
+ * Enregistrement permettant de représenter un ensemble d'attributs.
  *
  *  @author Samuel Bachmann (340373)
  *  @author Cyrus Giblain (312042)

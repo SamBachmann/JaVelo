@@ -11,6 +11,9 @@ import ch.epfl.javelo.Math2;
  */
 public final class WebMercator {
 
+    // Un constructeur privé pour cette classe non instantiable.
+    private WebMercator() {}
+
     /**
      *
      * Méthode nous permettant trouver la coordonnée x dans le système Web Mercator.
