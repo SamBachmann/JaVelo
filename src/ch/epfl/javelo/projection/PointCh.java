@@ -15,6 +15,7 @@ import ch.epfl.javelo.Preconditions;
 public record PointCh(double e, double n) {
     /**
      * Constructeur vérifiant que les coordonnées e et n sont dans la zone suisse.
+     *
      * @param e Valeur de l'abscisse dans les coordonnées suisses
      * @param n Valeur de l'ordonnée dans les coordonnées suisses
      */
@@ -24,6 +25,7 @@ public record PointCh(double e, double n) {
 
     /**
      * Calcule la distance au carré entre le point en question et le point entré en argument.
+     *
      * @param that PointCh duquel on veut calculer la distance au carré
      * @return La distance au carré entre les 2 PointCh
      */
@@ -34,6 +36,7 @@ public record PointCh(double e, double n) {
     }
     /**
      * Calcule la distance entre le point en question et le point entré en argument.
+     *
      * @param that PointCh duquel on veut calculer la distance
      * @return La distance entre les 2 PointCh
      */
@@ -43,6 +46,7 @@ public record PointCh(double e, double n) {
 
     /**
      * Méthode retournant la longitude d'un PointCh
+     *
      * @return La longitude
      */
     public double lon(){
@@ -51,6 +55,7 @@ public record PointCh(double e, double n) {
 
     /**
      * Méthode retournant la latitude d'un PointCh
+     *
      * @return La latitude
      */
     public double lat(){

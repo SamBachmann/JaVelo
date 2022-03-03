@@ -15,6 +15,7 @@ public record PointWebMercator(double x, double y) {
 
     /**
      * Constructeur vérifiant que les coordonnées e et n sont dans la zone suisse.
+     *
      * @param x Valeur de l'abscisse dans les coordonnées Web Mercator.
      * @param y Valeur de l'ordonnée dans les coordonnées Web Mercator.
      */

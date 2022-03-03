@@ -1,6 +1,5 @@
 package ch.epfl.javelo.projection;
 
-
 import ch.epfl.javelo.Math2;
 
 /**
@@ -22,6 +21,7 @@ public final class WebMercator {
     public static double x(double lon) {
        return (lon + Math.PI)/(2 * Math.PI);
     }
+
     /**
      *
      * Méthode nous permettant trouver la coordonnée y dans le système Web Mercator.
