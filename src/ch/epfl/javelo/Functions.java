@@ -18,7 +18,7 @@ public final class Functions {
     private Functions(){}
 
     /**
-     * Retourne une fonction constante de valeur y.
+     * Méthode retournant une fonction constante de valeur y.
      *
      * @param y La valeur de la constante.
      * @return Une fonction de type DoubleUnaryOperator constante.
@@ -29,13 +29,14 @@ public final class Functions {
 
     /**
      *
+     *
      * @param samples Tableau contenant les échantillons de valeur y. Ceux-ci sont espacés régulièrement entre 0 et xMax.
      * @param xMax La valeur en x maximale pour le dernier échantillon
-     * @return
+     * @return La fonction d'interpolation linéaire entre les points donnés.
      */
     public static DoubleUnaryOperator sampled(float[] samples, double xMax){
         Preconditions.checkArgument(samples.length >= 2 && xMax >= 0);
-        return new Sampled();
+        return new Sampled( samples,xMax);
     }
 
     /**
@@ -59,7 +60,18 @@ public final class Functions {
             return this.y;
         }
     }
+
+
     private static final class Sampled implements DoubleUnaryOperator {
+        private float[] samples;
+        private double xMax;
+        private double espacement;
+
+        private Sampled(float[] samples, double xMax){
+            this.samples = samples;
+            this.xMax = xMax;
+            this.espacement = xMax / samples.length;
+        }
 
         @Override
         public double applyAsDouble(double operand) {

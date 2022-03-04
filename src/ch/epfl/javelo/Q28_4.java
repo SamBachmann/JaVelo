@@ -21,7 +21,7 @@ public final class Q28_4 {
      * @return le nombre i représenté selon Q28.4
      */
     public static int ofInt(int i){
-        return i * 16;
+        return i << 4;
     }
 
     /**
