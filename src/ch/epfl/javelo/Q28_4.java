@@ -41,7 +41,7 @@ public final class Q28_4 {
      * @return Le même nombre représenté de manière décimale, de type float.
      */
     public static float asFloat(int q28_4){
-        return q28_4 / 16.f;
+        return Math.scalb(q28_4, -4);
     }
 
 }

@@ -28,7 +28,7 @@ public final class Functions {
     }
 
     /**
-     *
+     * Retourne une fonction obtenue par interpolation linéaire entre les échantillons samples.
      *
      * @param samples Tableau contenant les échantillons de valeur y. Ceux-ci sont espacés régulièrement entre 0 et xMax.
      * @param xMax La valeur en x maximale pour le dernier échantillon
@@ -65,17 +65,30 @@ public final class Functions {
     private static final class Sampled implements DoubleUnaryOperator {
         private float[] samples;
         private double xMax;
-        private double espacement;
+        private double coefficent;
+
 
         private Sampled(float[] samples, double xMax){
             this.samples = samples;
             this.xMax = xMax;
-            this.espacement = xMax / samples.length;
+            this.coefficent = (samples.length - 1) / xMax;
         }
 
+        /**
+         * Calcule l'interpolation linéaire entre les valeurs y contenues dans samples.
+         *
+         * @param x Une valeur d'abcisse, comprise entre 0 et xMax
+         * @return La fonction
+         */
         @Override
-        public double applyAsDouble(double operand) {
-            return 0;
+        public double applyAsDouble(double x) {
+            //On commence par vérifier et forcer x dans l'intervalle [0,xMax]
+            double xn = Math2.clamp(0.0, x, xMax);
+            int bInf = (int) Math.floor(coefficent * xn);
+            int bSup = (int) Math.ceil(coefficent * xn);
+            double xInNewInterval = coefficent * xn - bInf;
+
+            return Math2.interpolate(this.samples[bInf], this.samples[bSup],xInNewInterval);
         }
     }
 }

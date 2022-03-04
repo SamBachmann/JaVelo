@@ -42,7 +42,7 @@ public final class Math2 {
     /**
      *
      * Limite la valeur v à l'intervalle allant de min à max.
-     * Si v est en dehors de cet interval, on le ramène à la borne la plus proche.
+     * Si v est en dehors de cet intervalle, on le ramène à la borne la plus proche.
      *
      * @param min Valeur minimale de l'intervalle
      * @param v Valeur à limiter
