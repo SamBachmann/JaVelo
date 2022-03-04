@@ -26,11 +26,6 @@ public class Q28_4Test {
         assertEquals(127.0, Q28_4.asDouble(inQ28_4));
     }
 
-    @Test
-    void TestofInt(){
-        int bigInt = Integer.MAX_VALUE;
-        assertEquals(Integer.MAX_VALUE - 15, bigInt);
-    }
 
 }
 
