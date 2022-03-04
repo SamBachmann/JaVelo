@@ -15,7 +15,9 @@ public class PointWebMercatorTest {
         var expectedX19 = 0.518275214444;
         var expectedY19 = 0.353664894749;
         var expectedPointWebMercator = new PointWebMercator(expectedX19, expectedY19);
-        assertEquals(expectedPointWebMercator, actual);
+        assertEquals(expectedX19, actual.x(), DELTA);
+        assertEquals(expectedY19, actual.y(), DELTA);
+        //assertEquals(expectedPointWebMercator, actual);
     }
 
     // La méthode ofPointCh est constituée de méthodes déjà testées.
