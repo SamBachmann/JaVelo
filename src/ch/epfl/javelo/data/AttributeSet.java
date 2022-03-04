@@ -22,7 +22,7 @@ public record AttributeSet(long bits) {
      * @param bits Le contenu de l'ensemble au moyen d'un bit par valeur possible.
      */
     public AttributeSet {
-       long result = bits >> Attribute.COUNT;
+        long result = bits >> Attribute.COUNT;
         Preconditions.checkArgument(result == 0);
     }
 
