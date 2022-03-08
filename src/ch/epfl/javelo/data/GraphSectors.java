@@ -3,6 +3,7 @@ import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.SwissBounds;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,20 +16,43 @@ import java.util.List;
  */
 
 public record GraphSectors(ByteBuffer buffer ) {
+    private static final int OFFSET_NODE = 0;
+    private static final int OFFSET_LENGTH = OFFSET_NODE + Integer.BYTES;
+    private static final int FACTOR_TO_GET_INDEX = Integer.BYTES + Short.BYTES;
 
     public record Sector(int startNodeId, int endNodeId){
 
     }
 
-   /* public List<Sector> sectorsInArea(PointCh center, double distance){
+   public List<Sector> sectorsInArea(PointCh center, double distance){
         // première étape : calculer les coordonnées de secteurs xmin, xmax, ymin, ymax
-        int xMin = (int) Math.floor(128 * (center.e() - distance) / SwissBounds.WIDTH);
-        int xMax = (int) Math.floor(128 * (center.e() + distance) / SwissBounds.WIDTH);
-        int yMin = (int) Math.floor(128 * (center.n() - distance) / SwissBounds.HEIGHT);
-        int yMax = (int) Math.floor(128 * (center.n() + distance) / SwissBounds.HEIGHT);
+        int xMin = (int) Math.floor(128 * (center.e() - distance - SwissBounds.MIN_E) / SwissBounds.WIDTH);
+        int xMax = (int) Math.floor(128 * (center.e() + distance - SwissBounds.MIN_E) / SwissBounds.WIDTH);
+        int yMin = (int) Math.floor(128 * (center.n() - distance - SwissBounds.MIN_N) / SwissBounds.HEIGHT);
+        int yMax = (int) Math.floor(128 * (center.n() + distance - SwissBounds.MIN_N) / SwissBounds.HEIGHT);
 
+       // calculer les index des secteurs
+       ArrayList<Integer> listIndexSector = new ArrayList<Integer>();
+        for (int x = xMin; x <= xMax; ++x){
+            for (int y = yMin; y <= yMax; ++y){
+                listIndexSector.add(x + 128 * y);
+            }
+        }
+        // construire les secteurs depuis le buffer
+       ArrayList<Sector> listSector = new ArrayList<Sector>();
 
+        for (int i = 0; i < listIndexSector.size(); ++i){
+            int firstNodeIndex = FACTOR_TO_GET_INDEX * listIndexSector.get(i);
+            int nodeNumberInSector = Short.toUnsignedInt(
+                    buffer.getShort(
+                        FACTOR_TO_GET_INDEX * listIndexSector.get(i) + OFFSET_LENGTH
+                    )
+            );
+            int endNodeIndex = firstNodeIndex + nodeNumberInSector;
+            listSector.add(new Sector(firstNodeIndex,endNodeIndex));
 
+        }
 
-    }*/
+        return listSector;
+    }
 }

@@ -31,7 +31,7 @@ public final class Q28_4 {
      * @return Le même nombre représenté de manière décimale, de type double.
      */
     public static double asDouble(int q28_4){
-        return Math.scalb(q28_4, -4);
+        return Math.scalb((double) q28_4, -4);
     }
 
     /**
