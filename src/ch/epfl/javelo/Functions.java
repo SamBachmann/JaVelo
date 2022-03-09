@@ -83,10 +83,16 @@ public final class Functions {
         @Override
         public double applyAsDouble(double x) {
             //On commence par vérifier et forcer x dans l'intervalle [0,xMax]
+            if (x <= 0 ){
+                return this.samples[0];
+            }else if (x >= xMax){
+                return this.samples[samples.length -1];
+            }
+
             double xn = Math2.clamp(0.0, x, xMax);
             int bInf = (int) Math.floor(coefficent * xn);
             int bSup = (int) Math.ceil(coefficent * xn);
-            double xInNewInterval = coefficent * xn - bInf;
+            double xInNewInterval = Math.fma(coefficent,xn, - bInf);
 
             return Math2.interpolate(this.samples[bInf], this.samples[bSup],xInNewInterval);
         }

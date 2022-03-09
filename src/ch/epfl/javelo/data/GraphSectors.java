@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Enregistremenet représentant le tableau des secteurs JaVelo
+ * Enregistrement représentant le tableau des secteurs JaVelo
  *
  *  @author Samuel Bachmann (340373)
  *  @author Cyrus Giblain (312042)
