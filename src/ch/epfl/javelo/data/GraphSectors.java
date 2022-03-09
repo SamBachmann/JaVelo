@@ -19,6 +19,7 @@ public record GraphSectors(ByteBuffer buffer ) {
     private static final int OFFSET_NODE = 0;
     private static final int OFFSET_LENGTH = OFFSET_NODE + Integer.BYTES;
     private static final int FACTOR_TO_GET_INDEX = Integer.BYTES + Short.BYTES;
+    private static final int SECTEURS_PAR_COTE = 128;
 
     /**
      * Enregistrement imbriqué pour représenter un secteur à l'aide de l'index de 2 noeuds
@@ -40,10 +41,10 @@ public record GraphSectors(ByteBuffer buffer ) {
      */
    public List<Sector> sectorsInArea(PointCh center, double distance){
         // première étape : calculer les coordonnées de secteurs xmin, xmax, ymin, ymax
-        int xMin = (int) Math.floor(128 * (center.e() - distance - SwissBounds.MIN_E) / SwissBounds.WIDTH);
-        int xMax = (int) Math.floor(128 * (center.e() + distance - SwissBounds.MIN_E) / SwissBounds.WIDTH);
-        int yMin = (int) Math.floor(128 * (center.n() - distance - SwissBounds.MIN_N) / SwissBounds.HEIGHT);
-        int yMax = (int) Math.floor(128 * (center.n() + distance - SwissBounds.MIN_N) / SwissBounds.HEIGHT);
+        int xMin = (int) Math.floor(SECTEURS_PAR_COTE * (center.e() - distance - SwissBounds.MIN_E) / SwissBounds.WIDTH);
+        int xMax = (int) Math.floor(SECTEURS_PAR_COTE * (center.e() + distance - SwissBounds.MIN_E) / SwissBounds.WIDTH);
+        int yMin = (int) Math.floor(SECTEURS_PAR_COTE * (center.n() - distance - SwissBounds.MIN_N) / SwissBounds.HEIGHT);
+        int yMax = (int) Math.floor(SECTEURS_PAR_COTE * (center.n() + distance - SwissBounds.MIN_N) / SwissBounds.HEIGHT);
 
        // calculer les index des secteurs
        ArrayList<Integer> listIndexSector = new ArrayList<Integer>();
