@@ -69,7 +69,7 @@ public record PointWebMercator(double x, double y) {
      * @return La coordonnée x zoomée.
      */
     public double xAtZoomLevel(int zoomLevel) {
-        return x * zoomLevel;
+        return Math.scalb(x, 8 + zoomLevel);
     }
 
     /**
@@ -80,7 +80,7 @@ public record PointWebMercator(double x, double y) {
      * @return La coordonnée y zoomée.
      */
     public double yAtZoomLevel(int zoomLevel) {
-        return y * zoomLevel;
+        return Math.scalb(y, 8 + zoomLevel);
     }
 
     /**
