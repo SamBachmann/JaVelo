@@ -18,7 +18,7 @@ import java.util.List;
 public record GraphSectors(ByteBuffer buffer ) {
     private static final int OFFSET_NODE = 0;
     private static final int OFFSET_LENGTH = OFFSET_NODE + Integer.BYTES;
-    private static final int FACTOR_TO_GET_INDEX = Integer.BYTES + Short.BYTES;
+    private static final int SECTOR_INTS = OFFSET_LENGTH + Short.BYTES;
     private static final int SECTEURS_PAR_COTE = 128;
 
     /**
@@ -57,10 +57,10 @@ public record GraphSectors(ByteBuffer buffer ) {
        ArrayList<Sector> listSector = new ArrayList<Sector>();
 
         for (int i = 0; i < listIndexSector.size(); ++i){
-            int firstNodeIndex = FACTOR_TO_GET_INDEX * listIndexSector.get(i);
+            int firstNodeIndex = SECTOR_INTS * listIndexSector.get(i);
             int nodeNumberInSector = Short.toUnsignedInt(
                     buffer.getShort(
-                        FACTOR_TO_GET_INDEX * listIndexSector.get(i) + OFFSET_LENGTH
+                        SECTOR_INTS * listIndexSector.get(i) + OFFSET_LENGTH
                     )
             );
 

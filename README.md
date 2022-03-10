@@ -9,6 +9,6 @@ Cyrus: <br>
 - 3.4.7
 
 Samuel:<br>
-- 3.4.4
+- 3.4.4 (elevationGain)
 - 3.4.5
 - 3.4.6
