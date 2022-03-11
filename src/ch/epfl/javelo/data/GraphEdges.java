@@ -146,7 +146,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                         ++nombreIteration;
                     }
                 }
-                break;
+            break;
             case COMPRESSED_4BITS:
                 int nbIteration = 0;
                 for (int i = 1; i < Math2.ceilDiv(nombreEchantillons, Q0_4_PER_SHORT); ++i) {
@@ -173,7 +173,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         }
 
 
-        return new float[12];
+        return profilSamplesTable;
     }
 
 
