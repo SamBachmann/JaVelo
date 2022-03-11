@@ -38,7 +38,7 @@ public final class Bits {
     /**
      * Extrait d'un entier considéré comme un vecteur de bits la plage de bits d'une longueur et depuis
      * un point de départ donnés en arguments.
-     * Retourne une valeur non-signée.
+     * Retourne une valeur non signée.
      *
      * @param value Le vecteur de bits dont on veut extraire une plage de bits.
      * @param start La valeur de départ (comprise) de la plage de bits.
