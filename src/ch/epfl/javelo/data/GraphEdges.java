@@ -2,7 +2,6 @@ package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.Bits;
 import ch.epfl.javelo.Math2;
-import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.Q28_4;
 
 import java.nio.ByteBuffer;
@@ -59,7 +58,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @param edgeId L'index de l'arête dont on veut connaître le nœud de destination.
      * @return Un entier représentant l'identité du nœud de destination.
     */
-
     public int targetNodeId( int edgeId) {
         if (this.isInverted(edgeId)) {
             int entier = concatenation4PremiersOctets(edgeId);
@@ -106,9 +104,11 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
+     * Retourne le tableau des échantillons du profil de l'arête d'identité donnée,
      *
-     * @param edgeId
-     * @return
+     * vide si l'arête ne possède pas de profil.
+     * @param edgeId L'index de l'arête
+     * @return Un tableau float[] contenant les échantillons de profil
      */
     public float[] profileSamples(int edgeId){
         if ( !this.hasProfile(edgeId)){
@@ -192,7 +192,9 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return
      */
     private CompressionType typeProfil(int edgeId){
-        return CompressionType.values()[(Bits.extractUnsigned(profileIds.get(edgeId), 30,2))];
+        int profilIndex = (Bits.extractUnsigned(profileIds.get(edgeId), 30,2));
+        System.out.println(profilIndex);
+        return CompressionType.values()[profilIndex];
     }
 
     /**

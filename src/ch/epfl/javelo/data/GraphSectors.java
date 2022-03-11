@@ -41,10 +41,10 @@ public record GraphSectors(ByteBuffer buffer ) {
      */
    public List<Sector> sectorsInArea(PointCh center, double distance){
         // première étape : calculer les coordonnées de secteurs xmin, xmax, ymin, ymax
-        int xMin = (int) Math.floor(SECTEURS_PAR_COTE * (center.e() - distance - SwissBounds.MIN_E) / SwissBounds.WIDTH);
-        int xMax = (int) Math.floor(SECTEURS_PAR_COTE * (center.e() + distance - SwissBounds.MIN_E) / SwissBounds.WIDTH);
-        int yMin = (int) Math.floor(SECTEURS_PAR_COTE * (center.n() - distance - SwissBounds.MIN_N) / SwissBounds.HEIGHT);
-        int yMax = (int) Math.floor(SECTEURS_PAR_COTE * (center.n() + distance - SwissBounds.MIN_N) / SwissBounds.HEIGHT);
+        int xMin = (int)Math.floor(SECTEURS_PAR_COTE * (center.e() - distance - SwissBounds.MIN_E)/ SwissBounds.WIDTH);
+        int xMax = (int)Math.floor(SECTEURS_PAR_COTE * (center.e() + distance - SwissBounds.MIN_E)/ SwissBounds.WIDTH);
+        int yMin = (int)Math.floor(SECTEURS_PAR_COTE * (center.n() - distance - SwissBounds.MIN_N)/ SwissBounds.HEIGHT);
+        int yMax = (int)Math.floor(SECTEURS_PAR_COTE * (center.n() + distance - SwissBounds.MIN_N)/ SwissBounds.HEIGHT);
 
        // calculer les index des secteurs
        ArrayList<Integer> listIndexSector = new ArrayList<Integer>();
