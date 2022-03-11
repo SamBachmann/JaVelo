@@ -1,6 +1,8 @@
 package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.Bits;
+import ch.epfl.javelo.Math2;
+import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.Q28_4;
 
 import java.nio.ByteBuffer;
@@ -23,6 +25,11 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     private static final int OFFSET_ELEVATION_GAIN = OFFSET_LENGTH + Short.BYTES;
     private static final int OFFSET_OSM_ATTRIBUTES = OFFSET_ELEVATION_GAIN + Short.BYTES;
     private static final int EDGES_INTS = OFFSET_OSM_ATTRIBUTES + Short.BYTES;
+    private static final int Q4_4_PER_SHORT = Short.BYTES;
+    private static final int Q0_4_PER_SHORT = 2 * Q4_4_PER_SHORT;
+    private static final int Q0_4_LENGTH = 4;
+    private static final int Q4_4_LENGTH = 8;
+
 
     /**
      * Méthode auxiliaire nous permettant d'effectuer la concatenation des
@@ -95,7 +102,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return vrai si un profil est enregistré, faux sinon.
      */
     public boolean hasProfile(int edgeId) {
-        return typeProfil(edgeId) != 0;
+        return typeProfil(edgeId).ordinal() != 0;
     }
 
     /**
@@ -103,12 +110,14 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @param edgeId
      * @return
      */
-   /* public float[] profileSamples(int edgeId){
+    public float[] profileSamples(int edgeId){
         if ( !this.hasProfile(edgeId)){
             return new float[0];
         }
-        // question pour cette partie
-        int nombreEchantillons = (int) (1 + Math.ceil(this.length(edgeId) / 2));
+
+        int nombreEchantillons =  1 + Math2.ceilDiv(edgesBuffer.getShort(
+                edgeId * EDGES_INTS + OFFSET_LENGTH), Q28_4.ofInt(2)
+        );
         int idPremierEchantillon = Bits.extractUnsigned(profileIds.get(edgeId),0,30);
 
         // Premier échantillon: toujours le même cas.
@@ -116,23 +125,45 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         float premiereAltitude = Q28_4.asFloat(Short.toUnsignedInt(elevations.get(idPremierEchantillon)));
         profilSamplesTable[0] = premiereAltitude;
 
-        for (int i = 1; i < nombreEchantillons; ++i){
-            // Sélectionne le type de profil (1: non compressé, 2: compressé 8-bits, 3: compressé 4-bits)
-            switch (this.typeProfil(edgeId)){
-                case 1 :
-                    profilSamplesTable[i] = Q28_4.asFloat(Short.toUnsignedInt(elevations.get(idPremierEchantillon + i)));
-                break;
-                case 2 :
-                    if (((i - 1) / 2.0) == Math.floor((i + 1) / 2.0)){
-                        profilSamplesTable[i] = Q28_4.asFloat(
-                                Bits.extractSigned(elevations.get(idPremierEchantillon + i),4,4)
-                        );
+        switch (typeProfil(edgeId)) {
+            case NOT_COMPRESSED:
+                for (int i = 1; i < nombreEchantillons; ++i) {
+                    profilSamplesTable[i] = Q28_4.asFloat(
+                            Short.toUnsignedInt(elevations.get(idPremierEchantillon + i))
+                    );
+                }
+            break;
+            case COMPRESSED_8BITS:
+                int nombreIteration = 0;
+                //Parcours les shorts
+                for (int i = 1; i < Math2.ceilDiv(nombreEchantillons, Q4_4_PER_SHORT); ++i) {
+                    int k = Q4_4_PER_SHORT;
+                    // séparations dans les shorts
+                    while ((k > 0) && (nombreIteration < nombreEchantillons)) {
+                        profilSamplesTable[i] = profilSamplesTable[i - 1] +
+                                this.extractBitsCompressedProfil((k - 1) * 8, Q4_4_LENGTH, idPremierEchantillon + i);
+                        --k;
+                        ++nombreIteration;
                     }
+                }
                 break;
-                case 3 :
-            }
-
+            case COMPRESSED_4BITS:
+                int nbIteration = 0;
+                for (int i = 1; i < Math2.ceilDiv(nombreEchantillons, Q0_4_PER_SHORT); ++i) {
+                    int k = Q0_4_PER_SHORT; // == 4
+                    // séparations dans les shorts
+                    while ((k > 0) && (nbIteration < nombreEchantillons)) {
+                        profilSamplesTable[i] = profilSamplesTable[i - 1] +
+                                this.extractBitsCompressedProfil((k - 1) * 4,Q0_4_LENGTH, idPremierEchantillon + i);
+                        --k;
+                        ++nbIteration;
+                    }
+                }
+            break;
         }
+
+
+
 
         //inverser sens du tableau si isInverted = vrai
         if (this.isInverted(edgeId)){
@@ -143,7 +174,14 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
 
         return new float[12];
-    }*/
+    }
+
+
+    private float extractBitsCompressedProfil(int start, int length, int index){
+        return Q28_4.asFloat(
+                Bits.extractSigned(elevations.get(index),start,length)
+        );
+    }
 
 
     /**
@@ -151,8 +189,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @param edgeId L'index de l'arête
      * @return
      */
-    private int typeProfil(int edgeId){
-        return Bits.extractUnsigned(profileIds.get(edgeId), 30,2);
+    private CompressionType typeProfil(int edgeId){
+        return CompressionType.values()[(Bits.extractUnsigned(profileIds.get(edgeId), 30,2))];
     }
 
     /**
@@ -164,7 +202,11 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * à l'arête d'identité donnée.
      */
     public int attributesIndex(int edgeId) {
-        return edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_OSM_ATTRIBUTES);
+        return edgesBuffer.getShort(edgeId * 4 + 3);
+    }
+
+    private enum CompressionType{
+        NO_PROFIL, NOT_COMPRESSED, COMPRESSED_8BITS, COMPRESSED_4BITS;
     }
 
 }
