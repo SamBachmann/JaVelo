@@ -17,8 +17,7 @@ import java.nio.ShortBuffer;
  */
 
 public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuffer elevations) {
-    // Question : on peut utiliser les méthodes de Q28_4 pour représenter des 12_4 ?
-    //définir les constantes.
+    // Définition des constantes pour l'accès aux éléments dans edgesBuffer
     private static final int OFFSET_DESTINATION_NODE = 0;
     private static final int OFFSET_LENGTH = OFFSET_DESTINATION_NODE + Integer.BYTES;
     private static final int OFFSET_ELEVATION_GAIN = OFFSET_LENGTH + Short.BYTES;
@@ -67,7 +66,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
     /**
      * Retourne le dénivelé positif d'une arête.
-     * On se sert de
+     * On se sert de la méthode Q28_4.asDouble pour passer la valeur de dénivelé en UQ12.4 en double.
      *
      * @param edgeId L'index de l'arête
      * @return Le dénivelé positif de l'arête d'index edgeId, en mètres.
@@ -78,11 +77,78 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                         edgeId * EDGES_INTS + OFFSET_ELEVATION_GAIN)
                 )
             );
-
     }
 
-    /*public boolean hasProfile(int edgeId) {
+    /**
+     * Méthode qui test si une arête donnée possède un profil.
+     * Fait appel à la méthode privée typeProfil qui lui retourne le type de profil.
+     *
+     * @param edgeId L'index de l'arête
+     * @return vrai si un profil est enregistré, faux sinon.
+     */
+    public boolean hasProfile(int edgeId) {
+        if (typeProfil(edgeId) == 0){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param edgeId
+     * @return
+     */
+   /* public float[] profileSamples(int edgeId){
+        if ( !this.hasProfile(edgeId)){
+            return new float[0];
+        }
+        // question pour cette partie
+        int nombreEchantillons = (int) (1 + Math.ceil(this.length(edgeId) / 2));
+        int idPremierEchantillon = Bits.extractUnsigned(profileIds.get(edgeId),0,30);
+
+        // Premier échantillon: toujours le même cas.
+        float [] profilSamplesTable = new float[nombreEchantillons];
+        float premiereAltitude = Q28_4.asFloat(Short.toUnsignedInt(elevations.get(idPremierEchantillon)));
+        profilSamplesTable[0] = premiereAltitude;
+
+        for (int i = 1; i < nombreEchantillons; ++i){
+            // Sélectionne le type de profil (1: non compressé, 2: compressé 8-bits, 3: compressé 4-bits)
+            switch (this.typeProfil(edgeId)){
+                case 1 :
+                    profilSamplesTable[i] = Q28_4.asFloat(Short.toUnsignedInt(elevations.get(idPremierEchantillon + i)));
+                break;
+                case 2 :
+                    if (((i - 1) / 2.0) == Math.floor((i + 1) / 2.0)){
+                        profilSamplesTable[i] = Q28_4.asFloat(
+                                Bits.extractSigned(elevations.get(idPremierEchantillon + i),4,4)
+                        );
+                    }
+                break;
+                case 3 :
+            }
+
+        }
+
+        //inverser sens du tableau si isInverted = vrai
+        if (this.isInverted(edgeId)){
+            for (int i = 0; i < nombreEchantillons; ++i){
+
+            }
+        }
+
+
+        return new float[12];
     }*/
+
+
+    /**
+     * Méthode privée retournant le type de profil de l'arête.
+     * @param edgeId L'index de l'arête
+     * @return
+     */
+    private int typeProfil(int edgeId){
+        return Bits.extractUnsigned(profileIds.get(edgeId), 30,2);
+    }
 
     /**
      * Méthode nous permettant de connaître l'identité de l'ensemble d'attributs attaché à l'arête
