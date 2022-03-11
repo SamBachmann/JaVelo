@@ -24,6 +24,17 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     private static final int OFFSET_OSM_ATTRIBUTES = OFFSET_ELEVATION_GAIN + Short.BYTES;
     private static final int EDGES_INTS = OFFSET_OSM_ATTRIBUTES + Short.BYTES;
 
+    /**
+     * Méthode auxiliaire nous permettant d'effectuer la concatenation des
+     * 4 premiers octets du ByteBuffer edgesBuffer liés à chaque arête.
+     *
+     * @param edgeId L'index de l'arête dont on veut connaître les 4 premiers
+     *               octets.
+     * @return Un entier représentant les 4 premiers octets liés à chaque arête.
+     */
+    public int concatenation4PremiersOctets(int edgeId) {
+        return edgesBuffer.getInt(edgeId * EDGES_INTS);
+    }
 
     /**
      * Méthode nous permettant de savoir si une arête va dans le sens de la voie OSM dont elle provient.
@@ -32,8 +43,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return Un booléen indiquant le sens de l'arête.
      */
     public boolean isInverted(int edgeId) {
-        int attribut1 = edgesBuffer.get(edgeId * 4);
-        return attribut1 < 0;
+        return this.concatenation4PremiersOctets(edgeId) < 0;
     }
 
     /**
@@ -43,16 +53,14 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return Un entier représentant l'identité du nœud de destination.
     */
 
-    //public int targetNodeId( int edgeId) {
-        //if (this.isInverted(edgeId)) {
-            //int positif = -(edgesBuffer.get(edgeId));
-            //int etape2 = Bits.extractSigned(positif, 0, 32);
-            // Question concernant l'inversion de chaque bit.
-           // return
-       // } else {
-          // return edgesBuffer.get(edgeId * 4);
-        //}
-    //}
+    public int targetNodeId( int edgeId) {
+        if (this.isInverted(edgeId)) {
+            int entier = concatenation4PremiersOctets(edgeId);
+            return ~entier + 1;
+        } else {
+           return edgesBuffer.getInt(edgeId * EDGES_INTS);
+        }
+    }
 
     /**
      * Méthode nous permettant de connaître la longueur en mètres de l'arête d'index donné.
@@ -61,7 +69,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return Un double représentant la longueur de l'arête d'index donné.
      */
     public double length(int edgeId) {
-        return Q28_4.asDouble(edgesBuffer.getShort(edgeId * 4 + 1));
+        return Q28_4.asDouble(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_LENGTH));
     }
 
     /**
@@ -87,10 +95,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return vrai si un profil est enregistré, faux sinon.
      */
     public boolean hasProfile(int edgeId) {
-        if (typeProfil(edgeId) == 0){
-            return false;
-        }
-        return true;
+        return typeProfil(edgeId) != 0;
     }
 
     /**
@@ -159,7 +164,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * à l'arête d'identité donnée.
      */
     public int attributesIndex(int edgeId) {
-        return edgesBuffer.getShort(edgeId * 4 + 3);
+        return edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_OSM_ATTRIBUTES);
     }
 
 }
