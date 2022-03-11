@@ -141,7 +141,9 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                     // séparations dans les shorts
                     while ((k > 0) && (nombreIteration < nombreEchantillons)) {
                         profilSamplesTable[i] = profilSamplesTable[i - 1] +
-                                this.extractBitsCompressedProfil((k - 1) * 8, Q4_4_LENGTH, idPremierEchantillon + i);
+                                this.extractBitsCompressedProfil(
+                                        (k - 1) * 8, Q4_4_LENGTH, idPremierEchantillon + i
+                                );
                         --k;
                         ++nombreIteration;
                     }
@@ -154,7 +156,9 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                     // séparations dans les shorts
                     while ((k > 0) && (nbIteration < nombreEchantillons)) {
                         profilSamplesTable[i] = profilSamplesTable[i - 1] +
-                                this.extractBitsCompressedProfil((k - 1) * 4,Q0_4_LENGTH, idPremierEchantillon + i);
+                                this.extractBitsCompressedProfil(
+                                        (k - 1) * 4,Q0_4_LENGTH, idPremierEchantillon + i
+                                );
                         --k;
                         ++nbIteration;
                     }
@@ -162,16 +166,14 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
             break;
         }
 
-
-
-
         //inverser sens du tableau si isInverted = vrai
         if (this.isInverted(edgeId)){
             for (int i = 0; i < nombreEchantillons; ++i){
-
+                float inter = profilSamplesTable[i];
+                profilSamplesTable[i] = profilSamplesTable[nombreEchantillons - 1 - i];
+                profilSamplesTable[nombreEchantillons - 1 - i] = inter;
             }
         }
-
 
         return profilSamplesTable;
     }
