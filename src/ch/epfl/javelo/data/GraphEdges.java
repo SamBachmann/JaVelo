@@ -4,9 +4,11 @@ import ch.epfl.javelo.Bits;
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Q28_4;
 
+
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.Arrays;
 
 /**
  * Enregistrement représentant les arêtes du graphe JaVelo
@@ -100,7 +102,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return vrai si un profil est enregistré, faux sinon.
      */
     public boolean hasProfile(int edgeId) {
-        return typeProfil(edgeId).ordinal() != 0;
+        return (Bits.extractUnsigned(profileIds.get(edgeId), 30,2) != 0);
     }
 
     /**
@@ -134,13 +136,13 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                 }
             break;
             case COMPRESSED_8BITS:
-                int nombreIteration = 0;
+                int nombreIteration = 1;
                 //Parcours les shorts
-                for (int i = 1; i < Math2.ceilDiv(nombreEchantillons, Q4_4_PER_SHORT); ++i) {
+                for (int i = 1; i <= Math2.ceilDiv(nombreEchantillons, Q4_4_PER_SHORT); ++i) {
                     int k = Q4_4_PER_SHORT;
                     // séparations dans les shorts
                     while ((k > 0) && (nombreIteration < nombreEchantillons)) {
-                        profilSamplesTable[i] = profilSamplesTable[i - 1] +
+                        profilSamplesTable[nombreIteration] = profilSamplesTable[nombreIteration - 1] +
                                 this.extractBitsCompressedProfil(
                                         (k - 1) * 8, Q4_4_LENGTH, idPremierEchantillon + i
                                 );
@@ -150,12 +152,13 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                 }
             break;
             case COMPRESSED_4BITS:
-                int nbIteration = 0;
-                for (int i = 1; i < Math2.ceilDiv(nombreEchantillons, Q0_4_PER_SHORT); ++i) {
+                int nbIteration = 1;
+
+                for (int i = 1; i <= Math2.ceilDiv(nombreEchantillons, Q0_4_PER_SHORT); ++i) {
                     int k = Q0_4_PER_SHORT; // == 4
                     // séparations dans les shorts
                     while ((k > 0) && (nbIteration < nombreEchantillons)) {
-                        profilSamplesTable[i] = profilSamplesTable[i - 1] +
+                        profilSamplesTable[nbIteration] = profilSamplesTable[nbIteration - 1] +
                                 this.extractBitsCompressedProfil(
                                         (k - 1) * 4,Q0_4_LENGTH, idPremierEchantillon + i
                                 );
@@ -168,7 +171,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
         //inverser sens du tableau si isInverted = vrai
         if (this.isInverted(edgeId)){
-            for (int i = 0; i < nombreEchantillons; ++i){
+            for (int i = 0; i < nombreEchantillons / 2; ++i){
                 float inter = profilSamplesTable[i];
                 profilSamplesTable[i] = profilSamplesTable[nombreEchantillons - 1 - i];
                 profilSamplesTable[nombreEchantillons - 1 - i] = inter;
@@ -193,7 +196,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      */
     private CompressionType typeProfil(int edgeId){
         int profilIndex = (Bits.extractUnsigned(profileIds.get(edgeId), 30,2));
-        System.out.println(profilIndex);
         return CompressionType.values()[profilIndex];
     }
 

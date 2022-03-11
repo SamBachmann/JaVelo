@@ -48,6 +48,7 @@ public class GraphEdgesTest {
 
         assertEquals(2022, edges.attributesIndex(0));
         float[] expectedSamples = new float[]{
+
                 384.0625f, 384.125f, 384.25f, 384.3125f, 384.375f,
                 384.4375f, 384.5f, 384.5625f, 384.6875f, 384.75f
         };
