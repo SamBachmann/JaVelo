@@ -188,6 +188,11 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         );
     }
 
+    private float extractCompressed(){
+        return 0f;
+    }
+    private void extractUncompressed(){}
+
 
     /**
      * Méthode privée retournant le type de profil de l'arête.

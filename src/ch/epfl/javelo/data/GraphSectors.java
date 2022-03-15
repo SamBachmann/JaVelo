@@ -60,7 +60,7 @@ public record GraphSectors(ByteBuffer buffer ) {
             int firstNodeIndex = SECTOR_INTS * listIndexSector.get(i);
             int nodeNumberInSector = Short.toUnsignedInt(
                     buffer.getShort(
-                        SECTOR_INTS * listIndexSector.get(i) + OFFSET_LENGTH
+                        firstNodeIndex + OFFSET_LENGTH
                     )
             );
 
