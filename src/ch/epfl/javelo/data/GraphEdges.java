@@ -63,7 +63,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     public int targetNodeId( int edgeId) {
         if (this.isInverted(edgeId)) {
             int entier = concatenation4PremiersOctets(edgeId);
-            return ~entier + 1;
+            return ~entier;
         } else {
            return edgesBuffer.getInt(edgeId * EDGES_INTS);
         }
@@ -76,7 +76,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return Un double représentant la longueur de l'arête d'index donné.
      */
     public double length(int edgeId) {
-        return Q28_4.asDouble(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_LENGTH));
+        return Q28_4.asDouble(Short.toUnsignedInt(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_LENGTH)));
     }
 
     /**
