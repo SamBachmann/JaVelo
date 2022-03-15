@@ -18,6 +18,7 @@ import java.util.function.DoubleUnaryOperator;
 public final class ElevationProfile {
     private final static int SGN_POSITIF = 1;
     private final static int SGN_NEGATIF = -1;
+
     private final double length;
     private final float [] elevationSamples;
     private final double minElevation;
