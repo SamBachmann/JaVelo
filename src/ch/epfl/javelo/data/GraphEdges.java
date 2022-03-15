@@ -8,7 +8,7 @@ import ch.epfl.javelo.Q28_4;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.util.Arrays;
+
 
 /**
  * Enregistrement représentant les arêtes du graphe JaVelo
@@ -81,12 +81,12 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
     /**
      * Retourne le dénivelé positif d'une arête.
-     * On se sert de la méthode Q28_4.asDouble pour passer la valeur de dénivelé en UQ12.4 en double.
      *
      * @param edgeId L'index de l'arête
      * @return Le dénivelé positif de l'arête d'index edgeId, en mètres.
      */
     public double elevationGain(int edgeId){
+        //On se sert de la méthode Q28_4.asDouble pour passer la valeur de dénivelé en UQ12.4 en double.
         return Q28_4.asDouble(Short.toUnsignedInt(
                 edgesBuffer.getShort(
                         edgeId * EDGES_INTS + OFFSET_ELEVATION_GAIN)
@@ -107,8 +107,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
     /**
      * Retourne le tableau des échantillons du profil de l'arête d'identité donnée,
-     *
      * vide si l'arête ne possède pas de profil.
+     *
      * @param edgeId L'index de l'arête
      * @return Un tableau float[] contenant les échantillons de profil
      */

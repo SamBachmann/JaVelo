@@ -82,7 +82,6 @@ public final class Functions {
          */
         @Override
         public double applyAsDouble(double x) {
-            //On commence par vérifier et forcer x dans l'intervalle [0,xMax]
             if (x <= 0 ){
                 return this.samples[0];
             }else if (x >= xMax){
