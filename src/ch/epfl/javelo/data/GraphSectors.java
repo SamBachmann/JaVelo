@@ -57,10 +57,10 @@ public record GraphSectors(ByteBuffer buffer ) {
        ArrayList<Sector> listSector = new ArrayList<Sector>();
 
         for (int i = 0; i < listIndexSector.size(); ++i){
-            int firstNodeIndex = SECTOR_INTS * listIndexSector.get(i);
+            int firstNodeIndex = listIndexSector.get(i);
             int nodeNumberInSector = Short.toUnsignedInt(
                     buffer.getShort(
-                        firstNodeIndex + OFFSET_LENGTH
+                            SECTOR_INTS * firstNodeIndex + OFFSET_LENGTH
                     )
             );
 
