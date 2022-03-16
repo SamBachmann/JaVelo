@@ -40,7 +40,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      *               octets.
      * @return Un entier représentant les 4 premiers octets liés à chaque arête.
      */
-    public int concatenation4PremiersOctets(int edgeId) {
+    private int concatenation4PremiersOctets(int edgeId) {
         return edgesBuffer.getInt(edgeId * EDGES_INTS);
     }
 
@@ -122,7 +122,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         );
         int idPremierEchantillon = Bits.extractUnsigned(profileIds.get(edgeId),0,30);
 
-        // Premier échantillon: toujours le même cas.
+        // Premier échantillon : toujours le même cas.
         float [] profilSamplesTable = new float[nombreEchantillons];
         float premiereAltitude = Q28_4.asFloat(Short.toUnsignedInt(elevations.get(idPremierEchantillon)));
         profilSamplesTable[0] = premiereAltitude;
@@ -197,7 +197,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     /**
      * Méthode privée retournant le type de profil de l'arête.
      * @param edgeId L'index de l'arête
-     * @return
+     * @return Le type de profil de l'arête.
      */
     private CompressionType typeProfil(int edgeId){
         int profilIndex = (Bits.extractUnsigned(profileIds.get(edgeId), 30,2));
@@ -213,11 +213,11 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * à l'arête d'identité donnée.
      */
     public int attributesIndex(int edgeId) {
-        return edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_OSM_ATTRIBUTES);
+        return Short.toUnsignedInt(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_OSM_ATTRIBUTES));
     }
 
     private enum CompressionType{
-        NO_PROFIL, NOT_COMPRESSED, COMPRESSED_8BITS, COMPRESSED_4BITS;
+        NO_PROFIL, NOT_COMPRESSED, COMPRESSED_8BITS, COMPRESSED_4BITS
     }
 
 }
