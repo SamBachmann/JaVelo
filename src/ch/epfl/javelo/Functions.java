@@ -44,7 +44,7 @@ public final class Functions {
      * @constante est la méthode qui instancie une de ces fonctions.
      */
     private static final class Constant implements DoubleUnaryOperator {
-        private double y;
+        private final double y;
 
         private Constant(double y){
             this.y = y;
@@ -63,9 +63,9 @@ public final class Functions {
 
 
     private static final class Sampled implements DoubleUnaryOperator {
-        private float[] samples;
-        private double xMax;
-        private double coefficent;
+        private final float[] samples;
+        private final double xMax;
+        private final double coefficent;
 
 
         private Sampled(float[] samples, double xMax){

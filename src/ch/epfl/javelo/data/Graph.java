@@ -29,7 +29,7 @@ public final class Graph {
         this.attributeSets = List.copyOf(attributeSets);
     }
 
-    public Graph loadFrom(Path basePath) throws IOException {
+    public static Graph loadFrom(Path basePath) throws IOException {
 
         basePath = Path.of("lausanne");
 

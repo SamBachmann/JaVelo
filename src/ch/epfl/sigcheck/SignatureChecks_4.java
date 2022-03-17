@@ -1,9 +1,11 @@
-/*package ch.epfl.sigcheck;
+package ch.epfl.sigcheck;
 
 // Attention : cette classe n'est *pas* un test JUnit, et son code n'est
 // pas destiné à être exécuté. Son seul but est de vérifier, autant que
 // possible, que les noms et les types des différentes entités à définir
 // pour cette étape du projet sont corrects.
+
+import ch.epfl.javelo.routing.RoutePoint;
 
 final class SignatureChecks_4 {
     private SignatureChecks_4() {}
@@ -63,8 +65,8 @@ final class SignatureChecks_4 {
     }
 
     void checkRoutePoint() throws Exception {
-        v20 = new ch.epfl.javelo.routing.RoutePoint(v12, v09, v09);
-        v20 = ch.epfl.javelo.routing.RoutePoint.NONE;
+        v20 = new RoutePoint(v12, v09, v09);
+        v20 = RoutePoint.NONE;
         v09 = v20.distanceToReference();
         v10 = v20.equals(v16);
         v07 = v20.hashCode();
@@ -98,4 +100,3 @@ final class SignatureChecks_4 {
     ch.epfl.javelo.routing.RoutePoint v20;
     java.util.List<ch.epfl.javelo.projection.PointCh> v21;
 }
-*/
