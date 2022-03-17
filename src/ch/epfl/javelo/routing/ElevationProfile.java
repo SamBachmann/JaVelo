@@ -3,6 +3,7 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.Functions;
 import ch.epfl.javelo.Preconditions;
 
+import java.awt.*;
 import java.util.DoubleSummaryStatistics;
 import java.util.function.DoubleUnaryOperator;
 
@@ -20,6 +21,7 @@ public final class ElevationProfile {
     private final static int SGN_NEGATIF = -1;
 
     private final double length;
+    private final DoubleUnaryOperator fonctionElevation;
     private final float [] elevationSamples;
     private final double minElevation;
     private final double maxElevation;
@@ -41,7 +43,8 @@ public final class ElevationProfile {
         this.minElevation = minMax.getMin();
         this.maxElevation = minMax.getMax();
         this.length = length;
-        this.elevationSamples = elevationSamples;
+        this.elevationSamples = elevationSamples.clone();
+        this.fonctionElevation = Functions.sampled(elevationSamples,length);
     }
 
 
@@ -90,10 +93,15 @@ public final class ElevationProfile {
         return computeAltitudeDifference(SGN_NEGATIF);
     }
 
+    /**
+     * Recherche l'altitude de l'itinéraire à un point donné
+     *
+     * @param position La position sur l'itinéraire, en mètres.
+     * @return L'altitude au point position.
+     */
     public double elevationAt(double position){
         //retourner une fonction sample, qui traite déjà les cas x < 0 et x > xmax
-        DoubleUnaryOperator elevation = Functions.sampled(elevationSamples, length);
-        return elevation.applyAsDouble(position);
+        return fonctionElevation.applyAsDouble(position);
     }
 
     /**
