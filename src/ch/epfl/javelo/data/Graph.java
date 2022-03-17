@@ -1,5 +1,6 @@
 package ch.epfl.javelo.data;
 
+import ch.epfl.javelo.Functions;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.io.IOException;
@@ -149,12 +150,18 @@ public final class Graph {
         return this.edges.elevationGain(edgeId);
     }
 
-    //Méthode à compléter. Question concernant les DoubleUnaryOperator
+    /**
+     * Retourne la fonction samples du profil en long d'une arête.
+     *
+     * @param edgeId L'index de l'arête dont on veut le profil.
+     * @return La fonction DoubleUnaryOperator représentant le profil.
+     */
     public DoubleUnaryOperator edgeProfile(int edgeId) {
         if (this.edges.hasProfile(edgeId)) {
-            return this.edges.profileSamples(edgeId);
+            float[] profil =  this.edges.profileSamples(edgeId);
+            return Functions.sampled(profil,edges.length(edgeId));
         } else {
-            return Double.NaN;
+            return Functions.constant(Double.NaN);
         }
     }
 }
