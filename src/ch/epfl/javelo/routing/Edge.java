@@ -13,8 +13,9 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint,
         PointCh fromPoint = graph.nodePoint(fromNodeId);
         PointCh toPoint = graph.nodePoint(toNodeId);
         double length = graph.edgeLength(edgeId);
-        //profile à récupérer grâce à la dernière méthode de la classe précédente.
-        return new Edge(fromNodeId, toNodeId, fromPoint, toPoint, length, );
+        DoubleUnaryOperator profil = graph.edgeProfile(edgeId);
+
+        return new Edge(fromNodeId, toNodeId, fromPoint, toPoint, length, profil);
     }
 
     public double positionClosestTo(PointCh point) {
