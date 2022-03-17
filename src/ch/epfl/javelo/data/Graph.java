@@ -21,6 +21,7 @@ public final class Graph {
 
     public Graph(GraphNodes nodes, GraphSectors sectors, GraphEdges edges,
                  List<AttributeSet> attributeSets) {
+
         this.nodes = nodes;
         this.sectors = sectors;
         this.edges = edges;
@@ -148,9 +149,13 @@ public final class Graph {
         return this.edges.elevationGain(edgeId);
     }
 
-    //Méthode à faire.
+    //Méthode à compléter. Question concernant les DoubleUnaryOperator
     public DoubleUnaryOperator edgeProfile(int edgeId) {
-        return null;
+        if (this.edges.hasProfile(edgeId)) {
+            return this.edges.profileSamples(edgeId);
+        } else {
+            return Double.NaN;
+        }
     }
 }
 
