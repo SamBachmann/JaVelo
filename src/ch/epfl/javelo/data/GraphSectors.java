@@ -56,12 +56,15 @@ public record GraphSectors(ByteBuffer buffer ) {
         // construire les secteurs depuis le buffer
        ArrayList<Sector> listSector = new ArrayList<Sector>();
 
-       for (int firstNodeIndex : listIndexSector) {
-           int nodeNumberInSector = Short.toUnsignedInt(
-                   buffer.getShort(
-                           SECTOR_INTS * firstNodeIndex + OFFSET_LENGTH
-                   )
-           );
+        for (int i = 0; i < listIndexSector.size(); ++i){
+            int firstSectorIndex = listIndexSector.get(i);
+            int firstNodeIndex = buffer.getInt(SECTOR_INTS * firstSectorIndex );
+            int nodeNumberInSector = Short.toUnsignedInt(
+                    buffer.getShort(
+                            SECTOR_INTS * firstSectorIndex + OFFSET_LENGTH
+                    )
+            );
+
 
            int endNodeIndex = firstNodeIndex + nodeNumberInSector;
            listSector.add(new Sector(firstNodeIndex, endNodeIndex));

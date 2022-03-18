@@ -33,8 +33,8 @@ public record PointCh(double e, double n) {
      * @return La distance au carré entre les 2 PointCh.
      */
     public double squaredDistanceTo(PointCh that){
-        double coordX = this.e() - that.e();
-        double coordY = this.n() - that.n();
+        double coordX = that.e() - this.e();
+        double coordY = that.n() - this.n();
         return Math2.squaredNorm(coordX, coordY);
     }
     /**

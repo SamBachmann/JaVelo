@@ -168,21 +168,20 @@ public final class Graph {
 
         int nodeId = -1;
 
-        //List<GraphSectors.Sector> listOfSectors = this.sectors.sectorsInArea(point, searchDistance);
+        List<GraphSectors.Sector> listOfSectors = this.sectors.sectorsInArea(point, searchDistance);
         //System.out.println(listOfSectors.size());
-        //for (GraphSectors.Sector sector : listOfSectors) {
-            //for (int i = sector.startNodeId(); i < sector.endNodeId(); ++i) {
-                double autreComparaison = Double.MAX_VALUE;
-                for (int i = 0; i < this.nodes.count(); ++i) {
-                    PointCh pointAComparer = this.nodePoint(i);
-                    if (point.squaredDistanceTo(pointAComparer) <= Math.pow(searchDistance, 2)
+        double autreComparaison = Double.MAX_VALUE;
+        for (GraphSectors.Sector sector : listOfSectors) {
+            for (int i = sector.startNodeId(); i < sector.endNodeId(); ++i) {
+
+                PointCh pointAComparer = this.nodePoint(i);
+                if (point.squaredDistanceTo(pointAComparer) <= searchDistance * searchDistance
                         && point.squaredDistanceTo(pointAComparer) < autreComparaison) {
                     nodeId = i;
                     autreComparaison = point.squaredDistanceTo(pointAComparer);
-                    }
                 }
-            //}
-        //}
+            }
+       }
         return nodeId;
     }
 
