@@ -44,16 +44,35 @@ public interface Route {
     List<PointCh> points();
 
     /**
+     * Retourne le point se trouvant à la position donnée sur le long de l'itinéraire.
      *
-     * @param position
-     * @return
+     * @param position Position d'un point sur l'itinéraire.
+     * @return Un PointCh à la position donnée sur l'itinéraire.
      */
     PointCh pointAt(double position);
 
+    /**
+     * Renvoie l'altitude à la position donnée le long de l'itinéraire.
+     *
+     * @param position Position sur l'itinéraire dont on veut l'altitude
+     * @return L'altitude à la position donnée, sur l'itinéraire.
+     */
     double elevationAt(double position);
 
+    /**
+     * Retourne l'identité du noeud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée.
+     *
+     * @param position Position du noeud dont on veut connaitre l'identité
+     * @return L'identié de ce noeud.
+     */
     int nodeClosestTo(double position);
 
+    /**
+     * Retourne le point de l'itinéraire se trouvant le plus proche du point de référence donné.
+     *
+     * @param point PointCh de référence
+     * @return Le RoutePoint le plus proche du point donné en paramètre.
+     */
     RoutePoint pointClosestTo(PointCh point);
 
 

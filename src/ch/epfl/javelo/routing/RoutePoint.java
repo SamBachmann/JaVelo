@@ -5,7 +5,7 @@ import ch.epfl.javelo.projection.PointCh;
 /**
  * Enregistrement représentant le point d'un itinéraire le plus proche d'un point de référence donné.
  *
- *  @author Samuel Bachmann (340373)
+ *  @authors Samuel Bachmann (340373)
  *  @author Cyrus Giblain (312042)
  * <br>
  * 17/03/2022
@@ -15,6 +15,9 @@ import ch.epfl.javelo.projection.PointCh;
  * @param distanceToReference La distance entre le point et la référence, en mètres.
  */
 public record RoutePoint(PointCh point,double position, double distanceToReference) {
+    /**
+     * Constante statique représentant un point inexistant.
+     */
     public final static RoutePoint NONE = new RoutePoint(null, Double.NaN, Double.POSITIVE_INFINITY);
 
     /**
