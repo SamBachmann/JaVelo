@@ -6,6 +6,7 @@ import ch.epfl.javelo.projection.PointCh;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
@@ -60,7 +61,7 @@ public final class Graph {
                     .map(FileChannel.MapMode.READ_ONLY, 0, channel3.size());
         }
 
-        Path profilePath = basePath.resolve("profile_ids");
+        Path profilePath = basePath.resolve("profile_ids.bin");
         IntBuffer profileIdsBuffer;
         try (FileChannel channel4 = FileChannel.open(profilePath)) {
             profileIdsBuffer = channel4
@@ -79,11 +80,12 @@ public final class Graph {
         newEdges = new GraphEdges(edgesBuffer, profileIdsBuffer, elevationsBuffer);
 
         Path attributePath = basePath.resolve("attributes.bin");
-        ByteBuffer attributes;
+        LongBuffer attributes;
         List<AttributeSet> newAttributeSets;
         try (FileChannel channel6 = FileChannel.open(attributePath)) {
             attributes = channel6
-                    .map(FileChannel.MapMode.READ_ONLY, 0, channel6.size());
+                    .map(FileChannel.MapMode.READ_ONLY, 0, channel6.size())
+                    .asLongBuffer();
             for (int i = 0; i < attributes.capacity(); ++i) {
                 newAttributeSets1.add(new AttributeSet(attributes.get(i)));
             }
