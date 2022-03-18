@@ -31,8 +31,6 @@ public final class Graph {
 
     public static Graph loadFrom(Path basePath) throws IOException {
 
-        basePath = Path.of("lausanne");
-
         GraphNodes newNodes;
         GraphSectors newSectors;
         GraphEdges newEdges;
@@ -117,13 +115,17 @@ public final class Graph {
 
         int nodeId = -1;
 
-        for (int i = 0; i < this.nodes.count(); ++i) {
-            PointCh pointAComparer = this.nodePoint(i);
-            double autreComparaison = Double.MAX_VALUE;
-            if ((point.squaredDistanceTo(pointAComparer) <= searchDistance)
-             && point.squaredDistanceTo(pointAComparer) < autreComparaison) {
-                nodeId = i;
-                autreComparaison = point.squaredDistanceTo(pointAComparer);
+        List<GraphSectors.Sector> listOfSectors = this.sectors.sectorsInArea(point, searchDistance);
+
+        for (GraphSectors.Sector sector : listOfSectors) {
+            for (int i = sector.startNodeId(); i < sector.endNodeId(); ++i) {
+                PointCh pointAComparer = this.nodePoint(i);
+                double autreComparaison = Double.MAX_VALUE;
+                if ((point.squaredDistanceTo(pointAComparer) <= searchDistance)
+                        && point.squaredDistanceTo(pointAComparer) < autreComparaison) {
+                    nodeId = i;
+                    autreComparaison = point.squaredDistanceTo(pointAComparer);
+                }
             }
         }
         return nodeId;

@@ -25,8 +25,8 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint,
         double bX = toPoint.e();
         double bY = toPoint.n();
         double pX = point.e();
-
         double pY = point.n();
+
         return Math2.projectionLength(aX, aY, bX, bY, pX, pY);
     }
 
@@ -37,8 +37,8 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint,
 
         return new PointCh(positionE, positionN);
     }
-    // À faire.
+
     public double elevationAt(double position) {
-        return 0.0;
+        return profile.applyAsDouble(position);
     }
 }
