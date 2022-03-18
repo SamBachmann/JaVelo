@@ -4,7 +4,6 @@ import ch.epfl.javelo.Bits;
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Q28_4;
 
-
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
@@ -30,6 +29,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     private static final int Q0_4_PER_SHORT = 2 * Q4_4_PER_SHORT;
     private static final int Q0_4_LENGTH = 4;
     private static final int Q4_4_LENGTH = 8;
+
 
 
     /**
@@ -121,51 +121,21 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                 edgeId * EDGES_INTS + OFFSET_LENGTH), Q28_4.ofInt(2)
         );
         int idPremierEchantillon = Bits.extractUnsigned(profileIds.get(edgeId),0,30);
-
-        // Premier échantillon : toujours le même cas.
-        float [] profilSamplesTable = new float[nombreEchantillons];
-        float premiereAltitude = Q28_4.asFloat(Short.toUnsignedInt(elevations.get(idPremierEchantillon)));
-        profilSamplesTable[0] = premiereAltitude;
+        float [] profilSamplesTable = new float[0];
 
         switch (typeProfil(edgeId)) {
             case NOT_COMPRESSED:
-                for (int i = 1; i < nombreEchantillons; ++i) {
-                    profilSamplesTable[i] = Q28_4.asFloat(
-                            Short.toUnsignedInt(elevations.get(idPremierEchantillon + i))
-                    );
-                }
+                profilSamplesTable = extractUnCompressed(idPremierEchantillon, nombreEchantillons);
             break;
-            case COMPRESSED_8BITS:
-                int nombreIteration = 1;
-                //Parcours les shorts
-                for (int i = 1; i <= Math2.ceilDiv(nombreEchantillons, Q4_4_PER_SHORT); ++i) {
-                    int k = Q4_4_PER_SHORT;
-                    // séparations dans les shorts
-                    while ((k > 0) && (nombreIteration < nombreEchantillons)) {
-                        profilSamplesTable[nombreIteration] = profilSamplesTable[nombreIteration - 1] +
-                                this.extractBitsCompressedProfil(
-                                        (k - 1) * 8, Q4_4_LENGTH, idPremierEchantillon + i
-                                );
-                        --k;
-                        ++nombreIteration;
-                    }
-                }
-            break;
-            case COMPRESSED_4BITS:
-                int nbIteration = 1;
 
-                for (int i = 1; i <= Math2.ceilDiv(nombreEchantillons, Q0_4_PER_SHORT); ++i) {
-                    int k = Q0_4_PER_SHORT; // == 4
-                    // séparations dans les shorts
-                    while ((k > 0) && (nbIteration < nombreEchantillons)) {
-                        profilSamplesTable[nbIteration] = profilSamplesTable[nbIteration - 1] +
-                                this.extractBitsCompressedProfil(
-                                        (k - 1) * 4,Q0_4_LENGTH, idPremierEchantillon + i
-                                );
-                        --k;
-                        ++nbIteration;
-                    }
-                }
+            case COMPRESSED_8BITS:
+                profilSamplesTable = extractCompressed(idPremierEchantillon, nombreEchantillons, Q4_4_LENGTH,
+                        Q4_4_PER_SHORT);
+            break;
+
+            case COMPRESSED_4BITS:
+                profilSamplesTable = extractCompressed(idPremierEchantillon,nombreEchantillons, Q0_4_LENGTH,
+                        Q0_4_PER_SHORT);
             break;
         }
 
@@ -182,17 +152,58 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
 
-    private float extractBitsCompressedProfil(int start, int length, int index){
-        return Q28_4.asFloat(
-                Bits.extractSigned(elevations.get(index),start,length)
+    /**
+     * Méthode privée gérant l'extraction d'un profil non-compressé. Appelée dans le Switch de profilSamples.
+     *
+     * @param idPremierEchantillon L'index du premier échantillon dans le Buffer elevations.
+     * @param longeur Le nombre d'échantillons à retourner.
+     * @return Le tableau d'échantillons extraits.
+     */
+    private float[] extractUnCompressed(int idPremierEchantillon, int longeur){
+        float[] profilSamplesToReturn = new float[longeur];
+
+        for (int i = 0; i < longeur; ++i) {
+            profilSamplesToReturn[i] = Q28_4.asFloat(
+                    Short.toUnsignedInt(elevations.get(idPremierEchantillon + i))
+            );
+        }
+        return  profilSamplesToReturn;
+    }
+
+    /**
+     * Méthode privée gérant l'extraction d'un profil compressé.
+     *
+     * @param idPremierEchantillon L'index du premier échantillon dans le Buffer elevations.
+     * @param nombreEchantillons Le nombre d'échantillons à retourner.
+     * @param bitsPerSamples Le nombre de bits par échantillons, soit 8 pour les Q4_4, soit 4 pour les Q0_4
+     * @param samplesPerShort Le nombre d'échantillons contenus dans un Short, soit 2 pour les Q4_4, soit 4 pour
+     *                        les Q0_4
+     * @return Le tableau d'échantillons extraits.
+     */
+    private float[] extractCompressed(int idPremierEchantillon, int nombreEchantillons,int bitsPerSamples,
+                                      int samplesPerShort){
+        float[] profilSamplesToReturn = new float[nombreEchantillons];
+        //Extraction du premier échantillon, non-compressé
+        profilSamplesToReturn[0] = Q28_4.asFloat(
+                Short.toUnsignedInt(elevations.get(idPremierEchantillon))
         );
-    }
+        int nombreIteration = 1;
+        //Parcours les shorts
+        for (int i = 1; i <= Math2.ceilDiv(nombreEchantillons, samplesPerShort); ++i) {
+            int k = Short.SIZE;
+            // séparations dans les shorts
+            while ((k >= bitsPerSamples) && (nombreIteration < nombreEchantillons)) {
+                k -= bitsPerSamples;
+                profilSamplesToReturn[nombreIteration] = profilSamplesToReturn[nombreIteration - 1] + Q28_4.asFloat(
+                        Bits.extractSigned(elevations.get(idPremierEchantillon + i),k,bitsPerSamples)
+                );
 
-    private float extractCompressed(){
-        return 0f;
-    }
-    private void extractUncompressed(){}
+                ++nombreIteration;
+            }
+        }
+        return profilSamplesToReturn;
 
+    }
 
     /**
      * Méthode privée retournant le type de profil de l'arête.

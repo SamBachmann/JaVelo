@@ -20,7 +20,5 @@ public class TestRoutePoint {
         RoutePoint ref2 = new RoutePoint(pt4,0.0,5);
 
         assertEquals(ref1.min(ref2), ref1);
-
-
     }
 }
