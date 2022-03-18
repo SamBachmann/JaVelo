@@ -3,7 +3,6 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.Functions;
 import ch.epfl.javelo.Preconditions;
 
-import java.awt.*;
 import java.util.DoubleSummaryStatistics;
 import java.util.function.DoubleUnaryOperator;
 
