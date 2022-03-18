@@ -5,7 +5,7 @@ import ch.epfl.javelo.projection.PointCh;
 /**
  * Enregistrement représentant le point d'un itinéraire le plus proche d'un point de référence donné.
  *
- *  @authors Samuel Bachmann (340373)
+ *  @author Samuel Bachmann (340373)
  *  @author Cyrus Giblain (312042)
  * <br>
  * 17/03/2022

@@ -168,29 +168,30 @@ public final class Graph {
 
         int nodeId = -1;
 
-        List<GraphSectors.Sector> listOfSectors = this.sectors.sectorsInArea(point, searchDistance);
+        //List<GraphSectors.Sector> listOfSectors = this.sectors.sectorsInArea(point, searchDistance);
         //System.out.println(listOfSectors.size());
-        for (GraphSectors.Sector sector : listOfSectors) {
-            for (int i = sector.startNodeId(); i < sector.endNodeId(); ++i) {
-        double autreComparaison = Double.MAX_VALUE;
-              //for (int i = 0; i < this.nodes.count(); ++i) {
-                PointCh pointAComparer = this.nodePoint(i);
-                if (point.squaredDistanceTo(pointAComparer) <= Math.pow(searchDistance, 2)
+        //for (GraphSectors.Sector sector : listOfSectors) {
+            //for (int i = sector.startNodeId(); i < sector.endNodeId(); ++i) {
+                double autreComparaison = Double.MAX_VALUE;
+                for (int i = 0; i < this.nodes.count(); ++i) {
+                    PointCh pointAComparer = this.nodePoint(i);
+                    if (point.squaredDistanceTo(pointAComparer) <= Math.pow(searchDistance, 2)
                         && point.squaredDistanceTo(pointAComparer) < autreComparaison) {
                     nodeId = i;
                     autreComparaison = point.squaredDistanceTo(pointAComparer);
+                    }
                 }
-            }
-       }
+            //}
+        //}
         return nodeId;
     }
 
     /**
-     * Méthode nous donnant l'identité du noeud destination de l'arête d'identité
+     * Méthode nous donnant l'identité du nœud destination de l'arête d'identité
      * donnée.
      *
      * @param edgeId L'identité de l'arête.
-     * @return Un int représentant l'identité du noeud destination de l'arête d'identité
+     * @return Un int représentant l'identité du nœud destination de l'arête d'identité
      * donnée.
      */
     public int edgeTargetNodeId(int edgeId) {
