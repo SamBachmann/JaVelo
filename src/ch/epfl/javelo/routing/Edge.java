@@ -5,7 +5,21 @@ import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.util.function.DoubleUnaryOperator;
-
+/**
+ * Enregistrement représentant l'arête d'un itinéraire
+ *
+ *  @author Samuel Bachmann (340373)
+ *  @author Cyrus Giblain (312042)
+ * <br>
+ * 18/03/2022
+ *
+ * @param fromNodeId Identité du noeud de départ.
+ * @param toNodeId Identité du noeud d'arrivée de l'arête.
+ * @param fromPoint Point de départ de l'arête.
+ * @param toPoint
+ * @param length Longueur de l'arête, en mètres
+ * @param profile
+ **/
 public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint,
                    PointCh toPoint, double length, DoubleUnaryOperator profile) {
 

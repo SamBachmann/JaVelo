@@ -168,12 +168,12 @@ public final class Graph {
 
         int nodeId = -1;
 
-        //List<GraphSectors.Sector> listOfSectors = this.sectors.sectorsInArea(point, searchDistance);
+        List<GraphSectors.Sector> listOfSectors = this.sectors.sectorsInArea(point, searchDistance);
         //System.out.println(listOfSectors.size());
-        //for (GraphSectors.Sector sector : listOfSectors) {
-            //for (int i = sector.startNodeId(); i < sector.endNodeId(); ++i) {
-                double autreComparaison = Double.MAX_VALUE;
-              for (int i = 0; i < this.nodes.count(); ++i) {
+        for (GraphSectors.Sector sector : listOfSectors) {
+            for (int i = sector.startNodeId(); i < sector.endNodeId(); ++i) {
+        double autreComparaison = Double.MAX_VALUE;
+              //for (int i = 0; i < this.nodes.count(); ++i) {
                 PointCh pointAComparer = this.nodePoint(i);
                 if (point.squaredDistanceTo(pointAComparer) <= Math.pow(searchDistance, 2)
                         && point.squaredDistanceTo(pointAComparer) < autreComparaison) {
@@ -181,7 +181,7 @@ public final class Graph {
                     autreComparaison = point.squaredDistanceTo(pointAComparer);
                 }
             }
-       // }
+       }
         return nodeId;
     }
 
@@ -217,8 +217,7 @@ public final class Graph {
      * @return L'ensemble d'attributs attachés à l'arête d'identité donnée.
      */
     public AttributeSet edgeAttributes(int edgeId) {
-        return new AttributeSet(this.edges
-                .attributesIndex(edgeId));
+        return new AttributeSet(this.edges.attributesIndex(edgeId));
     }
 
     /**
