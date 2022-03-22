@@ -216,7 +216,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Méthode nous permettant de connaître l'identité de l'ensemble d'attributs attaché à l'arête
+     * Méthode nous permettant de connaître l'index de l'ensemble d'attributs attaché à l'arête
      * d'identité donnée.
      *
      * @param edgeId L'index de l'arête attachée à l'ensemble d'attributs.

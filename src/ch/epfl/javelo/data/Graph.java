@@ -217,7 +217,7 @@ public final class Graph {
      * @return L'ensemble d'attributs attachés à l'arête d'identité donnée.
      */
     public AttributeSet edgeAttributes(int edgeId) {
-        return new AttributeSet(this.edges.attributesIndex(edgeId));
+        return attributeSets.get(this.edges.attributesIndex(edgeId));
     }
 
     /**
