@@ -2,16 +2,28 @@ package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Classe représentant un itinéraire simple, implémente Route
+ *
+ *  @author Samuel Bachmann (340373)
+ *  @author Cyrus Giblain (312042)
+ * <br>
+ * 25/03/2022
+ */
 public final class SingleRoute implements Route{
 
     private List<Edge> edges;
     double[] positionTable;
 
+    /**
+     * Construit l'itinéraire en long à partir d'une liste d'arêtes.
+     *
+     * @param edges La liste d'arête du segment.
+     */
     public SingleRoute(List<Edge> edges) {
         Preconditions.checkArgument(!edges.isEmpty());
         this.edges = edges;
@@ -100,9 +112,9 @@ public final class SingleRoute implements Route{
      */
     @Override
     public PointCh pointAt(double position) {
-
-        return this.edges.get(applyBinarySearch(position))
-                .pointAt(position - this.positionTable[applyBinarySearch(position)]);
+    int index = methodeAuxiliaireBinarySearch(position);
+        return this.edges.get(index)
+                .pointAt(position - this.positionTable[index]);
     }
 
     /**
@@ -145,15 +157,15 @@ public final class SingleRoute implements Route{
     public RoutePoint pointClosestTo(PointCh point) {
         double distance = Double.MAX_VALUE;
         double position2 = 0.0;
-        PointCh pointClosestForEdgei;
+        PointCh pointClosestActual;
         PointCh pointClosest = this.edges().get(0).pointAt(0);
         for (Edge edge : edges()) {
             position2 = edge.positionClosestTo(point);
-            pointClosestForEdgei = edge.pointAt(position2);
-            double distance2 = point.distanceTo(pointClosestForEdgei);
+            pointClosestActual = edge.pointAt(position2);
+            double distance2 = point.distanceTo(pointClosestActual);
             if (distance2 < distance) {
                 distance = distance2;
-                pointClosest = pointClosestForEdgei;
+                pointClosest = pointClosestActual;
             }
         }
         return new RoutePoint(pointClosest, position2, distance);
