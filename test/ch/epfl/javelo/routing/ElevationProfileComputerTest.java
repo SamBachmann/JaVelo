@@ -11,6 +11,8 @@ public class ElevationProfileComputerTest {
     void ElevationProfilComputerWorksOnEmptyTable(){
         var tableauNan = new float[]{Float.NaN, Float.NaN,Float.NaN, Float.NaN};
 
+        var expected = new float[]{0f,0f,0f,0f};
+        //var actual = ElevationProfileComputer.elevationProfile()
         //assertEquals();
     }
 }

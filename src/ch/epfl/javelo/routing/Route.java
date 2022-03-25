@@ -5,7 +5,7 @@ import ch.epfl.javelo.projection.PointCh;
 import java.util.List;
 
 /**
- * Interface représantant un ittinéraire.
+ * Interface représantant un itinéraire.
  *
  *  @author Samuel Bachmann (340373)
  *  @author Cyrus Giblain (312042)
