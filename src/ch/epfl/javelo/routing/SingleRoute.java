@@ -112,7 +112,7 @@ public final class SingleRoute implements Route{
      */
     @Override
     public PointCh pointAt(double position) {
-    int index = methodeAuxiliaireBinarySearch(position);
+    int index = applyBinarySearch(position);
         return this.edges.get(index)
                 .pointAt(position - this.positionTable[index]);
     }
