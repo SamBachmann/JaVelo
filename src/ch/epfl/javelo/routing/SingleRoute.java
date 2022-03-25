@@ -2,10 +2,7 @@ package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
-import org.w3c.dom.Node;
 
-import java.awt.*;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -78,7 +75,13 @@ public final class SingleRoute implements Route{
         return listeDesPoints;
     }
 
-    private int methodeAuxiliaireBinarySearch(double position) {
+    /**
+     * Méthode permettant de faire un binary search.
+     *
+     * @param position Position d'un point sur l'itinéraire.
+     * @return Un int représentant le résultat du binary search.
+     */
+    private int applyBinarySearch(double position) {
 
         int resultatBinarySearch = Arrays.binarySearch(this.positionTable, position);
 
@@ -89,8 +92,6 @@ public final class SingleRoute implements Route{
         return edgeIndex;
     }
 
-
-
     /**
      * Retourne le point se trouvant à la position donnée sur le long de l'itinéraire.
      *
@@ -100,8 +101,8 @@ public final class SingleRoute implements Route{
     @Override
     public PointCh pointAt(double position) {
 
-        return this.edges.get(methodeAuxiliaireBinarySearch(position))
-                .pointAt(position - this.positionTable[methodeAuxiliaireBinarySearch(position)]);
+        return this.edges.get(applyBinarySearch(position))
+                .pointAt(position - this.positionTable[applyBinarySearch(position)]);
     }
 
     /**
@@ -112,7 +113,7 @@ public final class SingleRoute implements Route{
      */
     @Override
     public double elevationAt(double position) {
-        int index = methodeAuxiliaireBinarySearch(position);
+        int index = applyBinarySearch(position);
         return this.edges.get(index)
                 .elevationAt(position - this.positionTable[index]);
     }
@@ -121,12 +122,12 @@ public final class SingleRoute implements Route{
      * Retourne l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée.
      *
      * @param position Position du nœud dont on veut connaitre l'identité
-     * @return L'identité de ce noeud.
+     * @return L'identité de ce nœud.
      */
     @Override
     public int nodeClosestTo(double position) {
         PointCh pointCh = this.pointAt(position);
-        Edge edge = this.edges.get(methodeAuxiliaireBinarySearch(position));
+        Edge edge = this.edges.get(applyBinarySearch(position));
         if (pointCh.distanceTo(edge.fromPoint()) <= pointCh.distanceTo(edge.toPoint())) {
             return edge.fromNodeId();
         } else {

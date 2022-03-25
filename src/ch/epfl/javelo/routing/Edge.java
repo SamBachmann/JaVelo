@@ -32,7 +32,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint,
      * @param fromNodeId Le nœud de départ de l'arête.
      * @param toNodeId Le nœud d'arrivée de l'arête.
      * @return Une instance de Edge, soit une arête composant un itinéraire.
-     */
+     **/
     public static Edge of(Graph graph, int edgeId, int fromNodeId, int toNodeId) {
         PointCh fromPoint = graph.nodePoint(fromNodeId);
         PointCh toPoint = graph.nodePoint(toNodeId);
