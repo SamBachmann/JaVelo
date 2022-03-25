@@ -91,8 +91,8 @@ public final class ElevationProfileComputer {
         boolean rechercheBornesInterpol = false;
         int indexBorneInf = 0;
         int indexBorneSup;
-        //On commence à 2 car on sait que les 2 premières valeurs ne sont pas NaN
-        for(int i = 2; i < elevationTable.length; ++i){
+        //On commence à 1 car on sait que la première valeur n'est pas NaN
+        for(int i = 1; i < elevationTable.length; ++i){
             //début trou
             if (Float.isNaN(elevationTable[i]) && !rechercheBornesInterpol){
                 rechercheBornesInterpol = true;
@@ -113,14 +113,5 @@ public final class ElevationProfileComputer {
             }
         }
     }
-
-    /*public static void main(String[] args){
-        //elevationTable Test:
-        var interTestTable = new float[]{0f,4.5f,3.3f,2f,Float.NaN,Float.NaN,Float.NaN,Float.NaN,Float.NaN,4f,4f};
-        var tabVide = new float[]{Float.NaN,Float.NaN,Float.NaN,Float.NaN,Float.NaN, Float.NaN,Float.NaN,Float.NaN};
-        System.out.println("Trou milieu: " + Arrays.toString(interpolationIntermediaire(interTestTable)));
-        System.out.println("Tableau vide: " + Arrays.toString(interpolationIntermediaire(tabVide)));
-
-    }*/
 
 }
