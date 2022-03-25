@@ -19,8 +19,9 @@ public final class SingleRoute implements Route{
         Preconditions.checkArgument(!edges.isEmpty());
         this.edges = edges;
 
-        double distance = 0.0;
+
         this.positionTable = new double[edges().size()];
+        double distance = 0.0;
         for (int i = 0; i < edges().size(); ++i) {
             positionTable[i] = distance;
             distance = distance + edges().get(i).length();
@@ -110,9 +111,9 @@ public final class SingleRoute implements Route{
      */
     @Override
     public double elevationAt(double position) {
-
-        return this.edges.get(methodeAuxiliaireBinarySearch(position))
-                .elevationAt(position - this.positionTable[methodeAuxiliaireBinarySearch(position)]);
+        int index = methodeAuxiliaireBinarySearch(position);
+        return this.edges.get(index)
+                .elevationAt(position - this.positionTable[index]);
     }
 
     /**
@@ -123,10 +124,7 @@ public final class SingleRoute implements Route{
      */
     @Override
     public int nodeClosestTo(double position) {
-        for (int i = 0; i < edges().size(); ++i) {
-            edges.get(i).
-        }
-        return 0;
+
     }
 
     /**

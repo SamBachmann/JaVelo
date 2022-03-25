@@ -28,7 +28,7 @@ public final class ElevationProfileComputer {
         Preconditions.checkArgument(maxStepLength > 0);
 
         float[] elevationTable = elevationTableInitialisation(route, maxStepLength);
-        elevationTable = interpolationIntermediaire(elevationTable);
+        interpolationIntermediaire(elevationTable);
 
         return new ElevationProfile(route.length(), elevationTable);
     }
@@ -87,7 +87,7 @@ public final class ElevationProfileComputer {
      * @param elevationTable Le tableau d'altitude (qui contient encore des trous)
      * @return Le tableau d'altitude après interpolation.
      */
-    private static float[] interpolationIntermediaire(float[] elevationTable){
+    private static void interpolationIntermediaire(float[] elevationTable){
         boolean rechercheBornesInterpol = false;
         int indexBorneInf = 0;
         int indexBorneSup;
@@ -112,7 +112,6 @@ public final class ElevationProfileComputer {
                 }
             }
         }
-        return elevationTable;
     }
 
     /*public static void main(String[] args){
