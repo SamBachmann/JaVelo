@@ -112,7 +112,7 @@ public final class Math2 {
      * @return La norme au carré du vecteur u.
      */
     public static double squaredNorm(double uX, double uY){
-        return uX * uX + uY * uY;
+        return Math.fma(uX, uX, uY * uY);
     }
 
     /**
