@@ -1,19 +1,35 @@
 package ch.epfl.javelo.routing;
 
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
-
-import java.util.ArrayList;
 import java.util.Arrays;
+
+/**
+ * Classe calculant le profil en long d'un itinéraire donné, à l'aide de sa méthode elevationProfile
+ *
+ *  @author Samuel Bachmann (340373)
+ *  @author Cyrus Giblain (312042)
+ * <br>
+ * 25/03/2022
+ */
 
 public final class ElevationProfileComputer {
     private ElevationProfileComputer(){}
 
+    /**
+     * Calcule et retourne le profil en long de l'itinéraire route.
+     *
+     * @param route L'itinéraire dont on veut connaitre le profil
+     * @param maxStepLength L'espacement maximal entre les échantillons du profil.
+     * @return Le profil en long de l'itinéraire, sous la forme d'un ElevationProfil
+     */
     public static ElevationProfile elevationProfile(Route route, double maxStepLength){
         Preconditions.checkArgument(maxStepLength > 0);
 
         int nbSamples = (int) Math.ceil(route.length() / maxStepLength) + 1;
         double espacement = route.length() / (nbSamples - 1);
+        TableState elevationState = TableState.EMPTY;
         float[] elevationTable = new float[nbSamples];
 
         //initialiser le tableau
@@ -30,8 +46,10 @@ public final class ElevationProfileComputer {
         }
 
         if (k == elevationTable.length){
+            // Tableau vide
             Arrays.fill(elevationTable,0,k, 0f);
         }else if (k > 0 && k < elevationTable.length){
+            elevationState = TableState.NOT_EMPTY;
             Arrays.fill(elevationTable,0,k,elevationTable[k]);
             //Remplir en queue de tableau.
             int c = elevationTable.length;
@@ -45,10 +63,40 @@ public final class ElevationProfileComputer {
         }
 
         //Interpolation des trous intermédiaires.
+        if (elevationState == TableState.NOT_EMPTY){
+            boolean rechercheBornesInterpol = false;
+            int indexBorneInf = 0;
+            int indexBorneSup;
+            //On commence à 1 car on sait que la première valeur n'est pas 0
+            for(int i = 1; i < elevationTable.length; ++i){
+                //début trou
+                if (Float.isNaN(elevationTable[i]) && !rechercheBornesInterpol){
+                    rechercheBornesInterpol = true;
+                    indexBorneInf = i;
+                }
+                //fin du trou
+                if (Float.isNaN(elevationTable[i-1]) && !Float.isNaN(elevationTable[i]) && rechercheBornesInterpol){
+                    // interpolation pour rentrer les valeurs manquantes.
+                    rechercheBornesInterpol = false;
+                    indexBorneSup = i;
+                    float y0 = elevationTable[indexBorneInf];
+                    float y1 = elevationTable[indexBorneSup];
 
+                    for (int c = indexBorneInf + 1; c < indexBorneSup; ++c){
+                        double indexInterpolation = (c - indexBorneInf) / (indexBorneSup - indexBorneInf);
+                        elevationTable[c] = (float) Math2.interpolate(y0,y1, indexInterpolation);
+                    }
+                }
+            }
+        }
 
-
-        return null;
+        return new ElevationProfile(route.length(), elevationTable);
     }
+
+
+    private enum TableState{
+        EMPTY, NOT_EMPTY;
+    }
+
 }
 
