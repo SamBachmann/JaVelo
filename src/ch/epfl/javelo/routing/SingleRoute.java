@@ -2,17 +2,29 @@ package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
+import org.w3c.dom.Node;
 
+import java.awt.*;
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class SingleRoute implements Route{
 
     private List<Edge> edges;
+    double[] positionTable;
 
     public SingleRoute(List<Edge> edges) {
         Preconditions.checkArgument(!edges.isEmpty());
         this.edges = edges;
+
+        double distance = 0.0;
+        this.positionTable = new double[edges().size()];
+        for (int i = 0; i < edges().size(); ++i) {
+            positionTable[i] = distance;
+            distance = distance + edges().get(i).length();
+        }
     }
 
     /**
@@ -23,15 +35,7 @@ public final class SingleRoute implements Route{
      */
     @Override
     public int indexOfSegmentAt(double position) {
-        double distance = 0.0;
-        int index = 0;
-        for (int i = 0; i < edges().size(); ++i) {
-            index = i;
-            while (position > distance) {
-            distance = distance + edges().get(i).length();
-            }
-        }
-        return index;
+        return 0;
     }
 
     /**
@@ -73,6 +77,18 @@ public final class SingleRoute implements Route{
         return listeDesPoints;
     }
 
+    private int methodeAuxiliaireBinarySearch(double position) {
+
+        int resultatBinarySearch = Arrays.binarySearch(this.positionTable, position);
+
+        int edgeIndex = resultatBinarySearch;
+        if (resultatBinarySearch < 0) {
+            edgeIndex = -resultatBinarySearch - 2;
+
+        }
+    }
+
+
     /**
      * Retourne le point se trouvant à la position donnée sur le long de l'itinéraire.
      *
@@ -81,12 +97,9 @@ public final class SingleRoute implements Route{
      */
     @Override
     public PointCh pointAt(double position) {
-        int index = this.indexOfSegmentAt(position);
-        double distance = 0.0;
-        for (int i =  0; i < index; ++i) {
-            distance = distance + this.edges.get(i).length();
-        }
-        return this.edges.get(index).pointAt(position - distance);
+
+        return this.edges.get(methodeAuxiliaireBinarySearch(position))
+                .pointAt(position - this.positionTable[methodeAuxiliaireBinarySearch(position)]);
     }
 
     /**
@@ -97,12 +110,9 @@ public final class SingleRoute implements Route{
      */
     @Override
     public double elevationAt(double position) {
-        int index = this.indexOfSegmentAt(position);
-        double distance = 0.0;
-        for (int i =  0; i < index; ++i) {
-            distance = distance + this.edges.get(i).length();
-        }
-        return this.edges.get(index).elevationAt(position - distance);
+
+        return this.edges.get(methodeAuxiliaireBinarySearch(position))
+                .elevationAt(position - this.positionTable[methodeAuxiliaireBinarySearch(position)]);
     }
 
     /**
@@ -128,18 +138,18 @@ public final class SingleRoute implements Route{
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
         double distance = Double.MAX_VALUE;
-        PointCh pointCh = new PointCh(0, 0);
         double position2 = 0.0;
+        PointCh pointClosestForEdgei;
+        PointCh pointClosest = this.edges().get(0).pointAt(0);
         for (Edge edge : edges()) {
             position2 = edge.positionClosestTo(point);
-            double e = edge.toPoint().e() - ((edge.toPoint().e() - edge.fromPoint().e()) * (position2 / edge.length()));
-            double n = edge.toPoint().n() - ((edge.toPoint().n() - edge.fromPoint().n()) * (position2 / edge.length()));
-            pointCh = new PointCh(e, n);
-            double distance2 = Math.abs(Math.sqrt(point.squaredDistanceTo(pointCh)));
+            pointClosestForEdgei = edge.pointAt(position2);
+            double distance2 = point.distanceTo(pointClosestForEdgei);
             if (distance2 < distance) {
                 distance = distance2;
+                pointClosest = pointClosestForEdgei;
             }
         }
-        return new RoutePoint(pointCh, position2, distance);
+        return new RoutePoint(pointClosest, position2, distance);
     }
 }
