@@ -85,9 +85,10 @@ public final class SingleRoute implements Route{
         int edgeIndex = resultatBinarySearch;
         if (resultatBinarySearch < 0) {
             edgeIndex = -resultatBinarySearch - 2;
-
         }
+        return edgeIndex;
     }
+
 
 
     /**
@@ -117,14 +118,20 @@ public final class SingleRoute implements Route{
     }
 
     /**
-     * Retourne l'identité du noeud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée.
+     * Retourne l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée.
      *
-     * @param position Position du noeud dont on veut connaitre l'identité
-     * @return L'identié de ce noeud.
+     * @param position Position du nœud dont on veut connaitre l'identité
+     * @return L'identité de ce noeud.
      */
     @Override
     public int nodeClosestTo(double position) {
-
+        PointCh pointCh = this.pointAt(position);
+        Edge edge = this.edges.get(methodeAuxiliaireBinarySearch(position));
+        if (pointCh.distanceTo(edge.fromPoint()) <= pointCh.distanceTo(edge.toPoint())) {
+            return edge.fromNodeId();
+        } else {
+            return edge.toNodeId();
+        }
     }
 
     /**
