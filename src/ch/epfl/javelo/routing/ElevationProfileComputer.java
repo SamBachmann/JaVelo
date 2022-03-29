@@ -3,6 +3,7 @@ package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
+
 import java.util.Arrays;
 
 /**
@@ -34,8 +35,8 @@ public final class ElevationProfileComputer {
     }
 
     /**
-     * Méthode privée appelée dans ElevationProfilComputer.elevationProfile qui initialise le tableau d'altitude et
-     * remplace les valeurs NaN de tête et de queue du tableau.
+     * Méthode privée appelée dans ElevationProfilComputer.elevationProfile qui initialise
+     * le tableau d'altitude et remplace les valeurs NaN de tête et de queue du tableau.
      *
      * @param route L'itinéraire dont on veut connaitre le profil
      * @param maxStepLength L'espacement maximal entre les échantillons du profil
@@ -81,8 +82,8 @@ public final class ElevationProfileComputer {
     }
 
     /**
-     * Méthode privée appellée dans ElevationProfilComputer.elevationProfile qui rempli les trou intermédiaire dans
-     * le profil par interpolation.
+     * Méthode privée appellée dans ElevationProfilComputer.elevationProfile qui rempli les trous
+     * intermédiaire dans le profil par interpolation.
      *
      * @param elevationTable Le tableau d'altitude (qui contient encore des trous)
      * @return Le tableau d'altitude après interpolation.
