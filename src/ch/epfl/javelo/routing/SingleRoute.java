@@ -26,7 +26,7 @@ public final class SingleRoute implements Route{
      */
     public SingleRoute(List<Edge> edges) {
         Preconditions.checkArgument(!edges.isEmpty());
-        this.edges = edges;
+        this.edges = List.copyOf(edges);
 
 
         this.positionTable = new double[edges().size()];
