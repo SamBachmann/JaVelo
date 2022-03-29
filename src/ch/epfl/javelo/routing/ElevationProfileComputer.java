@@ -55,7 +55,7 @@ public final class ElevationProfileComputer {
         }
 
         //Remplacer les valeurs NaN en tête de tableau
-        int k= 0;
+        int k = 0;
         while (k < elevationTable.length && Float.isNaN(elevationTable[k])){
             k ++;
         }
@@ -67,7 +67,8 @@ public final class ElevationProfileComputer {
         }else if (k > 0 && k < elevationTable.length) {
             Arrays.fill(elevationTable, 0, k, elevationTable[k]);
 
-            //Remplir en queue de tableau.
+            //Remplir en queue de tableau, seulement si le tableau est non-vide
+        }else {
             int c = elevationTable.length;
             do {
                 --c;
