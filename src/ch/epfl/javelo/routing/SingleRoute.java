@@ -159,6 +159,7 @@ public final class SingleRoute implements Route{
         double position2 = 0.0;
         PointCh pointClosestActual;
         PointCh pointClosest = this.edges().get(0).pointAt(0);
+        double distancearetesprecedentes = 0.0;
         for (Edge edge : edges()) {
             position2 = edge.positionClosestTo(point);
             pointClosestActual = edge.pointAt(position2);
@@ -168,6 +169,11 @@ public final class SingleRoute implements Route{
                 pointClosest = pointClosestActual;
             }
         }
-        return new RoutePoint(pointClosest, position2, distance);
+        for (int i = 0; i < edges().size() - 1; ++i) {
+            distancearetesprecedentes = distancearetesprecedentes + edges().get(i).length();
+        }
+        double position3 = distancearetesprecedentes + position2;
+
+        return new RoutePoint(pointClosest, position3, distance);
     }
 }
