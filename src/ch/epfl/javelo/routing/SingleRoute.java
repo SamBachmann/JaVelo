@@ -1,9 +1,11 @@
 package ch.epfl.javelo.routing;
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,7 +18,7 @@ import java.util.List;
  */
 public final class SingleRoute implements Route{
 
-    private List<Edge> edges;
+    private final List<Edge> edges;
     double[] positionTable;
 
     /**
@@ -84,7 +86,7 @@ public final class SingleRoute implements Route{
             listeDesPoints.add(edge.fromPoint());
             listeDesPoints.add(edge.toPoint());
         }
-        return listeDesPoints;
+        return Collections.unmodifiableList(listeDesPoints);
     }
 
     /**
@@ -112,9 +114,10 @@ public final class SingleRoute implements Route{
      */
     @Override
     public PointCh pointAt(double position) {
-    int index = applyBinarySearch(position);
+        double positionClamped = Math2.clamp(0,position, this.length());
+        int index = applyBinarySearch(positionClamped);
         return this.edges.get(index)
-                .pointAt(position - this.positionTable[index]);
+                .pointAt(positionClamped - this.positionTable[index]);
     }
 
     /**
@@ -125,9 +128,10 @@ public final class SingleRoute implements Route{
      */
     @Override
     public double elevationAt(double position) {
-        int index = applyBinarySearch(position);
+        double positionClamped = Math2.clamp(0,position, this.length());
+        int index = applyBinarySearch(positionClamped);
         return this.edges.get(index)
-                .elevationAt(position - this.positionTable[index]);
+                .elevationAt(positionClamped - this.positionTable[index]);
     }
 
     /**
@@ -138,8 +142,9 @@ public final class SingleRoute implements Route{
      */
     @Override
     public int nodeClosestTo(double position) {
-        PointCh pointCh = this.pointAt(position);
-        Edge edge = this.edges.get(applyBinarySearch(position));
+        double positionClamped = Math2.clamp(0,position,this.length());
+        PointCh pointCh = this.pointAt(positionClamped);
+        Edge edge = this.edges.get(applyBinarySearch(positionClamped));
         if (pointCh.distanceTo(edge.fromPoint()) <= pointCh.distanceTo(edge.toPoint())) {
             return edge.fromNodeId();
         } else {
@@ -161,7 +166,7 @@ public final class SingleRoute implements Route{
         PointCh pointClosest = this.edges().get(0).pointAt(0);
         double distancearetesprecedentes = 0.0;
         for (Edge edge : edges()) {
-            position2 = edge.positionClosestTo(point);
+            position2 = Math2.clamp(0,edge.positionClosestTo(point), edge.length());
             pointClosestActual = edge.pointAt(position2);
             double distance2 = point.distanceTo(pointClosestActual);
             if (distance2 < distance) {
