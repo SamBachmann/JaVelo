@@ -19,7 +19,7 @@ import java.util.List;
 public final class SingleRoute implements Route{
 
     private final List<Edge> edges;
-    double[] positionTable;
+    private final double[] positionTable;
 
     /**
      * Construit l'itinéraire en long à partir d'une liste d'arêtes.
@@ -162,23 +162,29 @@ public final class SingleRoute implements Route{
     public RoutePoint pointClosestTo(PointCh point) {
         double distance = Double.MAX_VALUE;
         double position2 = 0.0;
+        int indexEdgeClosest = 0;
+        double positionMinimale = 0.0;
         PointCh pointClosestActual;
         PointCh pointClosest = this.edges().get(0).pointAt(0);
         double distancearetesprecedentes = 0.0;
-        for (Edge edge : edges()) {
+        for (int i = 0; i < edges().size() - 1; ++i) {
+            Edge edge = edges.get(i);
             position2 = Math2.clamp(0,edge.positionClosestTo(point), edge.length());
             pointClosestActual = edge.pointAt(position2);
             double distance2 = point.distanceTo(pointClosestActual);
             if (distance2 < distance) {
                 distance = distance2;
                 pointClosest = pointClosestActual;
+                indexEdgeClosest = i;
+                positionMinimale = position2;
             }
         }
         for (int i = 0; i < edges().size() - 1; ++i) {
             distancearetesprecedentes = distancearetesprecedentes + edges().get(i).length();
         }
-        double position3 = distancearetesprecedentes + position2;
+        //double position3 = distancearetesprecedentes + position2;
 
-        return new RoutePoint(pointClosest, position3, distance);
+        double positionRetour = positionTable[indexEdgeClosest] + positionMinimale;
+        return new RoutePoint(pointClosest, positionRetour, distance);
     }
 }
