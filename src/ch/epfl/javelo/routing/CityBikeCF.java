@@ -1,4 +1,4 @@
-/*package ch.epfl.javelo.routing;
+package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.data.AttributeSet;
 import ch.epfl.javelo.data.Graph;
@@ -159,5 +159,5 @@ public record CityBikeCF(Graph graph) implements CostFunction {
         return 2;
     }
 }
-*/
+
 

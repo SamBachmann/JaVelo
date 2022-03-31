@@ -161,30 +161,27 @@ public final class SingleRoute implements Route{
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
         double distance = Double.MAX_VALUE;
-        double position2 = 0.0;
+        double position;
+        double positionDistanceIdeale = 0.0;
         int indexEdgeClosest = 0;
-        double positionMinimale = 0.0;
+
         PointCh pointClosestActual;
         PointCh pointClosest = this.edges().get(0).pointAt(0);
-        double distancearetesprecedentes = 0.0;
+
         for (int i = 0; i < edges().size() - 1; ++i) {
             Edge edge = edges.get(i);
-            position2 = Math2.clamp(0,edge.positionClosestTo(point), edge.length());
-            pointClosestActual = edge.pointAt(position2);
+            position = Math2.clamp(0,edge.positionClosestTo(point), edge.length());
+            pointClosestActual = edge.pointAt(position);
             double distance2 = point.distanceTo(pointClosestActual);
             if (distance2 < distance) {
                 distance = distance2;
                 pointClosest = pointClosestActual;
                 indexEdgeClosest = i;
-                positionMinimale = position2;
+                positionDistanceIdeale = position;
             }
         }
-        for (int i = 0; i < edges().size() - 1; ++i) {
-            distancearetesprecedentes = distancearetesprecedentes + edges().get(i).length();
-        }
-        //double position3 = distancearetesprecedentes + position2;
 
-        double positionRetour = positionTable[indexEdgeClosest] + positionMinimale;
+        double positionRetour = positionTable[indexEdgeClosest] + positionDistanceIdeale;
         return new RoutePoint(pointClosest, positionRetour, distance);
     }
 }
