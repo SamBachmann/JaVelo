@@ -169,7 +169,7 @@ public final class Graph {
         int nodeId = -1;
 
         List<GraphSectors.Sector> listOfSectors = this.sectors.sectorsInArea(point, searchDistance);
-        //System.out.println(listOfSectors.size());
+
         double autreComparaison = Double.MAX_VALUE;
         for (GraphSectors.Sector sector : listOfSectors) {
             for (int i = sector.startNodeId(); i < sector.endNodeId(); ++i) {
