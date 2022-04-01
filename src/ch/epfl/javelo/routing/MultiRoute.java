@@ -36,28 +36,18 @@ public class MultiRoute implements Route{
 
         int index = 0;
         double longueur = 0.0;
-
+        double ancienneLongueur;
         for (Route segment : this.segments) {
+            ancienneLongueur = longueur;
             longueur += segment.length();
             if (position > longueur){
                 index += segment.indexOfSegmentAt(longueur);
             }
             else if (position <= longueur){
-                return index + segment.indexOfSegmentAt(longueur - position);
+                return index + segment.indexOfSegmentAt(position - ancienneLongueur);
             }
-
-            /*if (segment.indexOfSegmentAt(longueur) == 0){
-                longueur = longueur + segment.length();
-                ++ index;
-            }
-            else{
-                int nombreDeSousSegments = indexOfSegmentAt(segment.length()) + 1;
-            }
-
-            longueur = longueur + segment.length();
-            if (longueur < position) {
-                index = index + 1;
-            }*/
+            ++ index;
+            
         }
         return index;
     }

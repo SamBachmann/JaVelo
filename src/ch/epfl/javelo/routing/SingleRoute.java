@@ -5,7 +5,6 @@ import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -168,7 +167,7 @@ public final class SingleRoute implements Route{
         PointCh pointClosestActual;
         PointCh pointClosest = this.edges().get(0).pointAt(0);
 
-        for (int i = 0; i < edges().size() - 1; ++i) {
+        for (int i = 0; i < edges().size(); ++i) {
             Edge edge = edges.get(i);
             position = Math2.clamp(0,edge.positionClosestTo(point), edge.length());
             pointClosestActual = edge.pointAt(position);

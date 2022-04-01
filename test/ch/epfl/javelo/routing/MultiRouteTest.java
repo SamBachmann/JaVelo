@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 public class MultiRouteTest {
     @Test
     void indexOfSegmentAt() {
-        Route route = new MultiRoute() {
-        }
+        //Route route = new MultiRoute();
+
     }
 }
