@@ -57,7 +57,7 @@ public class MultiRoute implements Route{
         double longueur = 0.0;
 
         for (Route segment : this.segments) {
-            longueur = longueur + segment.length();
+            longueur += segment.length();
         }
         return longueur;
     }

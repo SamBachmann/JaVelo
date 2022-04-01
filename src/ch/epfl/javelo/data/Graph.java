@@ -151,7 +151,7 @@ public final class Graph {
      * @return Un int représentant l'identité de la edgeIndex-ème arête sortant du noeud d'identité
      * nodeId.
      */
-    public int nodeOutEdgeId(int nodeId, int edgeIndex) {
+    public int  nodeOutEdgeId(int nodeId, int edgeIndex) {
         return this.nodes.edgeId(nodeId, edgeIndex);
     }
 
