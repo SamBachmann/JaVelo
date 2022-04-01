@@ -178,7 +178,7 @@ class SingleRouteTest {
             assertEquals(pt.e(), pct.point().e(), 1e-4);
             assertEquals(pt.n(), pct.point().n(), 1e-4);
             assertEquals(pos, pct.position(), 1e-4);
-            //assertEquals(0, pct.distanceToReference(), 1e-4);
+            assertEquals(0, pct.distanceToReference(), 1e-4);
         }
     }
 

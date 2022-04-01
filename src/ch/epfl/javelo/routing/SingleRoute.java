@@ -86,7 +86,7 @@ public final class SingleRoute implements Route{
         for (Edge edge : edges()) {
             listeDesPoints.add(edge.toPoint());
         }
-        return Collections.unmodifiableList(listeDesPoints);
+        return List.copyOf(listeDesPoints);
     }
 
     /**
