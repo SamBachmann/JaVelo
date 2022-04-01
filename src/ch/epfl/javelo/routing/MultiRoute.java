@@ -33,16 +33,31 @@ public class MultiRoute implements Route{
      */
     @Override
     public int indexOfSegmentAt(double position) {
-        // Je ne vois pas en quoi ce serait plus simple d'appeler la méthode indexOfSegmentAt de SingleRoute.
-        // (C'est dans le deuxième paragraphe des conseils de programmation).
+
         int index = 0;
         double longueur = 0.0;
 
         for (Route segment : this.segments) {
+            longueur += segment.length();
+            if (position > longueur){
+                index += segment.indexOfSegmentAt(longueur);
+            }
+            else if (position <= longueur){
+                return index + segment.indexOfSegmentAt(longueur - position);
+            }
+
+            /*if (segment.indexOfSegmentAt(longueur) == 0){
+                longueur = longueur + segment.length();
+                ++ index;
+            }
+            else{
+                int nombreDeSousSegments = indexOfSegmentAt(segment.length()) + 1;
+            }
+
             longueur = longueur + segment.length();
             if (longueur < position) {
                 index = index + 1;
-            }
+            }*/
         }
         return index;
     }
@@ -90,11 +105,8 @@ public class MultiRoute implements Route{
 
         for (int i = 0; i < this.segments.size(); ++i) {
             listOfPoints.addAll(this.segments.get(i).points());
-
-            for (int j = 0; j < this.segments.size() - 1; ++j)
-                //Il peut y avoir qu'un seul segment n'est-ce pas ? Voir la condition if soulignée.
-            if (this.segments.size() > 1) {
-                listOfPoints.remove(this.segments.get(j + 1).points().get(0));
+            if (i < this.segments.size() - 1) {
+                listOfPoints.remove(listOfPoints.size() - 1);
             }
         }
         return List.copyOf(listOfPoints);

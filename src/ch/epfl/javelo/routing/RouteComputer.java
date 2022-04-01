@@ -47,7 +47,7 @@ public final class RouteComputer {
 
         //initialisation de tous les noeuds à +infini
         for (int i = 0; i < distance.length; ++i){
-            distance[i] = Integer.MAX_VALUE;
+            distance[i] = Float.POSITIVE_INFINITY;
             predecesseur[i] = 0;
         }
 
