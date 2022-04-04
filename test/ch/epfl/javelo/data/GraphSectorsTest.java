@@ -1,7 +1,6 @@
 package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.projection.PointCh;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.nio.ByteBuffer;

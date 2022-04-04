@@ -1,7 +1,6 @@
 package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.Math2;
-import ch.epfl.javelo.projection.PointCh;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

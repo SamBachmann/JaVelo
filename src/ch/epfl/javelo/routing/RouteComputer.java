@@ -31,8 +31,8 @@ public final class RouteComputer {
     public Route  bestRouteBetween(int startNodeId, int endNodeId){
         Preconditions.checkArgument(startNodeId != endNodeId);
 
-        /**
-         * Enregistrement imbriqué pour représenter un noeud à une distance donnée
+        /*
+          Enregistrement imbriqué pour représenter un noeud à une distance donnée
          */
         record WeightedNode(int nodeId, float distance)
                 implements Comparable<WeightedNode> {
