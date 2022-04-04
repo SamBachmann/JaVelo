@@ -1,5 +1,6 @@
 package ch.epfl.javelo.routing;
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 
@@ -49,7 +50,7 @@ public class MultiRoute implements Route{
             ++ index;
             
         }
-        return index;
+        return index - 1;
     }
     /**
      * Retourne la longueur totale de l'itinéraire, en mètres.
