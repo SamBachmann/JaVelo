@@ -16,8 +16,7 @@ import java.util.StringJoiner;
 public record AttributeSet(long bits) {
 
     /**
-     *
-     * Constructeur permettant de représenter un ensemble d'attributs.
+     * Constructeur permettant de créer un ensemble d'attributs.
      *
      * @param bits Le contenu de l'ensemble au moyen d'un bit par valeur possible.
      */
@@ -27,7 +26,6 @@ public record AttributeSet(long bits) {
     }
 
     /**
-     *
      * Construit un nouvel ensemble composé des attributs passés en arguments.
      *
      * @param attributes La liste d'attributs.
@@ -43,8 +41,7 @@ public record AttributeSet(long bits) {
     }
 
     /**
-     *
-     * Permet de savoir si un attribut est bien présent dans l'ensemble this.
+     * Permet de savoir si un attribut est bien présent dans l'ensemble d'attributs this.
      *
      * @param attribute L'attribut en question.
      * @return Un booléen indiquant si l'attribut est bien contenu dans l'ensemble.
@@ -55,7 +52,6 @@ public record AttributeSet(long bits) {
     }
 
     /**
-     *
      * Permet de savoir si les ensembles d'attributs this et that ont au moins
      * un attribut en commun.
      *
@@ -76,10 +72,9 @@ public record AttributeSet(long bits) {
     }
 
     /**
+     * Redéfinit la méthode toString() afin de mieux représenter un ensemble d'attributs.
      *
-     * Redéfinit la méthode toString() afin de mieux représenter un ensemble.
-     *
-     * @return Un String d'une nouvelle façon.
+     * @return Un String représentant l'ensemble d'attributs.
      */
     @Override
     public String toString() {
