@@ -1,7 +1,4 @@
-package ch.epfl.javelo.routing;/*
- *	Author:      Samuel Bachmann
- *	Date:
- */
+package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.KmlPrinter;
 import ch.epfl.javelo.data.Graph;

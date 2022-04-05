@@ -64,7 +64,7 @@ public final class RouteComputer {
 
             }
 
-            //if (distance[noeudActuelId] != Float.NEGATIVE_INFINITY) {
+            if (distance[noeudActuelId] != Float.NEGATIVE_INFINITY) {
                 for (int k = 0; k < graph.nodeOutDegree(noeudActuelId); ++k) {
                     int indexEdge = graph.nodeOutEdgeId(noeudActuelId, k);
                     int nouveauNoeudId = graph.edgeTargetNodeId(indexEdge);
@@ -76,11 +76,11 @@ public final class RouteComputer {
                         predecesseur[nouveauNoeudId] = noeudActuelId;
                         enExploration.add(new WeightedNode(nouveauNoeudId, distance[nouveauNoeudId]));
                     }
-                    //On ne veut plus parcourir les noeuds déjà vus.
-                    
-                    //distance[noeudActuelId] = Float.NEGATIVE_INFINITY;
                 }
-            //}
+
+                //On ne veut plus parcourir les noeuds déjà vus.
+                distance[noeudActuelId] = Float.NEGATIVE_INFINITY;
+            }
         }
 
         if (itineraireExiste){

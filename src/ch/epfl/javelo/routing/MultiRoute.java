@@ -1,6 +1,5 @@
 package ch.epfl.javelo.routing;
 
-import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 
@@ -168,16 +167,20 @@ public class MultiRoute implements Route{
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
-        double distance = Integer.MAX_VALUE;
-        RoutePoint routePoint;
-        RoutePoint routePoint1 = new RoutePoint(null, 0.0, 0.0);
+        double positionItineraire = 0.0;
+        RoutePoint routePointActuel;
+        RoutePoint pointClosest = RoutePoint.NONE;
+
         for (Route segment : this.segments) {
-            routePoint = segment.pointClosestTo(point);
-            if (routePoint.distanceToReference() < distance) {
-                routePoint1 = routePoint;
-                distance = routePoint.distanceToReference();
-            }
+            routePointActuel = segment.pointClosestTo(point);
+            PointCh pointCHActuel = routePointActuel.point();
+            double position = positionItineraire + routePointActuel.position();
+            double distance = routePointActuel.distanceToReference();
+
+            pointClosest = pointClosest.min(pointCHActuel, position, distance);
+            positionItineraire += segment.length();
         }
-        return routePoint1;
+
+        return pointClosest;
     }
 }

@@ -34,7 +34,7 @@ public record RoutePoint(PointCh point,double position, double distanceToReferen
      * Calcule et retourne le point le plus proche du point de référence entre le point en question
      * et un point passé en paramètre.
      *
-     * @param that Un autre RoutePoint dont on veut comparer la distance avec la référence avec celui-ci.
+     * @param that Un autre RoutePoint dont on veut comparer la distance de la référence avec celui-ci.
      * @return Le point le plus proche de la référence (Entre this et that)
      */
     public RoutePoint min(RoutePoint that){

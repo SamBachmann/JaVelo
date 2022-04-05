@@ -28,14 +28,9 @@ public final class SingleRoute implements Route{
     public SingleRoute(List<Edge> edges) {
         Preconditions.checkArgument(!edges.isEmpty());
         this.edges = List.copyOf(edges);
-
-
         this.positionTable = new double[edges().size()];
-        double distance = 0.0;
-        for (int i = 0; i < edges().size(); ++i) {
-            positionTable[i] = distance;
-            distance = distance + edges().get(i).length();
-        }
+        initialisePositionTable();
+
     }
 
     /**
@@ -159,28 +154,37 @@ public final class SingleRoute implements Route{
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
-        double distance = Double.MAX_VALUE;
-        double position;
-        double positionDistanceIdeale = 0.0;
-        int indexEdgeClosest = 0;
-
-        PointCh pointClosestActual;
+        double positionEdge;
+        double positionItineraire;
+        PointCh pointCHActual;
         PointCh pointClosest = this.edges().get(0).pointAt(0);
+
+        RoutePoint routePointClosest = new RoutePoint(pointClosest, 0.0, Double.POSITIVE_INFINITY);
 
         for (int i = 0; i < edges().size(); ++i) {
             Edge edge = edges.get(i);
-            position = Math2.clamp(0,edge.positionClosestTo(point), edge.length());
-            pointClosestActual = edge.pointAt(position);
-            double distance2 = point.distanceTo(pointClosestActual);
-            if (distance2 < distance) {
-                distance = distance2;
-                pointClosest = pointClosestActual;
-                indexEdgeClosest = i;
-                positionDistanceIdeale = position;
-            }
+            positionEdge = Math2.clamp(0, edge.positionClosestTo(point), edge.length());
+            positionItineraire = positionEdge + positionTable[i];
+            pointCHActual = edge.pointAt(positionEdge);
+
+            double distance = point.distanceTo(pointCHActual);
+             routePointClosest = routePointClosest.min(pointCHActual, positionItineraire, distance);
         }
 
-        double positionRetour = positionTable[indexEdgeClosest] + positionDistanceIdeale;
-        return new RoutePoint(pointClosest, positionRetour, distance);
+        return routePointClosest;
+    }
+
+
+
+    /**
+     * Méthode privée lancée depuis le constructeur qui initialise le tableau des positions de
+     * chaque arête
+     */
+    private void initialisePositionTable(){
+        double distance = 0.0;
+        for (int i = 0; i < edges().size(); ++i) {
+            positionTable[i] = distance;
+            distance = distance + edges().get(i).length();
+        }
     }
 }

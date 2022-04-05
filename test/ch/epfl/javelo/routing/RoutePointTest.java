@@ -75,4 +75,13 @@ class RoutePointTest {
         var distanceToReference = rng.nextDouble(0, 1_000);
         return new RoutePoint(pointCh, position, distanceToReference);
     }
+    @Test
+    void routePointMinTest(){
+        var e = 2_600_000;
+        var n = 1_200_000;
+        var pointCh = new PointCh(e, n);
+        var rtNone = RoutePoint.NONE;
+        var newRoute = new RoutePoint(pointCh, 0.0, 1000.0);
+        assertEquals(rtNone.min(pointCh, 0.0, 1000.0), newRoute );
+    }
 }
