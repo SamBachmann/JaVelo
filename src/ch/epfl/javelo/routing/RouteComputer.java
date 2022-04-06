@@ -3,6 +3,7 @@ package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.data.Graph;
+import ch.epfl.javelo.projection.PointCh;
 
 import java.util.*;
 
@@ -45,13 +46,13 @@ public final class RouteComputer {
         PriorityQueue<WeightedNode> enExploration = new PriorityQueue<>();
         boolean itineraireExiste = false;
 
-        //initialisation de tous les noeuds à +infini
-        for (int i = 0; i < distance.length; ++i){
-            distance[i] = Float.POSITIVE_INFINITY;
-            predecesseur[i] = 0;
-        }
+        // initialisation des tableaux.
+        Arrays.fill(distance, Float.POSITIVE_INFINITY);
+        Arrays.fill(predecesseur, 0);
+
 
         int noeudActuelId;
+        PointCh destination = graph.nodePoint(endNodeId);
         distance[startNodeId] = 0;
         enExploration.add(new WeightedNode(startNodeId, distance[startNodeId]));
 
@@ -74,7 +75,10 @@ public final class RouteComputer {
                     if (distanceNouveauNoeud < distance[nouveauNoeudId]) {
                         distance[nouveauNoeudId] = distanceNouveauNoeud;
                         predecesseur[nouveauNoeudId] = noeudActuelId;
-                        enExploration.add(new WeightedNode(nouveauNoeudId, distance[nouveauNoeudId]));
+                        float distanceDroite = (float) graph.nodePoint(nouveauNoeudId).distanceTo(destination);
+                        enExploration.add(new WeightedNode(nouveauNoeudId, distance[nouveauNoeudId]
+                                + distanceDroite)
+                        );
                     }
                 }
 
@@ -83,6 +87,7 @@ public final class RouteComputer {
             }
         }
 
+        // Construit l'itinéraire
         if (itineraireExiste){
             noeudActuelId = endNodeId;
             List<Edge> listEdges = new ArrayList<Edge>();
