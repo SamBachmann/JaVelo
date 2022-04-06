@@ -225,6 +225,7 @@ class MultiRouteTest {
             var p = new PointCh(ORIGIN_E + dE, ORIGIN_N + edgesCount * EDGE_LENGTH + dN);
             var pct = route.pointClosestTo(p);
             assertEquals(end, pct.point());
+            System.out.println(pct.position());
             assertEquals(edgesCount * EDGE_LENGTH, pct.position());
             assertEquals(Math.hypot(dE, dN), pct.distanceToReference(), 1e-4);
         }
@@ -247,6 +248,8 @@ class MultiRouteTest {
             var pct = route.pointClosestTo(pt);
             assertEquals(pt.e(), pct.point().e(), 1e-4);
             assertEquals(pt.n(), pct.point().n(), 1e-4);
+            //System.out.println(pct.position());
+            //System.out.println(pos);
             assertEquals(pos, pct.position(), 1e-4);
             assertEquals(0, pct.distanceToReference(), 1e-4);
         }
