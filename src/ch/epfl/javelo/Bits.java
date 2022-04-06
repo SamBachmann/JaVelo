@@ -47,7 +47,7 @@ public final class Bits {
      */
     public static int extractUnsigned(int value, int start, int length){
         Preconditions.checkArgument(start >= 0 && start < 32
-                                    && length > 0 && length < 32 - start);
+                                    && length > 0 && length <= 32 - start && length < 32);
         int decalGauche = 32 - length - start;
         int decalDroite = 32 - length;
 

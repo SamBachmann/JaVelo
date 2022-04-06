@@ -102,6 +102,15 @@ public class MultiRoute implements Route{
         return List.copyOf(listOfPoints);
     }
 
+    private double distanceItineraire(int index) {
+
+        double distance = 0.0;
+        for (int i = 0; i < index; ++i) {
+            distance = distance + this.segments.get(i).length();
+        }
+        return distance;
+    }
+
     /**
      * Retourne le point se trouvant à la position donnée sur le long de l'itinéraire.
      *
@@ -114,10 +123,8 @@ public class MultiRoute implements Route{
         int index = this.indexOfSegmentAt(position);
         Route segment = this.segments.get(index);
 
-        double distance = 0.0;
-        for (int i = 0; i < index; ++i) {
-            distance = distance + this.segments.get(i).length();
-        }
+        double distance = this.distanceItineraire(index);
+
         return segment.pointAt(position - distance);
     }
 
@@ -133,18 +140,16 @@ public class MultiRoute implements Route{
         int index = this.indexOfSegmentAt(position);
         Route segment = this.segments.get(index);
 
-        double distance = 0.0;
-        for (int i = 0; i < index; ++i) {
-            distance = distance + this.segments.get(i).length();
-        }
+        double distance = this.distanceItineraire(index);
+
         return segment.elevationAt(position - distance);
     }
 
     /**
-     * Retourne l'identité du noeud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée.
+     * Retourne l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée.
      *
-     * @param position Position du noeud dont on veut connaitre l'identité
-     * @return L'identié de ce noeud.
+     * @param position Position du nœud dont on veut connaitre l'identité
+     * @return L'identité de ce nœud.
      */
     @Override
     public int nodeClosestTo(double position) {
@@ -152,10 +157,8 @@ public class MultiRoute implements Route{
         int index = this.indexOfSegmentAt(position);
         Route segment = this.segments.get(index);
 
-        double distance = 0.0;
-        for (int i = 0; i < index; ++i) {
-            distance = distance + this.segments.get(i).length();
-        }
+        double distance = this.distanceItineraire(index);
+
         return segment.nodeClosestTo(position - distance);
     }
 
