@@ -33,7 +33,7 @@ public final class RouteComputer {
         Preconditions.checkArgument(startNodeId != endNodeId);
 
         /*
-          Enregistrement imbriqué pour représenter un noeud à une distance donnée
+          Enregistrement imbriqué pour représenter un nœud à une distance donnée
          */
         record WeightedNode(int nodeId, float distance)
                 implements Comparable<WeightedNode> {
