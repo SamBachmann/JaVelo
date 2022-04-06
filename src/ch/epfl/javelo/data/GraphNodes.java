@@ -33,7 +33,6 @@ public record GraphNodes(IntBuffer buffer) {
     }
 
     /**
-     *
      * Cette méthode permet de connaître la coordonnée E du nœud d'index donné.
      *
      * @return La coordonnée E voulue.
