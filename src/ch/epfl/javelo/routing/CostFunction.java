@@ -19,5 +19,5 @@ public interface CostFunction {
      * @param edgeId L'identité de l'arête en question.
      * @return Le facteur de multiplication de la longueur de l'arête.
      */
-    public abstract double costFactor(int nodeId, int edgeId);
+    double costFactor(int nodeId, int edgeId);
 }
