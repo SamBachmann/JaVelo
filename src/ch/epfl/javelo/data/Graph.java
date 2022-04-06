@@ -29,6 +29,7 @@ public final class Graph {
     private final GraphSectors sectors;
     private final GraphEdges edges;
     private final List<AttributeSet> attributeSets;
+    private final static int NO_NODE = -1;
 
     public Graph(GraphNodes nodes, GraphSectors sectors, GraphEdges edges,
                  List<AttributeSet> attributeSets) {
@@ -162,11 +163,12 @@ public final class Graph {
      * @param point Le point donné.
      * @param searchDistance La distance maximale donnée.
      * @return Un int représentant l'identité du nœud se trouvant le plus proche du point donné,
-     * à la distance maximale donnée, ou -1 si aucun nœud ne correspond à ces critères.
+     * à la distance maximale donnée, ou la constante NO_NODE valant -1 si aucun nœud ne correspond
+     * à ces critères.
      */
     public int nodeClosestTo(PointCh point, double searchDistance) {
 
-        int nodeId = -1;
+        int nodeId = NO_NODE;
 
         List<GraphSectors.Sector> listOfSectors = this.sectors.sectorsInArea(point, searchDistance);
 
@@ -186,7 +188,7 @@ public final class Graph {
     }
 
     /**
-     * Méthode nous donnant l'identité du nœud destination de l'arête d'identité
+     * Méthode nous donnant l'identité du nœud de destination de l'arête d'identité
      * donnée.
      *
      * @param edgeId L'identité de l'arête.
@@ -254,4 +256,5 @@ public final class Graph {
             return Functions.constant(Double.NaN);
         }
     }
+
 }

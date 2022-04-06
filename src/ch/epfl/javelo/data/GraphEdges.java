@@ -25,6 +25,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     private static final int OFFSET_ELEVATION_GAIN = OFFSET_LENGTH + Short.BYTES;
     private static final int OFFSET_OSM_ATTRIBUTES = OFFSET_ELEVATION_GAIN + Short.BYTES;
     private static final int EDGES_INTS = OFFSET_OSM_ATTRIBUTES + Short.BYTES;
+
     private static final int Q4_4_PER_SHORT = Short.BYTES;
     private static final int Q0_4_PER_SHORT = 2 * Q4_4_PER_SHORT;
     private static final int Q0_4_LENGTH = 4;
@@ -38,14 +39,15 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      *
      * @param edgeId L'index de l'arête dont on veut connaître les 4 premiers
      *               octets.
-     * @return Un entier représentant les 4 premiers octets liés à chaque arête.
+     * @return Un int contenant les 4 premiers octets liés à chaque arête.
      */
     private int concatenation4PremiersOctets(int edgeId) {
         return edgesBuffer.getInt(edgeId * EDGES_INTS);
     }
 
     /**
-     * Méthode nous permettant de savoir si une arête va dans le sens de la voie OSM dont elle provient.
+     * Méthode nous permettant de savoir si une arête va dans le sens de
+     * la voie OSM dont elle provient.
      *
      * @param edgeId L'index de l'arête dont on veut connaître le sens.
      * @return Un booléen indiquant le sens de l'arête.
@@ -80,9 +82,9 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Retourne le dénivelé positif d'une arête.
+     * Méthode retournant le dénivelé positif d'une arête.
      *
-     * @param edgeId L'index de l'arête
+     * @param edgeId L'index de l'arête.
      * @return Le dénivelé positif de l'arête d'index edgeId, en mètres.
      */
     public double elevationGain(int edgeId){
@@ -96,7 +98,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
     /**
      * Méthode qui test si une arête donnée possède un profil.
-     * Fait appel à la méthode privée typeProfil qui lui retourne le type de profil.
      *
      * @param edgeId L'index de l'arête
      * @return vrai si un profil est enregistré, faux sinon.
@@ -153,7 +154,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
 
     /**
-     * Méthode privée gérant l'extraction d'un profil non-compressé. Appelée dans le Switch de profilSamples.
+     * Méthode privée gérant l'extraction d'un profil non-compressé.
+     * Appelée dans le Switch de profilSamples.
      *
      * @param idPremierEchantillon L'index du premier échantillon dans le Buffer elevations.
      * @param longeur Le nombre d'échantillons à retourner.
@@ -176,32 +178,33 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @param idPremierEchantillon L'index du premier échantillon dans le Buffer elevations.
      * @param nombreEchantillons Le nombre d'échantillons à retourner.
      * @param bitsPerSamples Le nombre de bits par échantillons, soit 8 pour les Q4_4, soit 4 pour les Q0_4
-     * @param samplesPerShort Le nombre d'échantillons contenus dans un Short, soit 2 pour les Q4_4, soit 4 pour
-     *                        les Q0_4
+     * @param samplesPerShort Le nombre d'échantillons contenus dans un Short, soit 2 pour les Q4_4,
+     *                       soit 4 pour les Q0_4
      * @return Le tableau d'échantillons extraits.
      */
-    private float[] extractCompressed(int idPremierEchantillon, int nombreEchantillons,int bitsPerSamples,
-                                      int samplesPerShort){
-        float[] profilSamplesToReturn = new float[nombreEchantillons];
+    private float[] extractCompressed(int idPremierEchantillon, int nombreEchantillons,
+                                      int bitsPerSamples, int samplesPerShort){
+        float[] profilSamples = new float[nombreEchantillons];
         //Extraction du premier échantillon, non-compressé
-        profilSamplesToReturn[0] = Q28_4.asFloat(
+        profilSamples[0] = Q28_4.asFloat(
                 Short.toUnsignedInt(elevations.get(idPremierEchantillon))
         );
-        int nombreIteration = 1;
+        int nbIteration = 1;
         //Parcours les shorts
         for (int i = 1; i <= Math2.ceilDiv(nombreEchantillons, samplesPerShort); ++i) {
             int k = Short.SIZE;
             // séparations dans les shorts
-            while ((k >= bitsPerSamples) && (nombreIteration < nombreEchantillons)) {
+            while ((k >= bitsPerSamples) && (nbIteration < nombreEchantillons)) {
                 k -= bitsPerSamples;
-                profilSamplesToReturn[nombreIteration] = profilSamplesToReturn[nombreIteration - 1] + Q28_4.asFloat(
-                        Bits.extractSigned(elevations.get(idPremierEchantillon + i),k,bitsPerSamples)
-                );
+                float deltaElevation = Q28_4.asFloat(Bits.extractSigned(
+                        elevations.get(idPremierEchantillon + i),k,bitsPerSamples));
 
-                ++nombreIteration;
+                profilSamples[nbIteration] = profilSamples[nbIteration - 1] + deltaElevation;
+
+                ++nbIteration;
             }
         }
-        return profilSamplesToReturn;
+        return profilSamples;
 
     }
 
