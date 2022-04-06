@@ -10,8 +10,8 @@ import java.util.*;
 public final class RouteComputer {
     private final Graph graph;
     private final CostFunction costFunction;
-    private float [] distance;
-    private int[] predecesseur;
+    private final float [] distance;
+    private final int[] predecesseur;
 
     public RouteComputer(Graph graph , CostFunction costFunction){
         this.graph = graph;
@@ -23,7 +23,7 @@ public final class RouteComputer {
 
     /**
      * Méthode appliquant l'algorithme de calcul d'itinéraire pour trouver le meilleur entre
-     * un nœud de départ et un nœud d'arrivée donnés.
+     * un nœud de départ et un nœud d'arrivée donnés (Algorithme A*).
      *
      * @param startNodeId L'index du nœud de départ.
      * @param endNodeId L'index du nœud d'arrivée.
@@ -89,27 +89,38 @@ public final class RouteComputer {
 
         // Construit l'itinéraire
         if (itineraireExiste){
-            noeudActuelId = endNodeId;
-            List<Edge> listEdges = new ArrayList<Edge>();
-
-            while (noeudActuelId != startNodeId){
-                int noeudPrecedentId = predecesseur[noeudActuelId];
-                for (int i = 0; i < graph.nodeOutDegree(noeudPrecedentId); ++i){
-                    int indexEdge = graph.nodeOutEdgeId(noeudPrecedentId, i);
-                    if (graph.edgeTargetNodeId(indexEdge) == noeudActuelId){
-                        listEdges.add(Edge.of(graph, indexEdge,noeudPrecedentId,noeudActuelId));
-                        noeudActuelId = noeudPrecedentId;
-                        break;
-                    }
-                }
-            }
-            Collections.reverse(listEdges);
-
+            List<Edge> listEdges = itineraireConstructeur(startNodeId, endNodeId );
             return new SingleRoute(List.copyOf(listEdges));
 
         }
         // Aucun itinéraire trouvé
         return null;
+    }
+
+    /**
+     * Méthode privée appelée depuis bestRouteBetween retournant une liste d'arêtes à partir d'un
+     * tableau d'index de noeuds.
+     *
+     * @param startNodeId L'index du nœud de départ.
+     * @param endNodeId L'index du nœud d'arrivée.
+     * @return
+     */
+    private List<Edge> itineraireConstructeur(int startNodeId, int endNodeId){
+        List<Edge> listEdges = new ArrayList<>();
+        int noeudActuelId = endNodeId;
+        while (noeudActuelId != startNodeId){
+            int noeudPrecedentId = predecesseur[noeudActuelId];
+            for (int i = 0; i < graph.nodeOutDegree(noeudPrecedentId); ++i){
+                int indexEdge = graph.nodeOutEdgeId(noeudPrecedentId, i);
+                if (graph.edgeTargetNodeId(indexEdge) == noeudActuelId){
+                    listEdges.add(Edge.of(graph, indexEdge,noeudPrecedentId,noeudActuelId));
+                    noeudActuelId = noeudPrecedentId;
+                    break;
+                }
+            }
+        }
+        Collections.reverse(listEdges);
+        return List.copyOf(listEdges);
     }
 
 }

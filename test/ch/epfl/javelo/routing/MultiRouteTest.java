@@ -248,8 +248,7 @@ class MultiRouteTest {
             var pct = route.pointClosestTo(pt);
             assertEquals(pt.e(), pct.point().e(), 1e-4);
             assertEquals(pt.n(), pct.point().n(), 1e-4);
-            //System.out.println(pct.position());
-            //System.out.println(pos);
+
             assertEquals(pos, pct.position(), 1e-4);
             assertEquals(0, pct.distanceToReference(), 1e-4);
         }

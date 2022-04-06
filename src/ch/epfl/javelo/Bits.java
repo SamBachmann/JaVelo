@@ -36,8 +36,8 @@ public final class Bits {
     }
 
     /**
-     * Extrait d'un entier considéré comme un vecteur de bits la plage de bits d'une longueur et depuis
-     * un point de départ donnés en arguments.
+     * Extrait d'un entier considéré comme un vecteur de bits la plage de bits d'une longueur
+     * et depuis un point de départ donnés en arguments.
      * Retourne une valeur non signée.
      *
      * @param value Le vecteur de bits dont on veut extraire une plage de bits.
@@ -47,7 +47,7 @@ public final class Bits {
      */
     public static int extractUnsigned(int value, int start, int length){
         Preconditions.checkArgument(start >= 0 && start < 32
-                                    && length > 0 && length < 32 - start);
+                                    && length > 0 && length <= 32 - start && length < 32);
         int decalGauche = 32 - length - start;
         int decalDroite = 32 - length;
 
