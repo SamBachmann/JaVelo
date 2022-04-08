@@ -61,9 +61,7 @@ public class MultiRoute implements Route{
     public double length() {
 
         int indexFinItineraire = this.segments.size();
-
         return distanceItineraire(indexFinItineraire);
-
     }
 
     /**

@@ -16,18 +16,19 @@ import ch.epfl.javelo.projection.PointCh;
  */
 public record RoutePoint(PointCh point,double position, double distanceToReference) {
     /**
-     * Constante statique représentant un point inexistant.
+     * Représente un point inexistant.
      */
     public final static RoutePoint NONE = new RoutePoint(null, Double.NaN, Double.POSITIVE_INFINITY);
 
     /**
      * Décale le RoutePoint sur l'itinéraire, vers l'avant ou l'arrière
      *
-     * @param positionDifference La différence de position par rapport au point de base, peut être positif ou négatif.
+     * @param positionDifference La différence de position par rapport au point de base.
      * @return Un nouveau RoutePoint décalé.
      */
     public RoutePoint withPositionShiftedBy(double positionDifference){
-        return new RoutePoint(this.point,this.position + positionDifference, this.distanceToReference);
+        double newPosition = this.position + positionDifference;
+        return new RoutePoint(this.point, newPosition, this.distanceToReference);
     }
 
     /**

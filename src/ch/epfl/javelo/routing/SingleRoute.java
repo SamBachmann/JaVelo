@@ -51,11 +51,11 @@ public final class SingleRoute implements Route{
      */
     @Override
     public double length() {
-        double taille =  0.0;
+        double longueur =  0.0;
         for (Edge edge : edges) {
-            taille = taille + edge.length();
+            longueur = longueur + edge.length();
         }
-        return taille;
+        return longueur;
     }
 
     /**
@@ -129,7 +129,8 @@ public final class SingleRoute implements Route{
     }
 
     /**
-     * Retourne l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée.
+     * Retourne l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche
+     * de la position donnée.
      *
      * @param position Position du nœud dont on veut connaitre l'identité
      * @return L'identité de ce nœud.
@@ -173,8 +174,6 @@ public final class SingleRoute implements Route{
 
         return routePointClosest;
     }
-
-
 
     /**
      * Méthode privée lancée depuis le constructeur qui initialise le tableau des positions de
