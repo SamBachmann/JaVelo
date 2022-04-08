@@ -34,6 +34,7 @@ public record GraphNodes(IntBuffer buffer) {
     /**
      * Cette méthode permet de connaître la coordonnée E du nœud d'index donné.
      *
+     * @param nodeId L'index du noeud.
      * @return La coordonnée E voulue.
      */
     public double nodeE(int nodeId) {
@@ -43,6 +44,7 @@ public record GraphNodes(IntBuffer buffer) {
     /**
      * Cette méthode permet de connaître la coordonnée N du nœud d'index donné.
      *
+     * @param nodeId L'index du noeud.
      * @return La coordonnée N voulue.
      */
     public double nodeN(int nodeId) {

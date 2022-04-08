@@ -19,6 +19,11 @@ public class MultiRoute implements Route{
 
     private final List<Route> segments;
 
+    /**
+     * Constructeur de l'itinéraire multiple, è partir d'une liste de segments.
+     *
+     * @param segments La liste des segments de cet itinéraire.
+     */
     public MultiRoute(List<Route> segments) {
 
         Preconditions.checkArgument(!segments.isEmpty());

@@ -20,6 +20,12 @@ public final class RouteComputer {
     private final float [] distance;
     private final int[] predecesseur;
 
+    /**
+     * Constructeur d'un calculateur d'itinéraire.
+     *
+     * @param graph Le graphe dans lequel on veut construire l'itinéraire.
+     * @param costFunction La fonction de coût appliquée dans le calcul.
+     */
     public RouteComputer(Graph graph , CostFunction costFunction){
         this.graph = graph;
         this.costFunction = costFunction;

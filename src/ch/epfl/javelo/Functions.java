@@ -42,7 +42,7 @@ public final class Functions {
 
     /**
      * Classe privée permettant de modéliser une fonction constante.
-     * @constante est la méthode qui instancie une de ces fonctions.
+     * Constant est la méthode qui instancie une de ces fonctions.
      */
     private static final class Constant implements DoubleUnaryOperator {
         private final double y;
@@ -63,6 +63,9 @@ public final class Functions {
     }
 
 
+    /**
+     * Classe privée permettant de modéliser une fonction échantillonnée.
+     */
     private static final class Sampled implements DoubleUnaryOperator {
         private final float[] samples;
         private final double xMax;

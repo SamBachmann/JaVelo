@@ -87,7 +87,6 @@ public final class ElevationProfileComputer {
      * intermédiaires dans le profil par interpolation.
      *
      * @param elevationTable Le tableau d'altitude (qui contient encore des trous)
-     * @return Le tableau d'altitude après interpolation.
      */
     private static void interpolationIntermediaire(float[] elevationTable){
         boolean rechercheBornesInterpol = false;

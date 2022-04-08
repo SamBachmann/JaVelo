@@ -31,6 +31,14 @@ public final class Graph {
     private final List<AttributeSet> attributeSets;
     private final static int NO_NODE = -1;
 
+    /**
+     * Constructeur de Graph
+     *
+     * @param nodes L'ensemble des noeuds du graphe.
+     * @param sectors L'ensemble des secteurs du graphe.
+     * @param edges L'enemble des arêtes du graphe.
+     * @param attributeSets L'ensemble des attributs du graphe.
+     */
     public Graph(GraphNodes nodes, GraphSectors sectors, GraphEdges edges,
                  List<AttributeSet> attributeSets) {
 
@@ -45,6 +53,7 @@ public final class Graph {
      * dont on fournit le chemin d'accès.
      *
      * @param basePath Le chemin d'accès du fichier.
+     * @throws IOException Si un fichier ne peut pas être extrait.
      * @return Un graphe JaVelo obtenu à partir du fichier donné.
      */
     public static Graph loadFrom(Path basePath) throws IOException {
