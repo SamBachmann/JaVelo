@@ -3,7 +3,6 @@ package ch.epfl.javelo.projection;
 import ch.epfl.javelo.Preconditions;
 
 /**
- *
  * Enregistrement permettant de représenter un point dans le système Web Mercator
  *
  *  @author Samuel Bachmann (340373)
@@ -14,7 +13,6 @@ import ch.epfl.javelo.Preconditions;
 public record PointWebMercator(double x, double y) {
 
     /**
-     *
      * Constructeur vérifiant que les coordonnées e et n sont dans la zone suisse.
      *
      * @param x Valeur de l'abscisse dans les coordonnées Web Mercator.
@@ -25,7 +23,6 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     *
      * Méthode nous permettant de connaître un point dans le système Web Mercator dont les
      * coordonnées sont x et y au niveau de zoom donné.
      *
@@ -43,7 +40,6 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     *
      * Méthode nous retournant un point dans le système Web Mercator à partir d'un point
      * dans le système suisse donné.
      *
@@ -62,10 +58,9 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     *
      * Méthode nous donnant la coordonnée x zoomée.
      *
-     * @param zoomLevel Cet argument désigne le niveau de zoom à appliquer.
+     * @param zoomLevel Niveau de zoom à appliquer.
      * @return La coordonnée x zoomée.
      */
     public double xAtZoomLevel(int zoomLevel) {
@@ -73,10 +68,9 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     *
      * Méthode nous donnant la coordonnée y zoomée.
      *
-     * @param zoomLevel Cet argument désigne le niveau de zoom à appliquer.
+     * @param zoomLevel Niveau de zoom à appliquer.
      * @return La coordonnée y zoomée.
      */
     public double yAtZoomLevel(int zoomLevel) {
@@ -84,7 +78,6 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     *
      * Méthode nous donnant la longitude du point en radians.
      *
      * @return La longitude du point.
@@ -94,7 +87,6 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     *
      * Méthode nous donnant la latitude du point en radians.
      *
      * @return La latitude du point.
@@ -104,7 +96,6 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     *
      * Méthode nous donnant le point de coordonnées suisses à partir du point
      * en coordonnées Web Mercator.
      *

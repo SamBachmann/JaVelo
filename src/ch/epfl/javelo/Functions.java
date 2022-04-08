@@ -30,7 +30,8 @@ public final class Functions {
     /**
      * Retourne une fonction obtenue par interpolation linéaire entre les échantillons samples.
      *
-     * @param samples Tableau contenant les échantillons de valeur y. Ceux-ci sont espacés régulièrement entre 0 et xMax.
+     * @param samples Tableau contenant les échantillons de valeur y. Ceux-ci sont espacés
+     *               régulièrement entre 0 et xMax.
      * @param xMax La valeur en x maximale pour le dernier échantillon
      * @return La fonction d'interpolation linéaire entre les points donnés.
      */
@@ -67,7 +68,6 @@ public final class Functions {
         private final double xMax;
         private final double coefficent;
 
-
         private Sampled(float[] samples, double xMax){
             this.samples = samples;
             this.xMax = xMax;
@@ -96,4 +96,5 @@ public final class Functions {
             return Math2.interpolate(this.samples[bInf], this.samples[bSup],xInNewInterval);
         }
     }
+
 }

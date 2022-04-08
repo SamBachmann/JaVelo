@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class MultiRoute implements Route{
 
-    final List<Route> segments;
+    private final List<Route> segments;
 
     public MultiRoute(List<Route> segments) {
 
@@ -51,6 +51,7 @@ public class MultiRoute implements Route{
         }
         return index - 1;
     }
+
     /**
      * Retourne la longueur totale de l'itinéraire, en mètres.
      *
@@ -59,12 +60,10 @@ public class MultiRoute implements Route{
     @Override
     public double length() {
 
-        double longueur = 0.0;
+        int indexFinItineraire = this.segments.size();
 
-        for (Route segment : this.segments) {
-            longueur += segment.length();
-        }
-        return longueur;
+        return distanceItineraire(indexFinItineraire);
+
     }
 
     /**
@@ -102,14 +101,6 @@ public class MultiRoute implements Route{
         return List.copyOf(listOfPoints);
     }
 
-    private double distanceItineraire(int index) {
-
-        double distance = 0.0;
-        for (int i = 0; i < index; ++i) {
-            distance = distance + this.segments.get(i).length();
-        }
-        return distance;
-    }
 
     /**
      * Retourne le point se trouvant à la position donnée sur le long de l'itinéraire.
@@ -185,5 +176,21 @@ public class MultiRoute implements Route{
         }
 
         return pointClosest;
+    }
+
+    /**
+     * Méthode privée calculant la distance sur l'itinéraire entre le point de départ
+     * et le segment d'itinéraire d'index donné
+     *
+     * @param index L'index du segment d'itinéraire
+     * @return La distance jusqu'à ce segment
+     */
+    private double distanceItineraire(int index) {
+
+        double distance = 0.0;
+        for (int i = 0; i < index; ++i) {
+            distance = distance + this.segments.get(i).length();
+        }
+        return distance;
     }
 }

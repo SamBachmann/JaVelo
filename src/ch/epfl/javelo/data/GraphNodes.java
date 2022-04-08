@@ -23,7 +23,6 @@ public record GraphNodes(IntBuffer buffer) {
     private static final int NODE_INTS = OFFSET_OUT_EDGES + 1;
 
     /**
-     *
      * Cette méthode nous donne le nombre total de nœuds du graphe JaVelo.
      *
      * @return Le nombre de nœuds.
@@ -42,7 +41,6 @@ public record GraphNodes(IntBuffer buffer) {
     }
 
     /**
-     *
      * Cette méthode permet de connaître la coordonnée N du nœud d'index donné.
      *
      * @return La coordonnée N voulue.
@@ -52,7 +50,6 @@ public record GraphNodes(IntBuffer buffer) {
     }
 
     /**
-     *
      * Cette méthode nous permet de connaître le nombre d'arêtes sortant
      * d'un nœud donné.
      *
@@ -74,7 +71,7 @@ public record GraphNodes(IntBuffer buffer) {
      * @return L'identité de l'arête concernée.
      */
     public int edgeId(int nodeId, int edgeIndex) {
-        int attribut3 = buffer.get(nodeId * 3 + OFFSET_OUT_EDGES);
+        int attribut3 = buffer.get(nodeId * NODE_INTS + OFFSET_OUT_EDGES);
         return Bits.extractUnsigned(attribut3, 0, 28) + edgeIndex;
     }
 }

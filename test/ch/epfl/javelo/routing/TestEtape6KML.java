@@ -13,7 +13,7 @@ public final class TestEtape6KML {
             CostFunction cf = new CityBikeCF(g);
             RouteComputer rc = new RouteComputer(g, cf);
             Route r = null;
-            for (int i = 0; i < 20; ++i) {
+            for (int i = 0; i < 5; ++i) {
                 long t0 = System.nanoTime();
                 r = rc.bestRouteBetween(2046055, 2694240);
                 System.out.printf(i + " : Itinéraire calculé en %d ms\n",

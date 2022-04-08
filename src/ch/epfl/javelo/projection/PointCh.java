@@ -4,7 +4,6 @@ import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 
 /**
- *
  *  Enregistrement permettant de représenter un point dans le système de coordonnée suisse (CH1903+)
  *
  *  @author Samuel Bachmann (340373)
@@ -15,7 +14,6 @@ import ch.epfl.javelo.Preconditions;
 public record PointCh(double e, double n) {
 
     /**
-     *
      * Constructeur vérifiant que les coordonnées e et n sont dans la zone suisse.
      *
      * @param e Valeur de l'abscisse dans les coordonnées suisses.
@@ -26,7 +24,6 @@ public record PointCh(double e, double n) {
     }
 
     /**
-     *
      * Calcule la distance au carré entre le point en question et le point entré en argument.
      *
      * @param that PointCh duquel on veut calculer la distance au carré.
@@ -38,7 +35,6 @@ public record PointCh(double e, double n) {
         return Math2.squaredNorm(coordX, coordY);
     }
     /**
-     *
      * Calcule la distance entre le point en question et le point entré en argument.
      *
      * @param that PointCh duquel on veut calculer la distance.
@@ -49,7 +45,6 @@ public record PointCh(double e, double n) {
     }
 
     /**
-     *
      * Méthode retournant la longitude d'un PointCh.
      *
      * @return La longitude.
@@ -59,7 +54,6 @@ public record PointCh(double e, double n) {
     }
 
     /**
-     *
      * Méthode retournant la latitude d'un PointCh.
      *
      * @return La latitude.

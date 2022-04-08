@@ -99,15 +99,16 @@ public final class ElevationProfile {
      * @return L'altitude au point position.
      */
     public double elevationAt(double position){
-        //retourner une fonction sample, qui traite déjà les cas x < 0 et x > xmax
+
         return fonctionElevation.applyAsDouble(position);
     }
 
     /**
-     * Calcule le dénivelé, positif ou négatif en fonction de sign. Méthode appelée par totalAscent et totalDescent
+     * Calcule le dénivelé, positif ou négatif en fonction de sign.
+     * Méthode appelée par totalAscent et totalDescent.
      *
-     * @param sign Le signe du dénivelé, SGN_POSITIF = 1 si on calcule le dénivelé positf, SGN_NEGATIF = -1 si on veut
-     *             le dénivelé négatif
+     * @param sign Le signe du dénivelé, SGN_POSITIF = 1 si on calcule le dénivelé positf,
+     *            SGN_NEGATIF = -1 si on calcule le dénivelé négatif
      * @return Le dénivelé calculé
      */
     private double computeAltitudeDifference(int sign){

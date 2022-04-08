@@ -13,8 +13,8 @@ public final class Q28_4 {
     /**
      * Constructeur par défaut privé pour rendre la classe non instanciable.
      */
-    private Q28_4(){
-    }
+    private Q28_4(){}
+
     /**
      * Converti un nombre entier donné dans la représentation Q28.4.
      * @param i Le nombre entier int donné.

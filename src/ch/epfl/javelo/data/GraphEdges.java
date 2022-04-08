@@ -28,9 +28,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
     private static final int Q4_4_PER_SHORT = Short.BYTES;
     private static final int Q0_4_PER_SHORT = 2 * Q4_4_PER_SHORT;
-    private static final int Q0_4_LENGTH = 4;
-    private static final int Q4_4_LENGTH = 8;
-
+    private static final int Q4_4_LENGTH = Byte.SIZE;
+    private static final int Q0_4_LENGTH = Q4_4_LENGTH / 2;
 
 
     /**
@@ -78,7 +77,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return Un double représentant la longueur de l'arête d'index donné.
      */
     public double length(int edgeId) {
-        return Q28_4.asDouble(Short.toUnsignedInt(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_LENGTH)));
+        short length = edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_LENGTH);
+        return Q28_4.asDouble(Short.toUnsignedInt(length));
     }
 
     /**
@@ -88,16 +88,14 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return Le dénivelé positif de l'arête d'index edgeId, en mètres.
      */
     public double elevationGain(int edgeId){
+        short deltaElevation = edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_ELEVATION_GAIN);
+
         //On se sert de la méthode Q28_4.asDouble pour passer la valeur de dénivelé en UQ12.4 en double.
-        return Q28_4.asDouble(Short.toUnsignedInt(
-                edgesBuffer.getShort(
-                        edgeId * EDGES_INTS + OFFSET_ELEVATION_GAIN)
-                )
-            );
+        return Q28_4.asDouble(Short.toUnsignedInt(deltaElevation));
     }
 
     /**
-     * Méthode qui test si une arête donnée possède un profil.
+     * Méthode qui teste si une arête donnée possède un profil.
      *
      * @param edgeId L'index de l'arête
      * @return vrai si un profil est enregistré, faux sinon.
@@ -130,13 +128,13 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
             break;
 
             case COMPRESSED_8BITS:
-                profilSamplesTable = extractCompressed(idPremierEchantillon, nombreEchantillons, Q4_4_LENGTH,
-                        Q4_4_PER_SHORT);
+                profilSamplesTable = extractCompressed(idPremierEchantillon, nombreEchantillons,
+                        Q4_4_LENGTH, Q4_4_PER_SHORT);
             break;
 
             case COMPRESSED_4BITS:
-                profilSamplesTable = extractCompressed(idPremierEchantillon,nombreEchantillons, Q0_4_LENGTH,
-                        Q0_4_PER_SHORT);
+                profilSamplesTable = extractCompressed(idPremierEchantillon, nombreEchantillons,
+                        Q0_4_LENGTH, Q0_4_PER_SHORT);
             break;
         }
 
@@ -165,9 +163,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         float[] profilSamplesToReturn = new float[longeur];
 
         for (int i = 0; i < longeur; ++i) {
-            profilSamplesToReturn[i] = Q28_4.asFloat(
-                    Short.toUnsignedInt(elevations.get(idPremierEchantillon + i))
-            );
+            short localProfil = elevations.get(idPremierEchantillon + i);
+            profilSamplesToReturn[i] = Q28_4.asFloat(Short.toUnsignedInt(localProfil));
         }
         return  profilSamplesToReturn;
     }
@@ -177,7 +174,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      *
      * @param idPremierEchantillon L'index du premier échantillon dans le Buffer elevations.
      * @param nombreEchantillons Le nombre d'échantillons à retourner.
-     * @param bitsPerSamples Le nombre de bits par échantillons, soit 8 pour les Q4_4, soit 4 pour les Q0_4
+     * @param bitsPerSamples Le nombre de bits par échantillons, 8 pour les Q4_4, 4 pour les Q0_4
      * @param samplesPerShort Le nombre d'échantillons contenus dans un Short, soit 2 pour les Q4_4,
      *                       soit 4 pour les Q0_4
      * @return Le tableau d'échantillons extraits.
@@ -186,9 +183,9 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                                       int bitsPerSamples, int samplesPerShort){
         float[] profilSamples = new float[nombreEchantillons];
         //Extraction du premier échantillon, non-compressé
-        profilSamples[0] = Q28_4.asFloat(
-                Short.toUnsignedInt(elevations.get(idPremierEchantillon))
-        );
+        short premierEchantillon = elevations.get(idPremierEchantillon);
+        profilSamples[0] = Q28_4.asFloat(Short.toUnsignedInt(premierEchantillon));
+
         int nbIteration = 1;
         //Parcours les shorts
         for (int i = 1; i <= Math2.ceilDiv(nombreEchantillons, samplesPerShort); ++i) {
@@ -210,6 +207,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
 
     /**
      * Méthode privée retournant le type de profil de l'arête.
+     *
      * @param edgeId L'index de l'arête
      * @return Le type de profil de l'arête.
      */
@@ -230,6 +228,9 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         return Short.toUnsignedInt(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_OSM_ATTRIBUTES));
     }
 
+    /**
+     * Énumération des différents types de profils
+     */
     private enum CompressionType{
         NO_PROFIL, NOT_COMPRESSED, COMPRESSED_8BITS, COMPRESSED_4BITS
     }

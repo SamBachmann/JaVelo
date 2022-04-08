@@ -9,10 +9,10 @@ package ch.epfl.javelo.projection;
  */
 public final class SwissBounds {
 
-    // Un constructeur privé pour cette classe non instantiable.
+    // Un constructeur privé pour que cette classe soit non-instantiable.
     private SwissBounds() {}
 
-    // Valeurs constantes permettant de délimiter les frontières de la Suisse.
+    // Valeurs constantes permettant de délimiter les limites de la Suisse.
     public static final double MIN_E = 2485000;
     public static final double MAX_E = 2834000;
     public static final double MIN_N = 1075000;
@@ -21,8 +21,7 @@ public final class SwissBounds {
     public static final double HEIGHT = MAX_N - MIN_N;
 
     /**
-     *
-     * Méthode nous permettant de savoir si des coordonnées sont bien en Suisse.
+     * Méthode nous permettant de savoir si des coordonnées sont bien dans la zone suisse.
      *
      * @param e Cet argument désigne la coordonnée E dans le système de coordonnées suisse.
      * @param n Cet argument désigne la coordonnée N dans le système de coordonnées suisse.

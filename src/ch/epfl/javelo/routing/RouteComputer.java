@@ -4,9 +4,16 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
-
 import java.util.*;
 
+/**
+ * Classe gérant le calcul du meilleur itinéraire.
+ *
+ *  @author Samuel Bachmann (340373)
+ *  @author Cyrus Giblain (312042)
+ * <br>
+ * 31/03/2022
+ */
 public final class RouteComputer {
     private final Graph graph;
     private final CostFunction costFunction;
@@ -32,9 +39,7 @@ public final class RouteComputer {
     public Route  bestRouteBetween(int startNodeId, int endNodeId){
         Preconditions.checkArgument(startNodeId != endNodeId);
 
-        /*
-          Enregistrement imbriqué pour représenter un nœud à une distance donnée
-         */
+        //Enregistrement imbriqué pour représenter un nœud à une distance donnée
         record WeightedNode(int nodeId, float distance)
                 implements Comparable<WeightedNode> {
             @Override
@@ -62,15 +67,15 @@ public final class RouteComputer {
             if (noeudActuelId == endNodeId){
                 itineraireExiste = true;
                 break;
-
             }
 
             if (distance[noeudActuelId] != Float.NEGATIVE_INFINITY) {
                 for (int k = 0; k < graph.nodeOutDegree(noeudActuelId); ++k) {
                     int indexEdge = graph.nodeOutEdgeId(noeudActuelId, k);
                     int nouveauNoeudId = graph.edgeTargetNodeId(indexEdge);
-                    float distanceNouveauNoeud = (float) (distance[noeudActuelId]
-                            + costFunction.costFactor(noeudActuelId, indexEdge) * graph.edgeLength(indexEdge));
+                    float longeurAretePonderee = (float)(costFunction.costFactor(noeudActuelId,indexEdge)
+                            * graph.edgeLength(indexEdge));
+                    float distanceNouveauNoeud = (distance[noeudActuelId]) + longeurAretePonderee;
 
                     if (distanceNouveauNoeud < distance[nouveauNoeudId]) {
                         distance[nouveauNoeudId] = distanceNouveauNoeud;
@@ -89,23 +94,22 @@ public final class RouteComputer {
 
         // Construit l'itinéraire
         if (itineraireExiste){
-            List<Edge> listEdges = itineraireConstructeur(startNodeId, endNodeId );
-            return new SingleRoute(List.copyOf(listEdges));
-
+            return itineraireConstructeur(startNodeId, endNodeId);
         }
+
         // Aucun itinéraire trouvé
         return null;
     }
 
     /**
-     * Méthode privée appelée depuis bestRouteBetween retournant une liste d'arêtes à partir d'un
-     * tableau d'index de noeuds.
+     * Méthode privée appelée depuis bestRouteBetween retournant une SingleRoute à partir
+     * d'un tableau d'index de noeuds.
      *
      * @param startNodeId L'index du nœud de départ.
      * @param endNodeId L'index du nœud d'arrivée.
-     * @return
+     * @return L'itinéraire calculé préalablement.
      */
-    private List<Edge> itineraireConstructeur(int startNodeId, int endNodeId){
+    private SingleRoute itineraireConstructeur(int startNodeId, int endNodeId){
         List<Edge> listEdges = new ArrayList<>();
         int noeudActuelId = endNodeId;
         while (noeudActuelId != startNodeId){
@@ -120,7 +124,7 @@ public final class RouteComputer {
             }
         }
         Collections.reverse(listEdges);
-        return List.copyOf(listEdges);
+        return new SingleRoute(List.copyOf(listEdges));
     }
 
 }

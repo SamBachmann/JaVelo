@@ -14,8 +14,8 @@ import java.util.Arrays;
  * <br>
  * 25/03/2022
  */
-
 public final class ElevationProfileComputer {
+    //Constructeur privé puisque la classe est non-instanciable.
     private ElevationProfileComputer(){}
 
     /**
@@ -84,7 +84,7 @@ public final class ElevationProfileComputer {
 
     /**
      * Méthode privée appellée dans ElevationProfilComputer.elevationProfile qui rempli les trous
-     * intermédiaire dans le profil par interpolation.
+     * intermédiaires dans le profil par interpolation.
      *
      * @param elevationTable Le tableau d'altitude (qui contient encore des trous)
      * @return Le tableau d'altitude après interpolation.
@@ -98,7 +98,7 @@ public final class ElevationProfileComputer {
             //début trou
             if (Float.isNaN(elevationTable[i]) && !rechercheBornesInterpol){
                 rechercheBornesInterpol = true;
-                indexBorneInf = i -1;
+                indexBorneInf = i - 1;
             }
             //fin du trou
             if (Float.isNaN(elevationTable[i-1]) && !Float.isNaN(elevationTable[i]) && rechercheBornesInterpol){

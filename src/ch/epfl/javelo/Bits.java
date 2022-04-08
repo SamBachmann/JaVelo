@@ -1,7 +1,6 @@
 package ch.epfl.javelo;
 
 /**
- *
  * Extraire une séquence de bit d'un entier de type int
  *
  *  @author Samuel Bachmann (340373)
@@ -11,13 +10,13 @@ package ch.epfl.javelo;
  */
 public final class Bits {
     /**
-     * Constructeur par défaut privé pour rendre la classe non instanciable.
+     * Constructeur par défaut privé pour rendre la classe non-instanciable.
      */
     private Bits(){}
 
     /**
-     * Extrait d'un entier considéré comme un vecteur de bits la plage de bits d'une longueur et depuis
-     * un point de départ donnés en arguments.
+     * Extrait d'un entier considéré comme un vecteur de bits la plage de bits d'une longueur et
+     * depuis un point de départ donnés en arguments.
      * Retourne une valeur signée en complément à 2
      *
      * @param value Le vecteur de bits dont on veut extraire une plage de bits.

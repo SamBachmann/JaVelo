@@ -4,6 +4,7 @@ import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.SwissBounds;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,10 +28,8 @@ public record GraphSectors(ByteBuffer buffer ) {
      *
      * @param startNodeId L'index du premier noeud du secteur
      * @param endNodeId L'index du noeud situé juste après le dernier noeud du secteur.
-     *     */
-    public record Sector(int startNodeId, int endNodeId){
-
-    }
+     */
+    public record Sector(int startNodeId, int endNodeId){}
 
     /**
      * Calcule et retourne tous les secteurs ayant une intersection avec le carré dont le centre
@@ -41,7 +40,7 @@ public record GraphSectors(ByteBuffer buffer ) {
      * @return La liste des secteurs ayant intersection avec ce carré.
      */
    public List<Sector> sectorsInArea(PointCh center, double distance){
-        // première étape : calculer les coordonnées de secteurs xmin, xmax, ymin, ymax
+        // Calculer les coordonnées de secteurs xmin, xmax, ymin, ymax
         int xMin = (int)Math.floor(SECTEURS_PAR_COTE * (center.e() - distance - SwissBounds.MIN_E)/ SwissBounds.WIDTH);
         int xMax = (int)Math.ceil(SECTEURS_PAR_COTE * (center.e() + distance - SwissBounds.MIN_E)/ SwissBounds.WIDTH);
         int yMin = (int)Math.floor(SECTEURS_PAR_COTE * (center.n() - distance - SwissBounds.MIN_N)/ SwissBounds.HEIGHT);
@@ -52,21 +51,20 @@ public record GraphSectors(ByteBuffer buffer ) {
         yMin = Math2.clamp(0,yMin,SECTEURS_PAR_COTE);
         yMax = Math2.clamp(0,yMax,SECTEURS_PAR_COTE);
         // calculer les index des secteurs
-        ArrayList<Integer> listIndexSector = new ArrayList<Integer>();
+        List<Integer> listIndexSector = new ArrayList<Integer>();
         for (int x = xMin; x < xMax; ++x){
             for (int y = yMin; y < yMax; ++y){
                 listIndexSector.add(x + 128 * y);
             }
         }
         // construire les secteurs depuis le buffer
-        ArrayList<Sector> listSector = new ArrayList<>();
+        List<Sector> listSector = new ArrayList<>();
 
-        for (int i = 0; i < listIndexSector.size(); ++i){
-            int SectorIndex = listIndexSector.get(i);
-            int firstNodeIndex = buffer.getInt(SECTOR_INTS * SectorIndex );
+        for (int sectorIndex : listIndexSector){
+            int firstNodeIndex = buffer.getInt(SECTOR_INTS * sectorIndex );
             int nodeNumberInSector = Short.toUnsignedInt(
                     buffer.getShort(
-                            SECTOR_INTS * SectorIndex + OFFSET_LENGTH
+                            SECTOR_INTS * sectorIndex + OFFSET_LENGTH
                     )
             );
            int endNodeIndex = firstNodeIndex + nodeNumberInSector;

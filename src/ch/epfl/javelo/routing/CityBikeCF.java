@@ -159,5 +159,3 @@ public record CityBikeCF(Graph graph) implements CostFunction {
         return 2;
     }
 }
-
-

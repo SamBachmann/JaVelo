@@ -1,6 +1,7 @@
 package ch.epfl.javelo;
 
 /**
+ * Classe vérifiant les préconditions.
  *
  * @author Samuel Bachmann (340373)
  * @author Cyrus Giblain (312042)
@@ -13,7 +14,6 @@ public final class Preconditions {
     private Preconditions() {}
 
     /**
-     *
      * Méthode permettant de vérifier l'argument shouldBeTrue.
      *
      * @param shouldBeTrue L'argument qui doit être vrai pour qu'une

@@ -14,7 +14,6 @@ public final class Math2 {
     private Math2() {}
 
     /**
-     *
      * Retourne la partie entière par excès de la division de x par y.
      *
      * @param x Le numérateur (entier positif).
@@ -27,11 +26,10 @@ public final class Math2 {
     }
 
     /**
-     *
      * Rend la coordonnée y en fonction d'un x donné sur la droite passant par (0,y0) et (1,y1).
      *
      * @param y0 Le point de la droite en x = 0
-     * @param y1 Le point de la droite en x = 1
+     * @param y1  Le point de la droite en x = 1
      * @param x Le point d'abscisse en lequel on calcul y
      * @return La coordonnée y
      */
@@ -40,7 +38,6 @@ public final class Math2 {
     }
 
     /**
-     *
      * Limite la valeur v à l'intervalle allant de min à max.
      * Si v est en dehors de cet intervalle, on le ramène à la borne la plus proche.
      *
@@ -60,7 +57,6 @@ public final class Math2 {
     }
 
     /**
-     *
      * Surcharge de la méthode clamp pour des entrées de type double.
      *
      * @param min Valeur minimale de l'intervalle.
@@ -79,8 +75,7 @@ public final class Math2 {
     }
 
     /**
-     *
-     * Calcul le sinus hyperbolique inverse en fonction d'un paramètre x.
+     * Calcule le sinus hyperbolique inverse en fonction d'un paramètre x.
      *
      * @param x La valeur entrée pour le calcul du sinus hyperbolique inverse.
      * @return le sinus hyperbolique inverse en fonction de x.
@@ -90,7 +85,6 @@ public final class Math2 {
     }
 
     /**
-     *
      * Calcule le produit scalaire entre 2 vecteurs u et v à 2 composantes.
      *
      * @param uX Composante X de u.
@@ -104,7 +98,6 @@ public final class Math2 {
     }
 
     /**
-     *
      * Calcul de la norme au carré d'un vecteur u à 2 composantes.
      *
      * @param uX Composante X de u.
@@ -116,7 +109,6 @@ public final class Math2 {
     }
 
     /**
-     *
      * Calcul de la norme d'un vecteur u à 2 composantes.
      *
      * @param uX Composante X de u.
@@ -139,7 +131,8 @@ public final class Math2 {
      * @param pY Coordonnée Y de P.
      * @return La longueur de la projection.
      */
-    public static double projectionLength(double aX, double aY, double bX, double bY, double pX, double pY){
+    public static double projectionLength(double aX, double aY, double bX, double bY,
+                                          double pX, double pY){
         double uX = pX - aX;
         double uY = pY - aY;
         double vX = bX - aX;
