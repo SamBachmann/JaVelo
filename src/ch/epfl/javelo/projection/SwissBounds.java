@@ -12,12 +12,36 @@ public final class SwissBounds {
     // Un constructeur privé pour que cette classe soit non-instantiable.
     private SwissBounds() {}
 
-    // Valeurs constantes permettant de délimiter les limites de la Suisse.
+    // Valeurs constantes permettant de délimiter les frontières de la Suisse.
+
+    /**
+     * Délimitation ouest de la carte.
+     */
     public static final double MIN_E = 2485000;
+
+    /**
+     * Délimitation est de la carte.
+     */
     public static final double MAX_E = 2834000;
+
+    /**
+     * Délimitation sud de la carte.
+     */
     public static final double MIN_N = 1075000;
+
+    /**
+     * Délimitation nord de la carte.
+     */
     public static final double MAX_N = 1296000;
+
+    /**
+     * Longueur de la carte en ouest-est
+     */
     public static final double WIDTH = MAX_E - MIN_E;
+
+    /**
+     * Longueur de la carte en sud-nord.
+     */
     public static final double HEIGHT = MAX_N - MIN_N;
 
     /**

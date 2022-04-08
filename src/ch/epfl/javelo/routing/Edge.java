@@ -34,6 +34,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint,
      * @return Une instance de Edge, soit une arête composant un itinéraire.
      **/
     public static Edge of(Graph graph, int edgeId, int fromNodeId, int toNodeId) {
+
         PointCh fromPoint = graph.nodePoint(fromNodeId);
         PointCh toPoint = graph.nodePoint(toNodeId);
         double length = graph.edgeLength(edgeId);

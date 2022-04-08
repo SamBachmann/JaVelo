@@ -5,7 +5,7 @@ import ch.epfl.javelo.projection.PointCh;
 import java.util.List;
 
 /**
- * Interface représantant un itinéraire.
+ * Interface représentant un itinéraire.
  *
  *  @author Samuel Bachmann (340373)
  *  @author Cyrus Giblain (312042)
@@ -54,7 +54,7 @@ public interface Route {
     /**
      * Renvoie l'altitude à la position donnée le long de l'itinéraire.
      *
-     * @param position Position sur l'itinéraire dont on veut l'altitude
+     * @param position Position sur l'itinéraire dont on veut l'altitude.
      * @return L'altitude à la position donnée, sur l'itinéraire.
      */
     double elevationAt(double position);
@@ -70,10 +70,8 @@ public interface Route {
     /**
      * Retourne le point de l'itinéraire se trouvant le plus proche du point de référence donné.
      *
-     * @param point PointCh de référence
+     * @param point PointCh de référence.
      * @return Le RoutePoint le plus proche du point donné en paramètre.
      */
     RoutePoint pointClosestTo(PointCh point);
-
-
 }
