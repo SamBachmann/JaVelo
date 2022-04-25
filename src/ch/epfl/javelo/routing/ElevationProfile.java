@@ -7,7 +7,7 @@ import java.util.DoubleSummaryStatistics;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * Classe immuable représentant le profil en long d'un itinéraire, simple ou multiple.
+ * Classe représentant le profil en long d'un itinéraire, simple ou multiple.
  *
  *  @author Samuel Bachmann (340373)
  *  @author Cyrus Giblain (312042)
