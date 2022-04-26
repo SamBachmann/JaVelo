@@ -30,8 +30,8 @@ public class GpxTestser {
         CostFunction cf = new CityBikeCF(g);
         RouteComputer rc = new RouteComputer(g, cf);
         Route r = rc.bestRouteBetween(159049, 117669);
-        ElevationProfile ep = ElevationProfileComputer.elevationProfile(r, 10);
-        GpxGenerator.writeGpx("Sauvablin1.gpx", r, ep );
+        ElevationProfile ep = ElevationProfileComputer.elevationProfile(r, 5);
+        GpxGenerator.writeGpx("Sauvablin2.gpx", r, ep );
         System.out.println("done");
     }
 }
