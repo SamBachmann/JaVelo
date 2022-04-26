@@ -6,8 +6,17 @@ import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Iterator;
+import java.util.Locale;
 
 /**
  * Classe générant des fichiers GPX pour représenter l'itinéraire.
@@ -21,6 +30,13 @@ public class GpxGenerator {
     //Constructeur privé puisque la classe est non-instanciable.
     private GpxGenerator(){}
 
+    /**
+     * Crée le document GPX décrivant un itinéraire, à l'aide d'une route et d'un profil.
+     *
+     * @param itineraire L'itinéraire dont on veut le document GPX
+     * @param profileItineraire Le profil de cet itinéraire
+     * @return Le document au format GPX créé
+     */
     public static Document createGpx (Route itineraire, ElevationProfile profileItineraire ){
 
         Document doc = newDocument();
@@ -46,6 +62,7 @@ public class GpxGenerator {
         name.setTextContent("Route JaVelo");
 
         Element route = doc.createElement("rte");
+        root.appendChild(route);
 
         double longueur = 0.0;
         Iterator<Edge> edgeIterator = itineraire.edges().iterator();
@@ -53,12 +70,21 @@ public class GpxGenerator {
         for (PointCh point : itineraire.points()){
 
             Element routePt = doc.createElement("rtept");
-            routePt.setAttribute("lat", String.format("%.5f", point.lat()));
-            routePt.setAttribute("lon", String.valueOf(point.lon()));//changer le format
+            routePt.setAttribute("lat", String.format(
+                    Locale.ROOT,
+                    "%.5f",
+                    Math.toDegrees(point.lat())));
+            routePt.setAttribute("lon", String.format(
+                    Locale.ROOT,
+                    "%.5f",
+                    Math.toDegrees(point.lon())));
 
             double localElevation = profileItineraire.elevationAt(longueur);
             Element altitude = doc.createElement("ele");
-            altitude.setTextContent(String.valueOf(localElevation));
+            altitude.setTextContent(String.format(
+                    Locale.ROOT,
+                    "%.2f",
+                    localElevation));
             routePt.appendChild(altitude);
 
             route.appendChild(routePt);
@@ -68,11 +94,27 @@ public class GpxGenerator {
             }
         }
 
-        root.appendChild(route);
         return doc;
     }
 
-    public static void writeGpx (Document d) throws IOException {}
+    public static void writeGpx (String fileName, Route itineraire, ElevationProfile profileItineraire)
+            throws IOException {
+
+        Document doc = createGpx(itineraire, profileItineraire);
+        Writer w = new FileWriter(fileName);
+
+        try{
+            Transformer transformer = TransformerFactory
+                    .newDefaultInstance()
+                    .newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.transform(new DOMSource(doc),
+                    new StreamResult(w));
+        } catch (TransformerException e) {
+            throw new Error(e);
+        }
+
+    }
 
     /**
      * Méthode privée créant un document GPX, utilisée dans createGpx.

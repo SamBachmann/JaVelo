@@ -8,7 +8,12 @@ import java.nio.file.Path;
 
 public final class TestEtape6KML {
 
-        public static void main(String[] args) throws IOException {
+        public static void main(String[] args) throws IOException{
+            //testTimeLausanneBoncourt
+            testEPFLSauvablin();
+        }
+
+        private static void testTimeLausanneBoncourt () throws IOException {
             Graph g = Graph.loadFrom(Path.of("ch_west"));
             CostFunction cf = new CityBikeCF(g);
             RouteComputer rc = new RouteComputer(g, cf);
@@ -21,6 +26,18 @@ public final class TestEtape6KML {
             }
             //System.out.println("longueur : " + r.length());
             KmlPrinter.write("C:\\Users\\samue\\Documents\\EPFL\\Cours\\BA2\\PPOO\\JaVelo\\test\\ch\\epfl\\javelo\\routing\\javelo.kml", r);
+
         }
 
+        private static void testEPFLSauvablin() throws IOException{
+            Graph g = Graph.loadFrom(Path.of("lausanne"));
+            CostFunction cf = new CityBikeCF(g);
+            RouteComputer rc = new RouteComputer(g, cf);
+            Route r = rc.bestRouteBetween(159049, 117669);
+
+
+            //System.out.println("longueur : " + r.length());
+            KmlPrinter.write("C:\\Users\\samue\\Documents\\EPFL\\Cours\\BA2\\PPOO\\JaVelo\\test\\EpflSauvablin.kml", r);
+
+        }
 }
