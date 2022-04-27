@@ -64,7 +64,6 @@ public record GraphNodes(IntBuffer buffer) {
     }
 
     /**
-     *
      * Cette méthode permet de connaître l'identité de l'arête d'indice donné
      * sortant du nœud d'identité donné.
      *

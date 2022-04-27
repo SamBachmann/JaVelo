@@ -2,6 +2,7 @@ package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.Functions;
 import ch.epfl.javelo.projection.PointCh;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -170,7 +171,7 @@ public final class Graph {
      * à la distance maximale donnée.
      *
      * @param point Le point donné.
-     * @param searchDistance La distance maximale donnée.
+     * @param searchDistance La distance maximale de recherche.
      * @return Un int représentant l'identité du nœud se trouvant le plus proche du point donné,
      * à la distance maximale donnée, ou la constante NO_NODE valant -1 si aucun nœud ne correspond
      * à ces critères.

@@ -14,7 +14,7 @@ import ch.epfl.javelo.projection.PointCh;
  * @param position Position du point le long de l'itinéraire, donnée en mètres.
  * @param distanceToReference La distance entre le point et la référence, en mètres.
  */
-public record RoutePoint(PointCh point,double position, double distanceToReference) {
+public record RoutePoint(PointCh point, double position, double distanceToReference) {
     /**
      * Représente un point inexistant.
      */

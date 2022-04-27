@@ -15,7 +15,7 @@ import java.util.List;
  * <br>
  * 01/04/2022
  */
-public class MultiRoute implements Route{
+public final class MultiRoute implements Route{
 
     private final List<Route> segments;
 
