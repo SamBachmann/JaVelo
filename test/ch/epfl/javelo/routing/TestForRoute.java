@@ -46,4 +46,12 @@ public class TestForRoute implements Route{
     public RoutePoint pointClosestTo(PointCh point) {
         return null;
     }
+/*
+    public static void main(String[] args) {
+        int[] tab = {3, 2, 12, 53, 23};
+        for (int i = 0; i < 5; ++i) {
+            String position = (i > 0 && i < tab.length - 1) ? "middle" : ((i == 0) ? "first" : "last");
+            System.out.println(position);
+        }
+    }*/
 }
