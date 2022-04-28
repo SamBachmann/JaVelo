@@ -1,11 +1,12 @@
 package ch.epfl.javelo.projection;
 
 /**
+ * Classe contenant les constantes et méthodes statiques liées aux limites de la zone suisse.
  *
  * @author Samuel Bachmann (340373)
  * @author Cyrus Giblain (312042)
  *
- * Le 25/02/2022
+ * 25/02/2022
  */
 public final class SwissBounds {
 
