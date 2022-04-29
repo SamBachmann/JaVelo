@@ -23,6 +23,7 @@ public final class TileManager {
 
         public static boolean isValid(int zoom, int indexX, int indexY) {
             return (indexX >= 0) && (indexY >= 0) && (indexX <= Math.pow(2, zoom)) && (indexY <= Math.pow(2, zoom));
+            // utilisation possible de Math.scalb()
         }
 
     }
@@ -65,8 +66,9 @@ public final class TileManager {
                         InputStream i = c.getInputStream();
                         //i.close();
 
-                        Path path = Path.of(tileId.zoom() + "/" + tileId.indexX() + "/" + tileId.indexY() + ".png");
-                        Files.createDirectories(p);
+                    Path path = Path.of(tileId.zoom() + "/" + tileId.indexX() + "/" + tileId.indexY());
+                    Files.createDirectories(p);
+                    path.resolve(".png");
 
                         OutputStream o = new FileOutputStream(path.toFile());
                         i.transferTo(o);

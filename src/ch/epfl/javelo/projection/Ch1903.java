@@ -49,7 +49,7 @@ public final class Ch1903 {
     }
 
     /**
-     * Méthode permettant de passer des coordonnées suisses aux coordonnées WGS 84, en radians.
+     * Méthode permettant de passer des coordonnées suisses aux coordonnées WGS 84, en radiaans.
      *
      * @param e La valeur de l'abscisse dans les coordonnées suisses.
      * @param n La valeur de l'ordonnée dans les coordonnées suisses.
