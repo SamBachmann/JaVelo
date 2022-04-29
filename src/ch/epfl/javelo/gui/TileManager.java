@@ -10,8 +10,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class TileManager {
 
@@ -56,6 +58,23 @@ public final class TileManager {
                         cacheMemory.put(tileId, image);
                         imageFinale = image;
                     } catch (IOException e) {
+                if (cacheMemory.size() >= 2) {
+                    Iterator<TileId> it = cacheMemory.keySet().iterator();
+                    cacheMemory.remove(it.next());
+                }
+
+                if (cacheMemory.containsKey(tileId)) {
+                    imageFinale = cacheMemory.get(tileId);
+                } else {
+                    Path p = Path.of(this.path.toString()).resolve(String.valueOf(tileId.zoom()))
+                            .resolve(String.valueOf(tileId.indexX())).resolve(tileId.indexY() + ".png");
+                    if (Files.exists(p)) {
+                        try {
+                            InputStream inputStream = Files.newInputStream(p);
+                            Image image = new Image(inputStream);
+                            cacheMemory.put(tileId, image);
+                            imageFinale = image;
+                        } catch (IOException e) {
                             System.out.println("IOException");
                     }
                 } else {
@@ -74,13 +93,13 @@ public final class TileManager {
                         OutputStream o = new FileOutputStream(pathImage.toFile());
                         i.transferTo(o);
 
-                        InputStream inputStream = Files.newInputStream(pathImage);
-                        Image image = new Image(inputStream);
-                        cacheMemory.put(tileId, image);
-                        imageFinale = image;
+                            Image image = new Image(i);
+                            cacheMemory.put(tileId, image);
+
+                            imageFinale = image;
 
                         } catch (IOException e) {
-                            System.out.println("IOException : Fin de URL");
+                            System.out.println("IOException");
                         }
                     }
                 }
