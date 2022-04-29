@@ -28,6 +28,7 @@ public final class TileManager {
     }
 
     public TileManager(Path path, String nameOfTheServer) {
+
         this.path = path;
         this.nameOfTheServer = nameOfTheServer;
 

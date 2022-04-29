@@ -20,7 +20,7 @@ public final class Math2 {
      * @param y Le dénominateur (un entier positif non-nul).
      * @return Le résultat de la division entière.
      */
-    public static int ceilDiv(int x, int y){
+    public static int ceilDiv(int x, int y) throws IllegalArgumentException {
         Preconditions.checkArgument((x >= 0) && (y > 0));
         return (x + y - 1) / y ;
     }
@@ -46,13 +46,14 @@ public final class Math2 {
      * @param max Valeur maximale de l'intervalle
      * @return v si v appartient à l'intervalle, min si v < min, max si v > max
      */
-    public static int clamp(int min, int v, int max){
+    public static int clamp(int min, int v, int max) throws IllegalArgumentException {
         Preconditions.checkArgument(min <= max);
         if (v < min){
             return min;
         }else if (v > max){
             return max;
         }
+
         return v;
     }
 
@@ -64,7 +65,7 @@ public final class Math2 {
      * @param max Valeur maximale de l'intervalle.
      * @return v si v appartient à l'intervalle, min si v < min, max si v > max.
      */
-    public static double clamp(double min, double v, double max){
+    public static double clamp(double min, double v, double max) throws IllegalArgumentException {
         Preconditions.checkArgument(min <= max);
         if (v < min){
             return min;
