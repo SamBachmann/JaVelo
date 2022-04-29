@@ -27,7 +27,6 @@ public final class TileManager {
             return (indexX >= 0) && (indexY >= 0) && (indexX <= Math.pow(2, zoom)) && (indexY <= Math.pow(2, zoom));
             // utilisation possible de Math.scalb()
         }
-
     }
 
     public TileManager(Path path, String nameOfTheServer) {
@@ -44,11 +43,14 @@ public final class TileManager {
 
         if (TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
 
-            if (cacheMemory.size() > 100) {
-                Iterator<TileId> iterator = cacheMemory.keySet().iterator();
-                cacheMemory.remove(iterator.next());
-                System.out.println(cacheMemory.keySet() + " : remouve");
+            if (cacheMemory.containsKey(tileId)) {
+                imageFinale = cacheMemory.get(tileId);
+
             } else {
+                if (cacheMemory.size() >= 100) {
+                    Iterator<TileId> iterator = cacheMemory.keySet().iterator();
+                    cacheMemory.remove(iterator.next());
+                }
                 Path p = Path.of(this.path.toString())
                         .resolve(String.valueOf(tileId.zoom()))
                         .resolve(String.valueOf(tileId.indexX()))
