@@ -39,52 +39,52 @@ public final class TileManager {
 
     public Image imageForTileAt(TileId tileId) {
 
-        Image imageFinale = new Image("https://tile.openstreetmap.org/19/271725/185421.png");
+        Image imageFinale = null;
 
-        if (TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
+            if (TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
 
-            if (cacheMemory.containsKey(tileId)) {
-                imageFinale = cacheMemory.get(tileId);
-            } else {
-                Path p = Path.of(this.path.toString()).resolve(String.valueOf(tileId.zoom()))
-                        .resolve(String.valueOf(tileId.indexX())).resolve(String.valueOf(tileId.indexY())).resolve(".png");
-                if (Files.exists(p)) {
-                    try {
-                        InputStream inputStream = Files.newInputStream(p);
-                        Image image = new Image(inputStream);
-                        cacheMemory.put(tileId, image);
-                        imageFinale = image;
-                    } catch (IOException e) {
-                        System.out.println("IOException");
-                    }
+                if (cacheMemory.containsKey(tileId)) {
+                    imageFinale = cacheMemory.get(tileId);
                 } else {
-                    try {
-                        URL u = new URL("https://" + this.nameOfTheServer + "/" + tileId.zoom() + "/" +
-                                tileId.indexX() + "/" + tileId.indexY() + ".png");
-                        URLConnection c = u.openConnection();
-                        c.setRequestProperty("User-Agent", "JaVelo");
-                        InputStream i = c.getInputStream();
-                        //i.close();
+                    Path p = Path.of(this.path.toString()).resolve(String.valueOf(tileId.zoom()))
+                            .resolve(String.valueOf(tileId.indexX())).resolve(String.valueOf(tileId.indexY()) + ".png");
+                    if (Files.exists(p)) {
+                        try {
+                            InputStream inputStream = Files.newInputStream(p);
+                            Image image = new Image(inputStream);
+                            cacheMemory.put(tileId, image);
+                            imageFinale = image;
+                        } catch (IOException e) {
+                            System.out.println("IOException");
+                        }
+                    } else {
+                        try {
+                            URL u = new URL("https://" + this.nameOfTheServer + "/" + tileId.zoom() + "/" +
+                                    tileId.indexX() + "/" + tileId.indexY() + ".png");
+                            URLConnection c = u.openConnection();
+                            c.setRequestProperty("User-Agent", "JaVelo");
+                            InputStream i = c.getInputStream();
+                            //i.close();
 
-                    Path path = Path.of(tileId.zoom() + "/" + tileId.indexX() + "/" + tileId.indexY());
-                    Files.createDirectories(p);
-                    path.resolve(".png");
+                            Path pathDossier = Path.of(tileId.zoom() + "/" + tileId.indexX());
+                            Path pathImage = Path.of(tileId.zoom() + "/" + tileId.indexX() + "/" + tileId.indexY() + ".png");
+                            Files.createDirectories(pathDossier);
 
-                        OutputStream o = new FileOutputStream(path.toFile());
-                        i.transferTo(o);
+                            OutputStream o = new FileOutputStream(pathImage.toFile());
+                            i.transferTo(o);
 
-                        InputStream inputStream = Files.newInputStream(path);
-                        Image image = new Image(inputStream);
-                        cacheMemory.put(tileId, image);
+                            InputStream inputStream = Files.newInputStream(pathImage);
+                            Image image = new Image(inputStream);
+                            cacheMemory.put(tileId, image);
 
-                        imageFinale = image;
+                            imageFinale = image;
 
-                    } catch (IOException e) {
-                        System.out.println("IOException");
+                        } catch (IOException e) {
+                            System.out.println("IOException");
+                        }
                     }
                 }
             }
-        }
         return imageFinale;
     }
 }
