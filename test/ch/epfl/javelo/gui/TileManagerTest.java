@@ -16,10 +16,10 @@ public final class TileManagerTest extends Application {
 
             TileManager tm = new TileManager(
                     Path.of("."), "tile.openstreetmap.org");
-            for (int i = 0; i < 10; ++i) {
+            for (int i = 0; i < 105; ++i) {
             Image tileImage = tm.imageForTileAt(
-                    new TileManager.TileId(19, 271725, 185422));
-        }
+                    new TileManager.TileId(19, 271725 + i, 185422));
+            }
             Platform.exit();
     }
 }

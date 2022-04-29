@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
+
 
 public final class TileManager {
 
@@ -38,75 +38,54 @@ public final class TileManager {
 
     }
 
-    public Image imageForTileAt(TileId tileId) {
+    public Image imageForTileAt(TileId tileId) throws IOException {
 
         Image imageFinale = null;
 
         if (TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
 
-                if (cacheMemory.size() >= 101) {
-                    Iterator<TileId> iterator = cacheMemory.keySet().iterator();
-                    cacheMemory.remove(iterator.next());
-            if (cacheMemory.containsKey(tileId)) {
-                imageFinale = cacheMemory.get(tileId);
+            if (cacheMemory.size() > 100) {
+                Iterator<TileId> iterator = cacheMemory.keySet().iterator();
+                cacheMemory.remove(iterator.next());
+                System.out.println(cacheMemory.keySet() + " : remouve");
             } else {
                 Path p = Path.of(this.path.toString())
                         .resolve(String.valueOf(tileId.zoom()))
                         .resolve(String.valueOf(tileId.indexX()))
-                        .resolve(String.valueOf(tileId.indexY()) + ".png");
+                        .resolve(tileId.indexY() + ".png");
                 if (Files.exists(p)) {
-                    try {
-                        InputStream inputStream = Files.newInputStream(p);
+                    try (InputStream inputStream = Files.newInputStream(p)) {
                         Image image = new Image(inputStream);
                         cacheMemory.put(tileId, image);
                         imageFinale = image;
                     } catch (IOException e) {
-                if (cacheMemory.size() >= 2) {
-                    Iterator<TileId> it = cacheMemory.keySet().iterator();
-                    cacheMemory.remove(it.next());
-                }
-
-                if (cacheMemory.containsKey(tileId)) {
-                    imageFinale = cacheMemory.get(tileId);
-                } else {
-                    Path p = Path.of(this.path.toString()).resolve(String.valueOf(tileId.zoom()))
-                            .resolve(String.valueOf(tileId.indexX())).resolve(tileId.indexY() + ".png");
-                    if (Files.exists(p)) {
-                        try {
-                            InputStream inputStream = Files.newInputStream(p);
-                            Image image = new Image(inputStream);
-                            cacheMemory.put(tileId, image);
-                            imageFinale = image;
-                        } catch (IOException e) {
                             System.out.println("IOException");
                     }
                 } else {
-                    try {
-                        URL u = new URL("https://" + this.nameOfTheServer + "/" + tileId.zoom() + "/" +
+                    URL u = new URL("https://" + this.nameOfTheServer + "/" + tileId.zoom() + "/" +
                                 tileId.indexX() + "/" + tileId.indexY() + ".png");
-                        URLConnection c = u.openConnection();
-                        c.setRequestProperty("User-Agent", "JaVelo");
-                        InputStream i = c.getInputStream();
+                    URLConnection c = u.openConnection();
+                    c.setRequestProperty("User-Agent", "JaVelo");
+                    try (InputStream i = c.getInputStream()) {
+
                         //i.close();
 
-                        Path pathDossier = Path.of(tileId.zoom() + "/" + tileId.indexX());
-                        Path pathImage = Path.of(tileId.zoom() + "/" + tileId.indexX() + "/" + tileId.indexY() + ".png");
+                        Path pathDossier = Path.of(String.valueOf(tileId.zoom()))
+                                .resolve(String.valueOf(tileId.indexX()));
+                        Path pathImage = pathDossier.resolve(tileId.indexY() + ".png");
                         Files.createDirectories(pathDossier);
 
                         OutputStream o = new FileOutputStream(pathImage.toFile());
                         i.transferTo(o);
+                        o.close();
 
-                            Image image = new Image(i);
-                            cacheMemory.put(tileId, image);
-
-                            imageFinale = image;
-
-                        } catch (IOException e) {
-                            System.out.println("IOException");
-                        }
+                        Image image = new Image(i);
+                        cacheMemory.put(tileId, image);
+                        imageFinale = image;
                     }
                 }
             }
+        }
         return imageFinale;
     }
 }
