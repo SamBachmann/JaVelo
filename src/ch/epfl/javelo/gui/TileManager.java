@@ -10,8 +10,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class TileManager {
 
@@ -43,11 +45,16 @@ public final class TileManager {
 
             if (TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
 
+                if (cacheMemory.size() >= 2) {
+                    Iterator<TileId> it = cacheMemory.keySet().iterator();
+                    cacheMemory.remove(it.next());
+                }
+
                 if (cacheMemory.containsKey(tileId)) {
                     imageFinale = cacheMemory.get(tileId);
                 } else {
                     Path p = Path.of(this.path.toString()).resolve(String.valueOf(tileId.zoom()))
-                            .resolve(String.valueOf(tileId.indexX())).resolve(String.valueOf(tileId.indexY()) + ".png");
+                            .resolve(String.valueOf(tileId.indexX())).resolve(tileId.indexY() + ".png");
                     if (Files.exists(p)) {
                         try {
                             InputStream inputStream = Files.newInputStream(p);
@@ -64,7 +71,6 @@ public final class TileManager {
                             URLConnection c = u.openConnection();
                             c.setRequestProperty("User-Agent", "JaVelo");
                             InputStream i = c.getInputStream();
-                            //i.close();
 
                             Path pathDossier = Path.of(tileId.zoom() + "/" + tileId.indexX());
                             Path pathImage = Path.of(tileId.zoom() + "/" + tileId.indexX() + "/" + tileId.indexY() + ".png");
@@ -72,9 +78,9 @@ public final class TileManager {
 
                             OutputStream o = new FileOutputStream(pathImage.toFile());
                             i.transferTo(o);
+                            i.close();
 
-                            InputStream inputStream = Files.newInputStream(pathImage);
-                            Image image = new Image(inputStream);
+                            Image image = new Image(i);
                             cacheMemory.put(tileId, image);
 
                             imageFinale = image;

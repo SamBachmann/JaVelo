@@ -13,13 +13,14 @@ public final class TileManagerTest extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        for (int i = 0; i < 2; ++i) {
+
             TileManager tm = new TileManager(
                     Path.of("."), "tile.openstreetmap.org");
+            for (int i = 0; i < 10; ++i) {
             Image tileImage = tm.imageForTileAt(
                     new TileManager.TileId(19, 271725, 185422));
-            Platform.exit();
         }
+            Platform.exit();
     }
 }
 
