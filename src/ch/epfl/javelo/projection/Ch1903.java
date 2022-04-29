@@ -1,6 +1,8 @@
 package ch.epfl.javelo.projection;
 
 /**
+ * Classe contenant les méthodes permettant de convertir entre les coordonnées
+ * WGS 84 et les coordonnées suisses.
  *
  * @author Samuel Bachmann (340373)
  * @author Cyrus Giblain (312042)
@@ -13,7 +15,8 @@ public final class Ch1903 {
     private Ch1903() {}
 
     /**
-     * Méthode permettant de passer des coordonnées WGS 84 aux coordonnées suisses.
+     * Méthode permettant de passer des coordonnées WGS 84 à la composante est
+     * des coordonnées suisses.
      *
      * @param lon La longitude dans les coordonnées WGS 84.
      * @param lat La latitude dans les coordonnées WGS 84.
@@ -29,7 +32,8 @@ public final class Ch1903 {
     }
 
     /**
-     * Méthode permettant de passer des coordonnées WGS 84 aux coordonnées suisses.
+     * Méthode permettant de passer des coordonnées WGS 84 à la composante nord
+     * des coordonnées suisses.
      *
      * @param lon La longitude dans les coordonnées WGS 84.
      * @param lat La latitude dans les coordonnées WGS 84.
@@ -45,7 +49,7 @@ public final class Ch1903 {
     }
 
     /**
-     * Méthode permettant de passer des coordonnées suisses aux coordonnées WGS 84.
+     * Méthode permettant de passer des coordonnées suisses aux coordonnées WGS 84, en radians.
      *
      * @param e La valeur de l'abscisse dans les coordonnées suisses.
      * @param n La valeur de l'ordonnée dans les coordonnées suisses.
@@ -63,7 +67,7 @@ public final class Ch1903 {
     }
 
     /**
-     * Méthode permettant de passer des coordonnées suisses aux coordonnées WGS 84.
+     * Méthode permettant de passer des coordonnées suisses aux coordonnées WGS 84, en radians.
      *
      * @param e La valeur de l'abscisse dans les coordonnées suisses.
      * @param n La valeur de l'ordonnée dans les coordonnées suisses.

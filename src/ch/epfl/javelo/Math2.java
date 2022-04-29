@@ -1,8 +1,8 @@
 package ch.epfl.javelo;
 
 /**
- *
  * Collection d'outils mathématiques utiles pour le projet.
+ *
  *  @author Samuel Bachmann (340373)
  *  @author Cyrus Giblain (312042)
  * <br>
@@ -18,6 +18,7 @@ public final class Math2 {
      *
      * @param x Le numérateur (entier positif).
      * @param y Le dénominateur (un entier positif non-nul).
+     * @throws IllegalArgumentException Si l'un des arguments est négatif ou y nul.
      * @return Le résultat de la division entière.
      */
     public static int ceilDiv(int x, int y) throws IllegalArgumentException {
@@ -44,6 +45,7 @@ public final class Math2 {
      * @param min Valeur minimale de l'intervalle
      * @param v Valeur à limiter
      * @param max Valeur maximale de l'intervalle
+     * @throws IllegalArgumentException Si max est plus petit ou égal à min.
      * @return v si v appartient à l'intervalle, min si v < min, max si v > max
      */
     public static int clamp(int min, int v, int max) throws IllegalArgumentException {
@@ -63,6 +65,7 @@ public final class Math2 {
      * @param min Valeur minimale de l'intervalle.
      * @param v Valeur à limiter.
      * @param max Valeur maximale de l'intervalle.
+     * @throws IllegalArgumentException Si max est plus petit ou égal à min.
      * @return v si v appartient à l'intervalle, min si v < min, max si v > max.
      */
     public static double clamp(double min, double v, double max) throws IllegalArgumentException {
