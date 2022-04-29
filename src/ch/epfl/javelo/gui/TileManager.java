@@ -45,9 +45,9 @@ public final class TileManager {
 
             if (TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
 
-                if (cacheMemory.size() >= 2) {
-                    Iterator<TileId> it = cacheMemory.keySet().iterator();
-                    cacheMemory.remove(it.next());
+                if (cacheMemory.size() >= 101) {
+                    Iterator<TileId> iterator = cacheMemory.keySet().iterator();
+                    cacheMemory.remove(iterator.next());
                 }
 
                 if (cacheMemory.containsKey(tileId)) {
