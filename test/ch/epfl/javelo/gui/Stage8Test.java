@@ -1,4 +1,3 @@
-/*
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
@@ -16,6 +15,7 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 import static javafx.application.Application.launch;
+
 
 public final class Stage8Test extends Application {
     public static void main(String[] args) { launch(args); }
@@ -43,13 +43,13 @@ public final class Stage8Test extends Application {
                             mapViewParametersP,
                             waypoints,
                             errorConsumer);
-            BaseMapManager baseMapManager =
+            /*BaseMapManager baseMapManager =
                     new BaseMapManager(tileManager,
                             waypointsManager,
                             mapViewParametersP);
-
+*/
             StackPane mainPane =
-                    new StackPane(baseMapManager.pane(),
+                    new StackPane(//baseMapManager.pane(),
                             waypointsManager.pane());
             mainPane.getStylesheets().add("map.css");
             primaryStage.setMinWidth(600);
@@ -65,4 +65,3 @@ public final class Stage8Test extends Application {
         }
     }
 
-*/

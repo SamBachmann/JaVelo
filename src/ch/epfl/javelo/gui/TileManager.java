@@ -70,8 +70,6 @@ public final class TileManager {
                     c.setRequestProperty("User-Agent", "JaVelo");
                     try (InputStream i = c.getInputStream()) {
 
-                        //i.close();
-
                         Path pathDossier = Path.of(String.valueOf(tileId.zoom()))
                                 .resolve(String.valueOf(tileId.indexX()));
                         Path pathImage = pathDossier.resolve(tileId.indexY() + ".png");
