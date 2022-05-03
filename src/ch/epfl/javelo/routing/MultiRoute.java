@@ -82,7 +82,7 @@ public final class MultiRoute implements Route{
         for (Route segment : this.segments) {
             listOfEdges.addAll(segment.edges());
         }
-        return List.copyOf(listOfEdges);
+        return listOfEdges;
     }
 
     /**

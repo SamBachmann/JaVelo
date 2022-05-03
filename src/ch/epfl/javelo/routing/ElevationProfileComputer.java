@@ -14,7 +14,9 @@ import java.util.Arrays;
  * 25/03/2022
  */
 public final class ElevationProfileComputer {
-    //Constructeur privé puisque la classe est non-instanciable.
+    /**
+     * Constructeur privé pour rendre la classe non-instanciable.
+     */
     private ElevationProfileComputer(){}
 
     /**
@@ -41,7 +43,7 @@ public final class ElevationProfileComputer {
      * @param maxStepLength L'espacement maximal entre les échantillons du profil
      * @return Un tableau de float avec les valeurs récupérées depuis elevationAt de route.
      */
-    private static float[] elevationTableInitialisation(Route route, double maxStepLength){
+    private static float[]  elevationTableInitialisation(Route route, double maxStepLength){
         int nbSamples = (int) Math.ceil(route.length() / maxStepLength) + 1;
         double espacement = route.length() / (nbSamples - 1);
 
