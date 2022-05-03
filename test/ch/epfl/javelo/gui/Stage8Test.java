@@ -1,4 +1,4 @@
-package ch.epfl.javelo.gui;
+/*package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
@@ -43,11 +43,11 @@ public final class Stage8Test extends Application {
                             mapViewParametersP,
                             waypoints,
                             errorConsumer);
-            /*BaseMapManager baseMapManager =
+            BaseMapManager baseMapManager =
                     new BaseMapManager(tileManager,
                             waypointsManager,
                             mapViewParametersP);
-*/
+
             StackPane mainPane =
                     new StackPane(//baseMapManager.pane(),
                             waypointsManager.pane());
@@ -65,3 +65,4 @@ public final class Stage8Test extends Application {
         }
     }
 
+*/

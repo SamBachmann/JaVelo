@@ -53,6 +53,7 @@ public final class WaypointsManager {
      */
     public Pane pane (){
         Pane waypointPane = new Pane();
+        waypointPane.setPickOnBounds(false);
 
         for (int i = 0; i < waypointsList.size(); ++i) {
             SVGPath bordExt = new SVGPath();

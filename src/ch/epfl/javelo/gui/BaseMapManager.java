@@ -2,20 +2,13 @@ package ch.epfl.javelo.gui;
 
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
-import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.util.List;
 
 public final class BaseMapManager extends Application {
 
