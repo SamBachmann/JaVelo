@@ -2,6 +2,7 @@ package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
+import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -63,6 +64,14 @@ public final class WaypointsManager {
             bordIn.getStyleClass().add(" pin_inside");
 
             Group marqueur = new Group(bordExt, bordIn);
+
+            PointWebMercator positionMarqueur = PointWebMercator.ofPointCh(waypointsList.get(i).PointPassage());
+
+            double xEcran = parametersCarte.get().viewX(positionMarqueur);
+            double yEcran = parametersCarte.get().viewY(positionMarqueur);
+            marqueur.setLayoutX(xEcran);
+            marqueur.setLayoutY(yEcran);
+
             //Teste la position du marqueur dans la liste
             String position = (i > 0 && i < waypointsList.size()-1) ? "middle" : ((i == 0) ? "first" : "last");
             marqueur.getStyleClass().addAll("pin", position);
