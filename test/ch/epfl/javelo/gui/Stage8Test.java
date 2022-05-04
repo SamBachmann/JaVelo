@@ -1,9 +1,8 @@
-/*
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
-import com.sun.glass.ui.Application;
+import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -14,8 +13,6 @@ import javafx.stage.Stage;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;
-
-import static javafx.application.Application.launch;
 
 
 public final class Stage8Test extends Application {
@@ -65,5 +62,3 @@ public final class Stage8Test extends Application {
             public void accept(String s) { System.out.println(s); }
         }
     }
-  */
-

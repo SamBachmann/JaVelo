@@ -3,6 +3,7 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,11 +52,7 @@ public final class SingleRoute implements Route{
      */
     @Override
     public double length() {
-        double longueur =  0.0;
-        for (Edge edge : edges) {
-            longueur = longueur + edge.length();
-        }
-        return longueur;
+        return positionTable[positionTable.length - 1];
     }
 
     /**
@@ -80,7 +77,7 @@ public final class SingleRoute implements Route{
         for (Edge edge : edges()) {
             listeDesPoints.add(edge.toPoint());
         }
-        return List.copyOf(listeDesPoints);
+        return listeDesPoints;
     }
 
     /**
@@ -169,7 +166,7 @@ public final class SingleRoute implements Route{
             pointCHActual = edge.pointAt(positionEdge);
 
             double distance = point.distanceTo(pointCHActual);
-             routePointClosest = routePointClosest.min(pointCHActual, positionItineraire, distance);
+            routePointClosest = routePointClosest.min(pointCHActual, positionItineraire, distance);
         }
 
         return routePointClosest;

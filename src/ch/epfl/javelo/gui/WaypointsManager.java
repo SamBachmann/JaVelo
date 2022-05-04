@@ -23,11 +23,13 @@ public final class WaypointsManager {
     private final static int DISTANCE_RECHERCHE = 500;
     private final static String SVG_CHEMIN_EXTERIEUR = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
     private final static String SVG_CHEMIN_INTERIEUR = "M0-23A1 1 0 000-29 1 1 0 000-23";
+    private final static String MESSAGE_ERREUR = "Aucune route à proximité !";
+    private final static int NO_NODE = -1;
 
     private final Graph graph;
-    private ObjectProperty<MapViewParameters> parametersCarte;
-    private ObservableList<Waypoint> waypointsList;
-    private Consumer<String> errorHandler;
+    private final ObjectProperty<MapViewParameters> parametersCarte;
+    private final ObservableList<Waypoint> waypointsList;
+    private final Consumer<String> errorHandler;
 
     /**
      * Constructeur de WaypointsManager.
@@ -47,55 +49,91 @@ public final class WaypointsManager {
     }
 
     /**
-     * Méthode préparant le Pane contenant tous les points de passage.
+     * Méthode construisant le Pane contenant tous les points de passage.
      *
      * @return Pane contenant les points de passages.
      */
     public Pane pane (){
         Pane waypointPane = new Pane();
+        waypointPane.setPickOnBounds(false);
 
-        for (int i = 0; i < waypointsList.size(); ++i) {
-            SVGPath bordExt = new SVGPath();
-            bordExt.setContent(SVG_CHEMIN_EXTERIEUR);
-            bordExt.getStyleClass().add("pin_outside");
+        int i = 0;
+        for (Waypoint waypoint : waypointsList) {
+            PointWebMercator positionMarqueur = PointWebMercator.ofPointCh(waypoint.PointPassage());
+            Group marqueur = createMarqueur(i);
+            setPositionMarqueur(positionMarqueur, marqueur);
 
-            SVGPath bordIn = new SVGPath();
-            bordIn.setContent(SVG_CHEMIN_INTERIEUR);
-            bordIn.getStyleClass().add(" pin_inside");
+            marqueur.setOnMouseClicked(event -> waypointsList.remove(waypoint));
+            // Déplacer le visuel, mais pas de création de nouveau waypoint avant le relase
+            marqueur.setOnMouseDragged(event -> {
+                PointWebMercator positionActuelle = parametersCarte.
+                        get()
+                        .pointAt2(event.getX(), event.getY());
+                });
 
-            Group marqueur = new Group(bordExt, bordIn);
-
-            PointWebMercator positionMarqueur = PointWebMercator.ofPointCh(waypointsList.get(i).PointPassage());
-
-            double xEcran = parametersCarte.get().viewX(positionMarqueur);
-            double yEcran = parametersCarte.get().viewY(positionMarqueur);
-            marqueur.setLayoutX(xEcran);
-            marqueur.setLayoutY(yEcran);
-
-            //Teste la position du marqueur dans la liste
-            String position = (i > 0 && i < waypointsList.size()-1) ? "middle" : ((i == 0) ? "first" : "last");
-            marqueur.getStyleClass().addAll("pin", position);
-
+            marqueur.setOnMouseReleased(event -> addWaypoint(event.getX(), event.getY()));
             waypointPane.getChildren().add(marqueur);
+            ++i;
         }
 
         return waypointPane;
     }
 
+
     /**
      * Ajoute un Waypoint à la liste waypointsList, positionné sur le noeud le plus proche du point
      * passé en paramètre.
      *
-     * @param x Coordonnée est du point.
-     * @param y Coordonnée nord du point.
+     * @param x Coordonnée x dans la fenêtre.
+     * @param y Coordonnée y dans la fenêtre.
      */
     public void addWaypoint(double x, double y){
-        PointCh pointDonne = new PointCh(x,y);
-        int nodeNewWaypoint = graph.nodeClosestTo(pointDonne, DISTANCE_RECHERCHE);
-        PointCh positionNoeud = graph.nodePoint(nodeNewWaypoint);
+        PointWebMercator pointDonne = parametersCarte.get().pointAt2(x,y);
+        PointCh pointDonneEnCH = pointDonne.toPointCh();
+        int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
+        if (nodeNewWaypoint == NO_NODE){
+            errorHandler.accept(MESSAGE_ERREUR);
+        }else{
+            PointCh positionNoeud = graph.nodePoint(nodeNewWaypoint);
+            waypointsList.add(new Waypoint(positionNoeud,nodeNewWaypoint));
+        }
+    }
 
-        waypointsList.add(new Waypoint(positionNoeud,nodeNewWaypoint));
+    /**
+     * Méthode privée appelée depuis pane qui crée un marqueur (un groupe) à partir de 2 chemins SVG.
+     *
+     * @param index l'index du marqueur en question.
+     * @return Le marqueur créé.
+     */
+    private Group createMarqueur(int index){
+        SVGPath bordExt = new SVGPath();
+        bordExt.setContent(SVG_CHEMIN_EXTERIEUR);
+        bordExt.getStyleClass().add("pin_outside");
 
+        SVGPath bordIn = new SVGPath();
+        bordIn.setContent(SVG_CHEMIN_INTERIEUR);
+        bordIn.getStyleClass().add(" pin_inside");
+        Group marqueur = new Group(bordExt, bordIn);
+
+        //Teste la position du marqueur dans la liste
+        String position = (index > 0 && index < waypointsList.size() - 1)
+                ? "middle" : ((index == 0) ? "first" : "last");
+        marqueur.getStyleClass().addAll("pin", position);
+
+        return marqueur;
+    }
+
+    /**
+     * Méthode privée appellée depuis pane qui positionne les marqueurs au bon emplacement sur le Pane.
+     *
+     * @param positionMarqueur La position géographique du marqueur
+     * @param marqueur Le Group que l'on veut positionner.
+     */
+    private void setPositionMarqueur(PointWebMercator positionMarqueur, Group marqueur) {
+        double xEcran = parametersCarte.get().viewX(positionMarqueur);
+        double yEcran = parametersCarte.get().viewY(positionMarqueur);
+        marqueur.setLayoutX(xEcran);
+        marqueur.setLayoutY(yEcran);
     }
 
 }
