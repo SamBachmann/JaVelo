@@ -1,5 +1,6 @@
 package ch.epfl.javelo.gui;
 
+import ch.epfl.javelo.Math2;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,40 +14,48 @@ public final class BaseMapManager {
 
     TileManager tileManager;
     ObjectProperty<MapViewParameters> property;
+    Pane pane;
+    Canvas canvas;
+    Image image;
 
     public BaseMapManager(TileManager tileManager, ObjectProperty<MapViewParameters> property) {
 
         this.tileManager = tileManager;
         this.property = property;
 
-    }
+        canvas = new Canvas(2560, 1600);
+        pane = new Pane();
 
-        public Pane pane() {
+        pane.getChildren().add(canvas);
 
-            Canvas canvas = new Canvas();
-            Pane pane = new Pane();
+        int zoom = this.property.get().zoom();
+        int indexXHautGauche = (int) this.property.get().xHautGauche();
+        int indexYHautGauche = (int) this.property.get().yHautGauche();
 
-            pane.getChildren().add(canvas);
-            canvas.widthProperty().bind(pane.widthProperty());
-            canvas.heightProperty().bind(pane.heightProperty());
-
-            int zoom = this.property.get().zoom();
-            int indexXhautGauche = (int) this.property.get().xHautGauche();
-            int indexYhautGauche = (int) this.property.get().yHautGauche();
-
-            for (int i = 0; i < canvas.heightProperty().intValue(); i = i + 256) {
-                for (int j = 0; j < canvas.widthProperty().intValue(); j = j + 256) {
-                    TileManager.TileId tileId = new TileManager.TileId(zoom, indexXhautGauche + j, indexYhautGauche + i);
-                    try {
-                        Image image = this.tileManager.imageForTileAt(tileId);
-                        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-                        graphicsContext.drawImage(image, (double) j, (double) i);
-                    } catch (IOException e) {
-                        System.out.println("IOException");
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        for (int i = 0; i < Math2.ceilDiv(canvas.widthProperty().intValue(), 256); ++i) {
+            for (int j = 0; j < Math2.ceilDiv(canvas.heightProperty().intValue(), 256); ++j) {
+                TileManager.TileId tileId = new TileManager.TileId(zoom, indexXHautGauche + i, indexYHautGauche + j);
+                try {
+                    if (TileManager.TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
+                        image = this.tileManager.imageForTileAt(tileId);
+                        graphicsContext.drawImage(image, i * 256, j * 256);
                     }
+                } catch (IOException ignored) {
                 }
             }
-            return pane;
+        }
+
+    }
+        public Pane pane() {
+
+            //this.canvas.widthProperty().bind(pane.widthProperty());
+            //this.canvas.heightProperty().bind(pane.heightProperty());
+
+            //System.out.println(canvas.heightProperty());
+            //System.out.println(canvas.widthProperty());
+
+            return this.pane;
         }
 }
 

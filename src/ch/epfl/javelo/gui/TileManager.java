@@ -24,7 +24,7 @@ public final class TileManager {
     public record TileId(int zoom, int indexX, int indexY) {
 
         public static boolean isValid(int zoom, int indexX, int indexY) {
-            return (indexX >= 0) && (indexY >= 0) && (indexX <= Math.pow(2, zoom)) && (indexY <= Math.pow(2, zoom));
+            return (indexX >= 0) && (indexY >= 0) && (indexX < Math.pow(2, zoom)) && (indexY < Math.pow(2, zoom));
             // utilisation possible de Math.scalb()
         }
     }
@@ -79,7 +79,9 @@ public final class TileManager {
                         i.transferTo(o);
                         o.close();
 
-                        Image image = new Image(i);
+                        InputStream inS = Files.newInputStream(pathImage);
+                        Image image = new Image(inS);
+                        inS.close();
                         cacheMemory.put(tileId, image);
                         imageFinale = image;
                     }
