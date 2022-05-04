@@ -5,7 +5,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ public final class BaseMapManager {
     Canvas canvas;
     Image image;
 
-    public BaseMapManager(TileManager tileManager, ObjectProperty<MapViewParameters> property) {
+    public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager, ObjectProperty<MapViewParameters> property) {
 
         this.tileManager = tileManager;
         this.property = property;
