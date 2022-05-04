@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 import java.nio.file.Path;
 
-final class BaseMapManagerTest extends Application {
+public class BaseMapManagerTest extends Application {
 
     public static void main(String[] args) { launch(args); }
 

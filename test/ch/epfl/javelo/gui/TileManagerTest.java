@@ -17,7 +17,7 @@ public final class TileManagerTest extends Application {
             TileManager tm = new TileManager(
                     Path.of("."), "tile.openstreetmap.org");
             Image tileImage = tm.imageForTileAt(
-                    new TileManager.TileId(19, 271726, 185423));
+                    new TileManager.TileId(12, 271726, 185423));
             Platform.exit();
     }
 }

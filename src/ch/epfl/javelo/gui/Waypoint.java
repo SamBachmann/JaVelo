@@ -10,7 +10,7 @@ import ch.epfl.javelo.projection.PointCh;
  * <br>
  * 22/04/2022
  *
- * @param PointPassage Position du point de passge sur l'itinéraire
+ * @param PointPassage Position du point de passage sur l'itinéraire
  * @param nodeId Identité du noeud Javelo le plus proche de PointPassage.
  */
 public record Waypoint(PointCh PointPassage, int nodeId) {
