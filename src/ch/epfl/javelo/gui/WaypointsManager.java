@@ -3,8 +3,8 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
@@ -31,7 +31,6 @@ public final class WaypointsManager {
     private final ObjectProperty<MapViewParameters> parametersCarte;
     private final ObservableList<Waypoint> waypointsList;
     private final Consumer<String> errorHandler;
-    private final ObservableList<Group> listMarqueurs;
     private final Pane waypointPane;
 
     /**
@@ -48,53 +47,73 @@ public final class WaypointsManager {
         this.parametersCarte = parametersCarte;
         this.waypointsList = waypointsList;
         this.errorHandler = errorHandler;
-        this.listMarqueurs = FXCollections.observableArrayList();
         this.waypointPane = new Pane();
         waypointPane.setPickOnBounds(false);
 
+        creationMarqueurs();
+
         parametersCarte.addListener(observable -> {
-            for (int i = 0; i < waypointsList.size(); ++i){
+            for (int i = 0; i < waypointPane.getChildren().size(); ++i){
                 PointWebMercator positionDeplacee = PointWebMercator.ofPointCh(
                         waypointsList.get(i).PointPassage());
-
-                setPositionMarqueur(positionDeplacee, listMarqueurs.get(i));
+                Group marqueur = (Group) waypointPane.getChildren().get(i);
+                setPositionMarqueur(positionDeplacee, marqueur);
             }
 
         });
-        //waypointsList.addListener();
-        // recréer les points et les afficher ? Voir ça pour vendredi
+        waypointsList.addListener((InvalidationListener) observable -> {
+            creationMarqueurs();
+            System.out.println(waypointsList);
+        });
+        // recréer les points et les afficher
 
     }
 
     /**
-     * Méthode construisant le Pane contenant tous les points de passage.
+     * Méthode retournant le Pane contenant tous les points de passage.
      *
      * @return Pane contenant les points de passages.
      */
     public Pane pane() {
+        return waypointPane;
+    }
+
+
+    /**
+     * Méthode privée qui crée (ou recrée) les marqueurs sur le Pane à partir de la liste de waypoints
+     *
+     */
+    private void creationMarqueurs() {
         int i = 0;
-        listMarqueurs.clear();
+        waypointPane.getChildren().clear();
 
         for (Waypoint waypoint : waypointsList) {
             PointWebMercator positionMarqueur = PointWebMercator.ofPointCh(waypoint.PointPassage());
             Group marqueur = createGroup(i);
             setPositionMarqueur(positionMarqueur, marqueur);
-            listMarqueurs.add(marqueur);
 
-            marqueur.setOnMouseClicked(event -> waypointsList.remove(waypoint));
             // Déplacer le visuel, mais pas de création de nouveau waypoint avant le relase
             marqueur.setOnMouseDragged(event -> {
                 PointWebMercator positionActuelle = parametersCarte.
                         get()
-                        .pointAt2(event.getX(), event.getY());
+                        .pointAt2(event.getSceneX(), event.getSceneY());
                 setPositionMarqueur(positionActuelle, marqueur);
             });
 
-            marqueur.setOnMouseReleased(event -> addWaypoint(event.getX(), event.getY()));
+
+            marqueur.setOnMouseReleased(event -> {
+                //Cas du clic
+                if (!event.isStillSincePress()) {
+                    //Cas du relachement de drag
+                    addWaypoint(event.getSceneX(), event.getSceneY());
+
+                }
+                waypointsList.remove(waypoint);
+            });
             waypointPane.getChildren().add(marqueur);
+
             ++i;
         }
-        return waypointPane;
     }
 
 
@@ -123,7 +142,7 @@ public final class WaypointsManager {
      * @param index l'index du marqueur en question.
      * @return Le marqueur créé.
      */
-    private Group createGroup ( int index){
+    private Group createGroup (int index){
         SVGPath bordExt = new SVGPath();
         bordExt.setContent(SVG_CHEMIN_EXTERIEUR);
         bordExt.getStyleClass().add("pin_outside");
