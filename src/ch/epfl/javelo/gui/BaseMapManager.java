@@ -1,7 +1,6 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.Math2;
-import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
@@ -14,12 +13,12 @@ import java.io.IOException;
 public final class BaseMapManager {
 
    private final TileManager tileManager;
-   private ObjectProperty<MapViewParameters> property;
+   private final ObjectProperty<MapViewParameters> property;
    private final Pane pane;
    private final Canvas canvas;
    private boolean redrawNeeded;
 
-    public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager, ObjectProperty<MapViewParameters> property) {
+    public BaseMapManager(TileManager tileManager, /*WaypointsManager waypointsManager,*/ ObjectProperty<MapViewParameters> property) {
 
         this.tileManager = tileManager;
         this.property = property;
@@ -45,11 +44,30 @@ public final class BaseMapManager {
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
 
+        pane.setPickOnBounds(false);
+
         pane.setOnScroll(event -> {
-            int zoom2 = (int) Math.round(this.property.get().zoom() + event.getDeltaY());
-            zoom2 = Math2.clamp(8, zoom2, 19);
+
+            int zoom2 = this.property.get().zoom();
+            zoom2 = Math2.clamp(9, zoom2, 11);
+            if (event.getDeltaY() > 0) {
+                zoom2 = Math2.clamp(9, zoom2, 11);
+                zoom2 = zoom2 + 1;
+                zoom2 = Math2.clamp(9, zoom2, 11);
+                System.out.println(zoom2);
+            } else {
+                if (event.getDeltaY() < 0) {
+                    zoom2 = Math2.clamp(9, zoom2, 11);
+                    zoom2 = zoom2 - 1;
+                    zoom2 = Math2.clamp(9, zoom2, 11);
+                    System.out.println(zoom2);
+                }
+            }
+            //int zoom2 = (int) Math.round(this.property.get().zoom() + event.getDeltaY());
+
             MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, this.property.get().xHautGauche(),
                     this.property.get().yHautGauche());
+            this.property.addListener(observable -> redrawOnNextPulse());
             this.property.set(newMapViewParameters);
         } );
 
@@ -59,13 +77,8 @@ public final class BaseMapManager {
         int zoom = this.property.get().zoom();
         int indexXHautGauche = (int) this.property.get().xHautGauche();
         int indexYHautGauche = (int) this.property.get().yHautGauche();
-        //PointWebMercator pointWebMercator = PointWebMercator.of(zoom, indexXHautGauche, indexYHautGauche);
-        //int indexXTuileHautGauche = (int) Math.floor(Math.scalb(pointWebMercator.x(), zoom));
-        //int indexYTuileHautGauche = (int) Math.floor(Math.scalb(pointWebMercator.y(), zoom));
         int indexXTuileHautGauche = Math.floorDiv(indexXHautGauche, 256);
         int indexYTuileHautGauche = Math.floorDiv(indexYHautGauche, 256);
-        System.out.println(indexXTuileHautGauche);
-        System.out.println(indexYTuileHautGauche);
 
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
@@ -91,8 +104,6 @@ public final class BaseMapManager {
                         double departY = this.property.get().yHautGauche() - (indexYTuileHautGauche) * 256;
                         graphicsContext.drawImage(image,
                                 i * 256 - departX, j * 256 - departY);
-                        System.out.println(this.property.get().xHautGauche());
-                        System.out.println(tileId.indexX() * 256);
                     }
                 } catch (IOException ignored) {
                 }

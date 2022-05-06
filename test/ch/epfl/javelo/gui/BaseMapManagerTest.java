@@ -1,4 +1,4 @@
-/*
+
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.projection.PointWebMercator;
@@ -37,4 +37,3 @@ public final class BaseMapManagerTest extends Application {
     }
 }
 
-*/
