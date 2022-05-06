@@ -63,7 +63,6 @@ public final class WaypointsManager {
         });
         waypointsList.addListener((InvalidationListener) observable -> {
             creationMarqueurs();
-            System.out.println(waypointsList);
         });
         // recréer les points et les afficher
 
@@ -79,6 +78,25 @@ public final class WaypointsManager {
     }
 
 
+
+    /**
+    * Ajoute un Waypoint à la liste waypointsList, positionné sur le noeud le plus proche du point
+    * passé en paramètre.
+    *
+    * @param x Coordonnée x dans la fenêtre.
+    * @param y Coordonnée y dans la fenêtre.
+    */
+    public void addWaypoint ( double x, double y){
+        PointWebMercator pointDonne = parametersCarte.get().pointAt2(x, y);
+        PointCh pointDonneEnCH = pointDonne.toPointCh();
+        int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
+        if (nodeNewWaypoint == NO_NODE) {
+            errorHandler.accept(MESSAGE_ERREUR);
+        } else {
+            PointCh positionNoeud = graph.nodePoint(nodeNewWaypoint);
+            waypointsList.add(new Waypoint(positionNoeud, nodeNewWaypoint));
+        }
+    }
     /**
      * Méthode privée qui crée (ou recrée) les marqueurs sur le Pane à partir de la liste de waypoints
      *
@@ -108,8 +126,10 @@ public final class WaypointsManager {
                     waypointsList.remove(waypoint);
                 } else {
                     //Cas du relachement de drag
-                    waypointsList.remove(waypoint);
-                    addWaypoint(event.getSceneX(), event.getSceneY());
+                    if (positionValide()) {
+                        addWaypoint(event.getSceneX(), event.getSceneY());
+                        waypointsList.remove(waypoint);
+                    }
 
                 }
 
@@ -117,26 +137,6 @@ public final class WaypointsManager {
             waypointPane.getChildren().add(marqueur);
 
             ++i;
-        }
-    }
-
-
-    /**
-    * Ajoute un Waypoint à la liste waypointsList, positionné sur le noeud le plus proche du point
-    * passé en paramètre.
-    *
-    * @param x Coordonnée x dans la fenêtre.
-    * @param y Coordonnée y dans la fenêtre.
-    */
-    public void addWaypoint ( double x, double y){
-        PointWebMercator pointDonne = parametersCarte.get().pointAt2(x, y);
-        PointCh pointDonneEnCH = pointDonne.toPointCh();
-        int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
-        if (nodeNewWaypoint == NO_NODE) {
-            errorHandler.accept(MESSAGE_ERREUR);
-        } else {
-            PointCh positionNoeud = graph.nodePoint(nodeNewWaypoint);
-            waypointsList.add(new Waypoint(positionNoeud, nodeNewWaypoint));
         }
     }
 
@@ -177,4 +177,8 @@ public final class WaypointsManager {
         marqueur.setLayoutY(yEcran);
     }
 
+
+    private boolean positionValide(){
+        return false;
+    }
 }

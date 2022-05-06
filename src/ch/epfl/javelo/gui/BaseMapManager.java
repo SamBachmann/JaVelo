@@ -14,18 +14,18 @@ import java.io.IOException;
 public final class BaseMapManager {
 
    private final TileManager tileManager;
-   private ObjectProperty<MapViewParameters> property;
+   private final ObjectProperty<MapViewParameters> property;
    private final Pane pane;
    private final Canvas canvas;
    private boolean redrawNeeded;
 
-    public BaseMapManager(TileManager tileManager, /*WaypointsManager waypointsManager,*/ ObjectProperty<MapViewParameters> property) {
+    public BaseMapManager(TileManager tileManager, /*WaypointsManager waypointsManager,*/
+                          ObjectProperty<MapViewParameters> property) {
 
         this.tileManager = tileManager;
         this.property = property;
 
         // Redimensionnement automatique à écrire.
-        //canvas = new Canvas(1200, 700);
         canvas = new Canvas();
         pane = new Pane();
 
