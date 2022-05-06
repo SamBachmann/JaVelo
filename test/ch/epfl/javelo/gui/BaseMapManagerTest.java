@@ -1,3 +1,4 @@
+/*
 package ch.epfl.javelo.gui;
 
 import javafx.application.Application;
@@ -34,5 +35,4 @@ public final class BaseMapManagerTest extends Application {
         primaryStage.show();
     }
 }
-
-
+*/
