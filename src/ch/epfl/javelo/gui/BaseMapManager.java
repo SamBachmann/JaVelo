@@ -19,7 +19,7 @@ public final class BaseMapManager {
    private final Canvas canvas;
    private boolean redrawNeeded;
 
-    public BaseMapManager(TileManager tileManager, /*WaypointsManager waypointsManager,*/ ObjectProperty<MapViewParameters> property) {
+    public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager, ObjectProperty<MapViewParameters> property) {
 
         this.tileManager = tileManager;
         this.property = property;
@@ -51,7 +51,6 @@ public final class BaseMapManager {
             MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, this.property.get().xHautGauche(),
                     this.property.get().yHautGauche());
             this.property.set(newMapViewParameters);
-            System.out.println(zoom2);
         } );
 
     }
@@ -60,19 +59,40 @@ public final class BaseMapManager {
         int zoom = this.property.get().zoom();
         int indexXHautGauche = (int) this.property.get().xHautGauche();
         int indexYHautGauche = (int) this.property.get().yHautGauche();
-        PointWebMercator pointWebMercator = PointWebMercator.of(zoom, indexXHautGauche, indexYHautGauche);
-        int indexXTuileHautGauche = (int) Math.floor(Math.scalb(pointWebMercator.x(), zoom));
-        int indexYTuileHautGauche = (int) Math.floor(Math.scalb(pointWebMercator.y(), zoom));
+        //PointWebMercator pointWebMercator = PointWebMercator.of(zoom, indexXHautGauche, indexYHautGauche);
+        //int indexXTuileHautGauche = (int) Math.floor(Math.scalb(pointWebMercator.x(), zoom));
+        //int indexYTuileHautGauche = (int) Math.floor(Math.scalb(pointWebMercator.y(), zoom));
+        int indexXTuileHautGauche = Math.floorDiv(indexXHautGauche, 256);
+        int indexYTuileHautGauche = Math.floorDiv(indexYHautGauche, 256);
+        System.out.println(indexXTuileHautGauche);
+        System.out.println(indexYTuileHautGauche);
 
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-        for (int i = 0; i < Math2.ceilDiv((int) canvas.getWidth(), 256); ++i) {
-            for (int j = 0; j < Math2.ceilDiv((int) canvas.getHeight(), 256); ++j) {
+
+        int nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), 256);
+        int nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), 256);
+
+        if (this.property.get().xHautGauche() - indexXTuileHautGauche * 256 > 0) {
+            nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), 256) + 1;
+        }
+
+        if (this.property.get().yHautGauche() - indexYTuileHautGauche * 256 > 0) {
+            nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), 256) + 1;
+        }
+
+        for (int i = 0; i < nombreDeTuilesEnX; ++i) {
+            for (int j = 0; j < nombreDeTuilesEnY; ++j) {
                 TileManager.TileId tileId = new TileManager.TileId(zoom, indexXTuileHautGauche + i,
                         indexYTuileHautGauche + j);
                 try {
                     if (TileManager.TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
                         Image image = this.tileManager.imageForTileAt(tileId);
-                        graphicsContext.drawImage(image, i * 256, j * 256);
+                        double departX = this.property.get().xHautGauche() - (indexXTuileHautGauche) * 256;
+                        double departY = this.property.get().yHautGauche() - (indexYTuileHautGauche) * 256;
+                        graphicsContext.drawImage(image,
+                                i * 256 - departX, j * 256 - departY);
+                        System.out.println(this.property.get().xHautGauche());
+                        System.out.println(tileId.indexX() * 256);
                     }
                 } catch (IOException ignored) {
                 }

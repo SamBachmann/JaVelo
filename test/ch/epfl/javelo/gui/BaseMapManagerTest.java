@@ -1,4 +1,4 @@
-
+/*
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.projection.PointWebMercator;
@@ -22,7 +22,7 @@ public final class BaseMapManagerTest extends Application {
         String tileServerHost = "tile.openstreetmap.org";
         TileManager tileManager = new TileManager(cacheBasePath, tileServerHost);
 
-        MapViewParameters mapViewParameters = new MapViewParameters(19, 69561722, 47468099);
+        MapViewParameters mapViewParameters = new MapViewParameters(10, 135735, 92327);
         ObjectProperty<MapViewParameters> mapViewParametersP = new SimpleObjectProperty<>(mapViewParameters);
 
         BaseMapManager baseMapManager = new BaseMapManager(tileManager, mapViewParametersP);
@@ -37,3 +37,4 @@ public final class BaseMapManagerTest extends Application {
     }
 }
 
+*/

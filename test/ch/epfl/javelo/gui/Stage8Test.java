@@ -15,7 +15,6 @@ import javafx.stage.Stage;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-
 public final class Stage8Test extends Application {
     public static void main(String[] args) { launch(args); }
 
@@ -48,8 +47,8 @@ public final class Stage8Test extends Application {
                             mapViewParametersP);
 
             StackPane mainPane =
-                    new StackPane(baseMapManager.pane()
-                            /*waypointsManager.pane()*/);
+                    new StackPane(baseMapManager.pane(),
+                            waypointsManager.pane());
             mainPane.getStylesheets().add("map.css");
             primaryStage.setMinWidth(600);
             primaryStage.setMinHeight(300);
