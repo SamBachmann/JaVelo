@@ -20,7 +20,7 @@ public final class BaseMapManagerTest extends Application {
         String tileServerHost = "tile.openstreetmap.org";
         TileManager tileManager = new TileManager(cacheBasePath, tileServerHost);
 
-        MapViewParameters mapViewParameters = new MapViewParameters(19, 271711, 185427);
+        MapViewParameters mapViewParameters = new MapViewParameters(19, 271709, 185429);
         ObjectProperty<MapViewParameters> mapViewParametersP = new SimpleObjectProperty<>(mapViewParameters);
 
         BaseMapManager baseMapManager = new BaseMapManager(tileManager, mapViewParametersP);

@@ -26,8 +26,8 @@ public final class BaseMapManager {
         this.property = property;
 
         // Redimensionnement automatique à écrire.
-        //canvas = new Canvas(2560, 1600);
-        canvas = new Canvas();
+        canvas = new Canvas(2560, 1600);
+        //canvas = new Canvas();
         pane = new Pane();
 
         pane.getChildren().add(canvas);
