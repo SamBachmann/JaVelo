@@ -1,4 +1,4 @@
-/*
+
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
@@ -48,8 +48,8 @@ public final class Stage8Test extends Application {
                             mapViewParametersP);
 
             StackPane mainPane =
-                    new StackPane(baseMapManager.pane(),
-                            waypointsManager.pane());
+                    new StackPane(baseMapManager.pane()
+                            /*waypointsManager.pane()*/);
             mainPane.getStylesheets().add("map.css");
             primaryStage.setMinWidth(600);
             primaryStage.setMinHeight(300);
@@ -63,5 +63,3 @@ public final class Stage8Test extends Application {
             public void accept(String s) { System.out.println(s); }
         }
     }
-
- */

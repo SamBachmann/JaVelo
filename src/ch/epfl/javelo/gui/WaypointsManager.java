@@ -87,6 +87,7 @@ public final class WaypointsManager {
         int i = 0;
         waypointPane.getChildren().clear();
 
+
         for (Waypoint waypoint : waypointsList) {
             PointWebMercator positionMarqueur = PointWebMercator.ofPointCh(waypoint.PointPassage());
             Group marqueur = createGroup(i);
