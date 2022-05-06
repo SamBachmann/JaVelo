@@ -1,6 +1,7 @@
 
 package ch.epfl.javelo.gui;
 
+import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -21,7 +22,7 @@ public final class BaseMapManagerTest extends Application {
         String tileServerHost = "tile.openstreetmap.org";
         TileManager tileManager = new TileManager(cacheBasePath, tileServerHost);
 
-        MapViewParameters mapViewParameters = new MapViewParameters(19, 271709, 185429);
+        MapViewParameters mapViewParameters = new MapViewParameters(19, 69561722, 47468099);
         ObjectProperty<MapViewParameters> mapViewParametersP = new SimpleObjectProperty<>(mapViewParameters);
 
         BaseMapManager baseMapManager = new BaseMapManager(tileManager, mapViewParametersP);
@@ -29,9 +30,10 @@ public final class BaseMapManagerTest extends Application {
         StackPane mainPane = new StackPane(baseMapManager.pane());
 
         mainPane.getStylesheets().add("map.css");
-        primaryStage.setMinWidth(600);
-        primaryStage.setMinHeight(300);
+        primaryStage.setMinWidth(1000);
+        primaryStage.setMinHeight(700);
         primaryStage.setScene(new Scene(mainPane));
         primaryStage.show();
     }
 }
+
