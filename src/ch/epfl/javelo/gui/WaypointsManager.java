@@ -103,12 +103,15 @@ public final class WaypointsManager {
 
             marqueur.setOnMouseReleased(event -> {
                 //Cas du clic
-                if (!event.isStillSincePress()) {
+                if (event.isStillSincePress()) {
+                    waypointsList.remove(waypoint);
+                } else {
                     //Cas du relachement de drag
+                    waypointsList.remove(waypoint);
                     addWaypoint(event.getSceneX(), event.getSceneY());
 
                 }
-                waypointsList.remove(waypoint);
+
             });
             waypointPane.getChildren().add(marqueur);
 
