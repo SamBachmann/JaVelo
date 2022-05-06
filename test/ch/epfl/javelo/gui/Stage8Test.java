@@ -42,9 +42,7 @@ public final class Stage8Test extends Application {
                             waypoints,
                             errorConsumer);
             BaseMapManager baseMapManager =
-                    new BaseMapManager(tileManager,
-
-                            mapViewParametersP);
+                    new BaseMapManager(tileManager, waypointsManager, mapViewParametersP);
 
             StackPane mainPane =
                     new StackPane(baseMapManager.pane(),
