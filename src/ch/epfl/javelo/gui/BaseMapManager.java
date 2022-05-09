@@ -69,26 +69,17 @@ public final class BaseMapManager {
         //interaction du zoom
         pane.setOnScroll(event -> {
 
-            int zoom = this.property.get().zoom();
-            int zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom, ZOOM_MAX_VALUE);
+            int zoom2 = this.property.get().zoom();
             if (event.getDeltaY() > 0) {
-                zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
-                zoom2 = zoom2 + 1;
-                zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
-                zoom2 = Math2.clamp(9, zoom2 + 1, 11);
+                zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2 + 1, ZOOM_MAX_VALUE);
                 double newXHautGauche = this.property.get().xHautGauche() * 2;
                 double newYHautGauche = this.property.get().yHautGauche() * 2;
                 MapViewParameters newOne = new MapViewParameters(zoom2, newXHautGauche, newYHautGauche);
                 this.property.set(newOne);
-                redrawOnNextPulse();
-
                 System.out.println(zoom2);
             } else {
                 if (event.getDeltaY() < 0) {
-                    zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
-                    zoom2 = zoom2 - 1;
-                    zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
-                    zoom2 = Math2.clamp(9, zoom2 - 1, 11);
+                    zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2 - 1, ZOOM_MAX_VALUE);
                     System.out.println(zoom2);
                 }
             }
