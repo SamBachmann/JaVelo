@@ -1,12 +1,14 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.Math2;
+import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+
 import java.io.IOException;
 
 /**
@@ -19,14 +21,14 @@ import java.io.IOException;
  */
 public final class BaseMapManager {
 
-   private final TileManager tileManager;
-   private final static int ZOOM_MIN_VALUE = 8;
-   private final ObjectProperty<MapViewParameters> property;
-   private final Pane pane;
-   private final Canvas canvas;
-   private boolean redrawNeeded;
-   private final static int ZOOM_MAX_VALUE = 19;
-   private final WaypointsManager waypointsManager;
+    private final static int ZOOM_MIN_VALUE = 8;
+    private final static int ZOOM_MAX_VALUE = 19;
+    private final TileManager tileManager;
+    private final ObjectProperty<MapViewParameters> property;
+    private final Pane pane;
+    private final Canvas canvas;
+    private final WaypointsManager waypointsManager;
+    private boolean redrawNeeded;
 
 
     /**
@@ -56,8 +58,6 @@ public final class BaseMapManager {
         pane.getChildren().add(canvas);
 
 
-        dessinCarte();
-
         canvas.sceneProperty().addListener((p, oldS, newS) -> {
             assert oldS == null;
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
@@ -69,9 +69,10 @@ public final class BaseMapManager {
         //interaction du zoom
         pane.setOnScroll(event -> {
 
-            int zoom2 = this.property.get().zoom();
+            int zoom = this.property.get().zoom();
+            int zoom2 = 0;
             if (event.getDeltaY() > 0) {
-                zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2 + 1, ZOOM_MAX_VALUE);
+                zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom + 1, ZOOM_MAX_VALUE);
                 double newXHautGauche = this.property.get().xHautGauche() * 2;
                 double newYHautGauche = this.property.get().yHautGauche() * 2;
                 MapViewParameters newOne = new MapViewParameters(zoom2, newXHautGauche, newYHautGauche);
@@ -79,7 +80,7 @@ public final class BaseMapManager {
                 System.out.println(zoom2);
             } else {
                 if (event.getDeltaY() < 0) {
-                    zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2 - 1, ZOOM_MAX_VALUE);
+                    zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom - 1, ZOOM_MAX_VALUE);
                     System.out.println(zoom2);
                 }
             }
@@ -88,11 +89,11 @@ public final class BaseMapManager {
             int deltaZoom = zoom2 - zoom;
 
             PointWebMercator pointclic = property.get().pointAt2(event.getSceneX(), event.getSceneY());
-            double decalageX = pointclic.x() - property.get().xHautGauche();
-            double decalageY = pointclic.y() - property.get().yHautGauche();
+            double decalageX = pointclic.xAtZoomLevel(zoom) - property.get().xHautGauche();
+            double decalageY = pointclic.yAtZoomLevel(zoom) - property.get().yHautGauche();
 
-            double newXOrigine = pointclic.x()  - Math.scalb(decalageX, deltaZoom);
-            double newYOrigine = pointclic.y()  - Math.scalb(decalageY, deltaZoom);
+            double newXOrigine = pointclic.xAtZoomLevel(zoom) - Math.scalb(decalageX, deltaZoom);
+            double newYOrigine = pointclic.yAtZoomLevel(zoom) - Math.scalb(decalageY, deltaZoom);
 
             MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, newXOrigine, newYOrigine);
             this.property.set(newMapViewParameters);
