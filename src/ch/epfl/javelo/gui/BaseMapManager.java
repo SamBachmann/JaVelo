@@ -7,9 +7,16 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-
 import java.io.IOException;
 
+/**
+ * Classe représentant un gestionnaire du fond de carte.
+ *
+ *  @author Samuel Bachmann (340373)
+ *  @author Cyrus Giblain (312042)
+ * <br>
+ * 08/05/2022
+ */
 public final class BaseMapManager {
 
    private final TileManager tileManager;
@@ -18,7 +25,14 @@ public final class BaseMapManager {
    private final Canvas canvas;
    private boolean redrawNeeded;
 
-    public BaseMapManager(TileManager tileManager, /*WaypointsManager waypointsManager,*/ ObjectProperty<MapViewParameters> property) {
+    /**
+     * Constructeur du gestionnaire du fond de carte.
+     *
+     * @param tileManager Un gestionnaire de tuiles.
+     * @param waypointsManager Un gestionnaire des points de passage.
+     * @param property Des propriétés de type MapViewParameters.
+     */
+    public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager, ObjectProperty<MapViewParameters> property) {
 
         this.tileManager = tileManager;
         this.property = property;
@@ -49,17 +63,19 @@ public final class BaseMapManager {
         pane.setOnScroll(event -> {
 
             int zoom2 = this.property.get().zoom();
-            zoom2 = Math2.clamp(9, zoom2, 11);
+
             if (event.getDeltaY() > 0) {
-                zoom2 = Math2.clamp(9, zoom2, 11);
-                zoom2 = zoom2 + 1;
-                zoom2 = Math2.clamp(9, zoom2, 11);
+                zoom2 = Math2.clamp(9, zoom2 + 1, 11);
+                double newXHautGauche = this.property.get().xHautGauche() * 2;
+                double newYHautGauche = this.property.get().yHautGauche() * 2;
+                MapViewParameters newOne = new MapViewParameters(zoom2, newXHautGauche, newYHautGauche);
+                this.property.set(newOne);
+                redrawOnNextPulse();
+
                 System.out.println(zoom2);
             } else {
                 if (event.getDeltaY() < 0) {
-                    zoom2 = Math2.clamp(9, zoom2, 11);
-                    zoom2 = zoom2 - 1;
-                    zoom2 = Math2.clamp(9, zoom2, 11);
+                    zoom2 = Math2.clamp(9, zoom2 - 1, 11);
                     System.out.println(zoom2);
                 }
             }
@@ -71,8 +87,25 @@ public final class BaseMapManager {
             this.property.set(newMapViewParameters);
         } );
 
+        /*pane.setOnMousePressed(event -> {
+            MapViewParameters mapViewParameters =
+            Point2D = this.property.get().topLeft();
+            ObjectProperty<Point2D> property1 = new SimpleObjectProperty<>()
+        }
+
+         */
+
+        pane.setOnMousePressed(event -> {
+            if (event.isStillSincePress()) {
+                waypointsManager.addWaypoint(event.getX(), event.getY());
+            }
+        });
+
     }
 
+    /**
+     * Méthode privée qui permet de dessiner la carte.
+     */
     private void dessinCarte() {
         int zoom = this.property.get().zoom();
         int indexXHautGauche = (int) this.property.get().xHautGauche();
@@ -111,16 +144,27 @@ public final class BaseMapManager {
         }
     }
 
+    /**
+     * Méthode nous donnant le panneau qui va contenir le canvas et la carte.
+     *
+     * @return Le panneau qui va contenir la carte.
+     */
     public Pane pane() {
         return this.pane;
     }
 
+    /**
+     * Méthode redessinant la carte si nécessaire.
+     */
     private void redrawIfNeeded() {
         if (!redrawNeeded) return;
         redrawNeeded = false;
         dessinCarte();
     }
 
+    /**
+     * Méthode permettant de demander un redessin au prochain battement.
+     */
     private void redrawOnNextPulse() {
         redrawNeeded = true;
         Platform.requestNextPulse();

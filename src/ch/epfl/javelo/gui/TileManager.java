@@ -14,21 +14,54 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
+/**
+ *
+ * Classe représentant un gestionnaire de tuiles, qui prend comme attributs un chemin vers le disque,
+ * le nom du serveur ainsi qu'une mémoire cache.
+ *
+ *  @author Samuel Bachmann (340373)
+ *  @author Cyrus Giblain (312042)
+ * <br>
+ * 05/05/2022
+ */
 public final class TileManager {
 
     private final Path path;
     private final String nameOfTheServer;
     private final Map<TileId, Image> cacheMemory;
 
+    /**
+     *
+     * Enregistrement représentant l'identité d'une tuile, qui contient le niveau de zoom,
+     * son index en x et son index en y.
+     *
+     *  @author Samuel Bachmann (340373)
+     *  @author Cyrus Giblain (312042)
+     * <br>
+     * 05/05/2022
+     */
     public record TileId(int zoom, int indexX, int indexY) {
 
+        /**
+         * Méthode nous indiquant si l'identité de la tuile est valide.
+         *
+         * @param zoom Le niveau de zoom appliqué.
+         * @param indexX L'index x de la tuile.
+         * @param indexY L'index y de la tuile.
+         * @return Un booléen nous indiquant si une telle tuile existe (et est donc récupérable en ligne).
+         */
         public static boolean isValid(int zoom, int indexX, int indexY) {
             return (indexX >= 0) && (indexY >= 0) && (indexX < Math.pow(2, zoom)) && (indexY < Math.pow(2, zoom));
             // utilisation possible de Math.scalb()
         }
     }
 
+    /**
+     * Constructeur d'un gestionnaire de tuiles grâce à un chemin vers le disque ainsi qu'un nom de serveur.
+     *
+     * @param path Le chemin vers le disque.
+     * @param nameOfTheServer Le nom du serveur.
+     */
     public TileManager(Path path, String nameOfTheServer) {
 
         this.path = path;
@@ -37,6 +70,12 @@ public final class TileManager {
 
     }
 
+    /**
+     * Méthode nous donnant l'image de la tuile d'identité donnée.
+     *
+     * @param tileId L'identité de la tuile dont on veut retourner l'image.
+     * @return L'image de la tuile.
+     */
     public Image imageForTileAt(TileId tileId) throws IOException {
 
         Image imageFinale = null;
