@@ -20,10 +20,14 @@ import java.io.IOException;
 public final class BaseMapManager {
 
    private final TileManager tileManager;
+   private final static int ZOOM_MIN_VALUE = 8;
    private final ObjectProperty<MapViewParameters> property;
    private final Pane pane;
    private final Canvas canvas;
    private boolean redrawNeeded;
+   private final static int ZOOM_MAX_VALUE = 19;
+   private final WaypointsManager waypointsManager;
+
 
     /**
      * Constructeur du gestionnaire du fond de carte.
@@ -35,6 +39,7 @@ public final class BaseMapManager {
     public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager, ObjectProperty<MapViewParameters> property) {
 
         this.tileManager = tileManager;
+        this.waypointsManager = waypointsManager;
         this.property = property;
 
         // Redimensionnement automatique à écrire.
@@ -45,7 +50,7 @@ public final class BaseMapManager {
         this.canvas.widthProperty().bind(pane.widthProperty());
         this.canvas.heightProperty().bind(pane.heightProperty());
 
-
+        //Détecter les changements de taille de la fenêtre et redessiner
         pane.heightProperty().addListener(observable -> redrawOnNextPulse());
         pane.widthProperty().addListener(observable -> redrawOnNextPulse());
         pane.getChildren().add(canvas);
@@ -58,13 +63,18 @@ public final class BaseMapManager {
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
 
-        pane.setPickOnBounds(false);
+        this.property.addListener(observable -> redrawOnNextPulse());
+        //pane.setPickOnBounds(false);
 
+        //interaction du zoom
         pane.setOnScroll(event -> {
 
-            int zoom2 = this.property.get().zoom();
-
+            int zoom = this.property.get().zoom();
+            int zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom, ZOOM_MAX_VALUE);
             if (event.getDeltaY() > 0) {
+                zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
+                zoom2 = zoom2 + 1;
+                zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
                 zoom2 = Math2.clamp(9, zoom2 + 1, 11);
                 double newXHautGauche = this.property.get().xHautGauche() * 2;
                 double newYHautGauche = this.property.get().yHautGauche() * 2;
@@ -75,33 +85,32 @@ public final class BaseMapManager {
                 System.out.println(zoom2);
             } else {
                 if (event.getDeltaY() < 0) {
+                    zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
+                    zoom2 = zoom2 - 1;
+                    zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
                     zoom2 = Math2.clamp(9, zoom2 - 1, 11);
                     System.out.println(zoom2);
                 }
             }
             //int zoom2 = (int) Math.round(this.property.get().zoom() + event.getDeltaY());
 
-            MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, this.property.get().xHautGauche(),
-                    this.property.get().yHautGauche());
-            this.property.addListener(observable -> redrawOnNextPulse());
+            int deltaZoom = zoom2 - zoom;
+
+            PointWebMercator pointclic = property.get().pointAt2(event.getSceneX(), event.getSceneY());
+            double decalageX = pointclic.x() - property.get().xHautGauche();
+            double decalageY = pointclic.y() - property.get().yHautGauche();
+
+            double newXOrigine = pointclic.x()  - Math.scalb(decalageX, deltaZoom);
+            double newYOrigine = pointclic.y()  - Math.scalb(decalageY, deltaZoom);
+
+            MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, newXOrigine, newYOrigine);
             this.property.set(newMapViewParameters);
         } );
 
-        /*pane.setOnMousePressed(event -> {
-            MapViewParameters mapViewParameters =
-            Point2D = this.property.get().topLeft();
-            ObjectProperty<Point2D> property1 = new SimpleObjectProperty<>()
-        }
-
-         */
-
-        pane.setOnMousePressed(event -> {
-            if (event.isStillSincePress()) {
-                waypointsManager.addWaypoint(event.getX(), event.getY());
-            }
-        });
+        dessinCarte();
 
     }
+
 
     /**
      * Méthode privée qui permet de dessiner la carte.

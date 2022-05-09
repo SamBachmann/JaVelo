@@ -51,8 +51,7 @@ public final class TileManager {
          * @return Un booléen nous indiquant si une telle tuile existe (et est donc récupérable en ligne).
          */
         public static boolean isValid(int zoom, int indexX, int indexY) {
-            return (indexX >= 0) && (indexY >= 0) && (indexX < Math.pow(2, zoom)) && (indexY < Math.pow(2, zoom));
-            // utilisation possible de Math.scalb()
+            return (indexX >= 0) && (indexY >= 0) && (indexX < Math.scalb(1,zoom)) && (indexY < Math.scalb(1,zoom));
         }
     }
 
