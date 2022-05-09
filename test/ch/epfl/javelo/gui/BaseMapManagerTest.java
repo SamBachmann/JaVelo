@@ -1,7 +1,6 @@
 
 package ch.epfl.javelo.gui;
 
-import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -25,7 +24,7 @@ public final class BaseMapManagerTest extends Application {
         MapViewParameters mapViewParameters = new MapViewParameters(10, 135735, 92327);
         ObjectProperty<MapViewParameters> mapViewParametersP = new SimpleObjectProperty<>(mapViewParameters);
 
-        BaseMapManager baseMapManager = new BaseMapManager(tileManager, mapViewParametersP);
+        BaseMapManager baseMapManager = new BaseMapManager(tileManager, null, mapViewParametersP);
 
         StackPane mainPane = new StackPane(baseMapManager.pane());
 

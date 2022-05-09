@@ -1,6 +1,7 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.Math2;
+import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
@@ -13,63 +14,74 @@ import java.io.IOException;
 public final class BaseMapManager {
 
    private final TileManager tileManager;
+   private final static int ZOOM_MIN_VALUE = 8;
    private final ObjectProperty<MapViewParameters> property;
    private final Pane pane;
    private final Canvas canvas;
    private boolean redrawNeeded;
+   private final static int ZOOM_MAX_VALUE = 19;
+   private final WaypointsManager waypointsManager;
 
-    public BaseMapManager(TileManager tileManager, /*WaypointsManager waypointsManager,*/ ObjectProperty<MapViewParameters> property) {
+    public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager,
+                          ObjectProperty<MapViewParameters> property) {
 
         this.tileManager = tileManager;
+        this.waypointsManager = waypointsManager;
         this.property = property;
 
-        // Redimensionnement automatique à écrire.
-        //canvas = new Canvas(1200, 700);
         canvas = new Canvas();
         pane = new Pane();
 
         this.canvas.widthProperty().bind(pane.widthProperty());
         this.canvas.heightProperty().bind(pane.heightProperty());
 
-
+        //Détecter les changements de taille de la fenêtre et redessiner
         pane.heightProperty().addListener(observable -> redrawOnNextPulse());
         pane.widthProperty().addListener(observable -> redrawOnNextPulse());
         pane.getChildren().add(canvas);
-
-
-        dessinCarte();
 
         canvas.sceneProperty().addListener((p, oldS, newS) -> {
             assert oldS == null;
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
 
-        pane.setPickOnBounds(false);
+        this.property.addListener(observable -> redrawOnNextPulse());
+        //pane.setPickOnBounds(false);
 
+        //interaction du zoom
         pane.setOnScroll(event -> {
 
-            int zoom2 = this.property.get().zoom();
-            zoom2 = Math2.clamp(9, zoom2, 11);
+            int zoom = this.property.get().zoom();
+            int zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom, ZOOM_MAX_VALUE);
             if (event.getDeltaY() > 0) {
-                zoom2 = Math2.clamp(9, zoom2, 11);
+                zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
                 zoom2 = zoom2 + 1;
-                zoom2 = Math2.clamp(9, zoom2, 11);
+                zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
                 System.out.println(zoom2);
             } else {
                 if (event.getDeltaY() < 0) {
-                    zoom2 = Math2.clamp(9, zoom2, 11);
+                    zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
                     zoom2 = zoom2 - 1;
-                    zoom2 = Math2.clamp(9, zoom2, 11);
+                    zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom2, ZOOM_MAX_VALUE);
                     System.out.println(zoom2);
                 }
             }
             //int zoom2 = (int) Math.round(this.property.get().zoom() + event.getDeltaY());
 
-            MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, this.property.get().xHautGauche(),
-                    this.property.get().yHautGauche());
-            this.property.addListener(observable -> redrawOnNextPulse());
+            int deltaZoom = zoom2 - zoom;
+
+            PointWebMercator pointclic = property.get().pointAt2(event.getSceneX(), event.getSceneY());
+            double decalageX = pointclic.x() - property.get().xHautGauche();
+            double decalageY = pointclic.y() - property.get().yHautGauche();
+
+            double newXOrigine = pointclic.x()  - Math.scalb(decalageX, deltaZoom);
+            double newYOrigine = pointclic.y()  - Math.scalb(decalageY, deltaZoom);
+
+            MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, newXOrigine, newYOrigine);
             this.property.set(newMapViewParameters);
         } );
+
+        dessinCarte();
 
     }
 
@@ -126,5 +138,3 @@ public final class BaseMapManager {
         Platform.requestNextPulse();
     }
 }
-
-
