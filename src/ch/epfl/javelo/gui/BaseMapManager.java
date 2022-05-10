@@ -73,10 +73,10 @@ public final class BaseMapManager {
             int zoom2 = 0;
             if (event.getDeltaY() > 0) {
                 zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom + 1, ZOOM_MAX_VALUE);
-                double newXHautGauche = this.property.get().xHautGauche() * 2;
-                double newYHautGauche = this.property.get().yHautGauche() * 2;
-                MapViewParameters newOne = new MapViewParameters(zoom2, newXHautGauche, newYHautGauche);
-                this.property.set(newOne);
+                //double newXHautGauche = this.property.get().xHautGauche() * 2;
+                //double newYHautGauche = this.property.get().yHautGauche() * 2;
+                //MapViewParameters newOne = new MapViewParameters(zoom2, newXHautGauche, newYHautGauche);
+                //this.property.set(newOne);
                 System.out.println(zoom2);
             } else {
                 if (event.getDeltaY() < 0) {
@@ -89,11 +89,12 @@ public final class BaseMapManager {
             int deltaZoom = zoom2 - zoom;
 
             PointWebMercator pointclic = property.get().pointAt2(event.getSceneX(), event.getSceneY());
-            double decalageX = pointclic.xAtZoomLevel(zoom) - property.get().xHautGauche();
-            double decalageY = pointclic.yAtZoomLevel(zoom) - property.get().yHautGauche();
+            double decalageX = pointclic.xAtZoomLevel(zoom) - property.get().xHautGauche() ;
+            double decalageY = pointclic.yAtZoomLevel(zoom) - property.get().yHautGauche() ;
 
-            double newXOrigine = pointclic.xAtZoomLevel(zoom) - Math.scalb(decalageX, deltaZoom);
-            double newYOrigine = pointclic.yAtZoomLevel(zoom) - Math.scalb(decalageY, deltaZoom);
+            double newXOrigine = pointclic.xAtZoomLevel(zoom2) - Math.scalb(decalageX, deltaZoom);
+            double newYOrigine = pointclic.yAtZoomLevel(zoom2) - Math.scalb(decalageY, deltaZoom);
+
 
             MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, newXOrigine, newYOrigine);
             this.property.set(newMapViewParameters);
