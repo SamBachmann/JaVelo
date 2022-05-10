@@ -71,8 +71,12 @@ public final class BaseMapManager {
         pane.setOnScroll(event -> {
 
             int zoom = this.property.get().zoom();
+            int zoom1 = (int) Math2.clamp(ZOOM_MIN_VALUE, Math.round(zoom + event.getDeltaY()), ZOOM_MAX_VALUE);
             int zoom2 = 0;
+
+            /*
             if (event.getDeltaY() > 0) {
+
                 zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom + 1, ZOOM_MAX_VALUE);
                 //double newXHautGauche = this.property.get().xHautGauche() * 2;
                 //double newYHautGauche = this.property.get().yHautGauche() * 2;
@@ -85,9 +89,9 @@ public final class BaseMapManager {
                     System.out.println(zoom2);
                 }
             }
-            //int zoom2 = (int) Math.round(this.property.get().zoom() + event.getDeltaY());
+             */
 
-            int deltaZoom = zoom2 - zoom;
+            int deltaZoom = zoom1 - zoom;
             if (deltaZoom != 0){
                 PointWebMercator pointclic = property.get().pointAt2(event.getX(), event.getY());
                 double decalageX = pointclic.xAtZoomLevel(zoom) - property.get().xHautGauche();
@@ -100,12 +104,12 @@ public final class BaseMapManager {
                 double newYzoom = Math.scalb(newY, deltaZoom);
 
 
-                MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, newXzoom, newYzoom);
+                MapViewParameters newMapViewParameters = new MapViewParameters(zoom1, newXzoom, newYzoom);
                 this.property.set(newMapViewParameters);
             }
         } );
 
-        dessinCarte();
+        //dessinCarte();
 
         pane.setOnMousePressed(event -> {
 
