@@ -4,11 +4,14 @@ import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 
+import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -44,8 +47,6 @@ public final class BaseMapManager {
         this.waypointsManager = waypointsManager;
         this.property = property;
 
-        // Redimensionnement automatique à écrire.
-        //canvas = new Canvas(1200, 700);
         canvas = new Canvas();
         pane = new Pane();
 
@@ -64,7 +65,7 @@ public final class BaseMapManager {
         });
 
         this.property.addListener(observable -> redrawOnNextPulse());
-        //pane.setPickOnBounds(false);
+        pane.setPickOnBounds(false);
 
         //interaction du zoom
         pane.setOnScroll(event -> {
@@ -106,31 +107,26 @@ public final class BaseMapManager {
 
         dessinCarte();
 
-        double position0X;
-        double position0Y;
-
         pane.setOnMousePressed(event -> {
 
-            position0X = event.getX();
-            position0Y = event.getY();
+            //Point2D positionSourisAvant = new Point2D(event.getX(), event.getY());
 
-        });
+            pane.setOnMouseDragged(event1 -> {
 
-        pane.setOnMouseDragged(event1 -> {
+                //Point2D positionSourisApres = new Point2D(event1.getX(), event1.getY());
+                //Point2D position = positionSourisApres.subtract(positionSourisAvant);
+                //double xHautGauche = position.getX();
+                //double yHautGauche = position.getY();
 
-            double position1X = event1.getX();
-            double position1Y = event1.getY();
+                double decalageX = event1.getX() - event.getX();
+                double decalageY = event1.getY() - event.getY();
 
-            double decalageX = position1X - position0X;
-            double decalageY = position1Y - position0Y;
+                double xHautGauche = this.property.get().xHautGauche() - decalageX;
+                double yHautGauche = this.property.get().yHautGauche() - decalageY;
 
-            double xHautGauche = this.property.get().xHautGauche() - decalageX;
-            double yHautGauche = this.property.get().yHautGauche() - decalageY;
-
-            MapViewParameters mapViewParameters = this.property.get().withMinXY(xHautGauche, yHautGauche);
-            this.property.set(mapViewParameters);
-
-            dessinCarte();
+                MapViewParameters mapViewParameters = this.property.get().withMinXY(xHautGauche, yHautGauche);
+                this.property.set(mapViewParameters);
+            });
         });
     }
 
