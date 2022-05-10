@@ -3,8 +3,8 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
@@ -61,10 +61,10 @@ public final class WaypointsManager {
             }
 
         });
-        waypointsList.addListener((InvalidationListener) observable -> {
+
+        waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> {
             creationMarqueurs();
         });
-        // recréer les points et les afficher
 
     }
 
@@ -105,7 +105,6 @@ public final class WaypointsManager {
         int i = 0;
         waypointPane.getChildren().clear();
 
-
         for (Waypoint waypoint : waypointsList) {
             PointWebMercator positionMarqueur = PointWebMercator.ofPointCh(waypoint.PointPassage());
             Group marqueur = createGroup(i);
@@ -125,10 +124,16 @@ public final class WaypointsManager {
                 if (event.isStillSincePress()) {
                     waypointsList.remove(waypoint);
                 } else {
+
                     //Cas du relachement de drag
-                    if (positionValide()) {
+                    PointWebMercator positionPostDrag = parametersCarte.get().pointAt2(event.getSceneX(), event.getSceneY());
+                    if (positionValide(positionPostDrag)) {
                         addWaypoint(event.getSceneX(), event.getSceneY());
                         waypointsList.remove(waypoint);
+
+                    }else{
+                        errorHandler.accept(MESSAGE_ERREUR);
+                        creationMarqueurs();
                     }
 
                 }
@@ -178,7 +183,9 @@ public final class WaypointsManager {
     }
 
 
-    private boolean positionValide(){
-        return false;
+    private boolean positionValide(PointWebMercator pointAverifier){
+        PointCh pointDonneEnCH = pointAverifier.toPointCh();
+        int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
+        return nodeNewWaypoint != NO_NODE;
     }
 }

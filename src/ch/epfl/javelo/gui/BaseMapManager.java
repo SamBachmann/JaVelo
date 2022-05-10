@@ -9,9 +9,9 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
-import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -26,8 +26,10 @@ public final class BaseMapManager {
 
     private final static int ZOOM_MIN_VALUE = 8;
     private final static int ZOOM_MAX_VALUE = 19;
+
     private final TileManager tileManager;
     private final ObjectProperty<MapViewParameters> property;
+    private final ObjectProperty<Point2D> pointBaseDrag = new SimpleObjectProperty<>();
     private final Pane pane;
     private final Canvas canvas;
     private final WaypointsManager waypointsManager;
@@ -58,6 +60,7 @@ public final class BaseMapManager {
         pane.widthProperty().addListener(observable -> redrawOnNextPulse());
         pane.getChildren().add(canvas);
 
+        dessinCarte();
 
         canvas.sceneProperty().addListener((p, oldS, newS) -> {
             assert oldS == null;
@@ -65,7 +68,7 @@ public final class BaseMapManager {
         });
 
         this.property.addListener(observable -> redrawOnNextPulse());
-        pane.setPickOnBounds(false);
+        //pane.setPickOnBounds(false);
 
         //interaction du zoom
         pane.setOnScroll(event -> {
@@ -73,15 +76,8 @@ public final class BaseMapManager {
             int zoom = this.property.get().zoom();
             int zoom1 = (int) Math2.clamp(ZOOM_MIN_VALUE, Math.round(zoom + event.getDeltaY()), ZOOM_MAX_VALUE);
             int zoom2 = 0;
-
-            /*
             if (event.getDeltaY() > 0) {
-
                 zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom + 1, ZOOM_MAX_VALUE);
-                //double newXHautGauche = this.property.get().xHautGauche() * 2;
-                //double newYHautGauche = this.property.get().yHautGauche() * 2;
-                //MapViewParameters newOne = new MapViewParameters(zoom2, newXHautGauche, newYHautGauche);
-                //this.property.set(newOne);
                 System.out.println(zoom2);
             } else {
                 if (event.getDeltaY() < 0) {
@@ -89,9 +85,9 @@ public final class BaseMapManager {
                     System.out.println(zoom2);
                 }
             }
-             */
+            //int zoom2 = (int) Math.round(this.property.get().zoom() + event.getDeltaY());
 
-            int deltaZoom = zoom1 - zoom;
+            int deltaZoom = zoom2 - zoom;
             if (deltaZoom != 0){
                 PointWebMercator pointclic = property.get().pointAt2(event.getX(), event.getY());
                 double decalageX = pointclic.xAtZoomLevel(zoom) - property.get().xHautGauche();
@@ -103,34 +99,42 @@ public final class BaseMapManager {
                 double newXzoom = Math.scalb(newX, deltaZoom);
                 double newYzoom = Math.scalb(newY, deltaZoom);
 
-
                 MapViewParameters newMapViewParameters = new MapViewParameters(zoom1, newXzoom, newYzoom);
                 this.property.set(newMapViewParameters);
             }
         } );
 
-        //dessinCarte();
+        dessinCarte();
+
+        double position0X;
+        double position0Y;
 
         pane.setOnMousePressed(event -> {
-
+            Point2D point2D = calculPointSouris(event);
+            pointBaseDrag.set(point2D);
             //Point2D positionSourisAvant = new Point2D(event.getX(), event.getY());
+        });
 
-            pane.setOnMouseDragged(event1 -> {
+        pane.setOnMouseDragged(event -> {
 
-                //Point2D positionSourisApres = new Point2D(event1.getX(), event1.getY());
-                //Point2D position = positionSourisApres.subtract(positionSourisAvant);
-                //double xHautGauche = position.getX();
-                //double yHautGauche = position.getY();
+            //Point2D positionSourisApres = new Point2D(event.getX(), event.getY());
+            //Point2D position = positionSourisApres.subtract(positionSourisAvant);
+            //double xHautGauche = position.getX();
+            //double yHautGauche = position.getY();
 
-                double decalageX = event1.getX() - event.getX();
-                double decalageY = event1.getY() - event.getY();
+            /*
+            double decalageX = event.getX() - event.getX();
+            double decalageY = event.getY() - event.getY();
 
-                double xHautGauche = this.property.get().xHautGauche() - decalageX;
-                double yHautGauche = this.property.get().yHautGauche() - decalageY;
+            double xHautGauche = this.property.get().xHautGauche() - decalageX;
+            double yHautGauche = this.property.get().yHautGauche() - decalageY;
+            */
 
-                MapViewParameters mapViewParameters = this.property.get().withMinXY(xHautGauche, yHautGauche);
-                this.property.set(mapViewParameters);
-            });
+            Point2D point2DSouris = calculPointSouris(event);
+            Point2D difference =  point2DSouris.subtract(pointBaseDrag.get());
+            Point2D newTopLeft = property.get().topLeft().add(difference);
+            MapViewParameters mapViewParameters = this.property.get().withMinXY(newTopLeft.getX(), newTopLeft.getY());
+            this.property.set(mapViewParameters);
         });
     }
 
@@ -201,6 +205,14 @@ public final class BaseMapManager {
         redrawNeeded = true;
         Platform.requestNextPulse();
     }
+    private Point2D calculPointSouris(MouseEvent event) {
+        PointWebMercator positionSourisCarte = property.get().pointAt2(event.getX(), event.getY());
+        double xAtZoomLevel = positionSourisCarte.xAtZoomLevel(property.get().zoom());
+        double yAtZoomLevel = positionSourisCarte.yAtZoomLevel(property.get().zoom());
+        return new Point2D(xAtZoomLevel, yAtZoomLevel);
+    }
+
 }
+
 
 
