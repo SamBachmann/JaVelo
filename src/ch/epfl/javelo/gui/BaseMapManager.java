@@ -73,6 +73,10 @@ public final class BaseMapManager {
             int zoom2 = 0;
             if (event.getDeltaY() > 0) {
                 zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom + 1, ZOOM_MAX_VALUE);
+                //double newXHautGauche = this.property.get().xHautGauche() * 2;
+                //double newYHautGauche = this.property.get().yHautGauche() * 2;
+                //MapViewParameters newOne = new MapViewParameters(zoom2, newXHautGauche, newYHautGauche);
+                //this.property.set(newOne);
                 System.out.println(zoom2);
             } else {
                 if (event.getDeltaY() < 0) {
@@ -80,6 +84,7 @@ public final class BaseMapManager {
                     System.out.println(zoom2);
                 }
             }
+            //int zoom2 = (int) Math.round(this.property.get().zoom() + event.getDeltaY());
 
             int deltaZoom = zoom2 - zoom;
             if (deltaZoom != 0){
@@ -100,6 +105,29 @@ public final class BaseMapManager {
         } );
 
         dessinCarte();
+
+        pane.setOnMousePressed(event -> {
+
+            double position0X = event.getX();
+            double position0Y = event.getY();
+
+            pane.setOnMouseDragged(event1 -> {
+
+                double position1X = event1.getX();
+                double position1Y = event1.getY();
+
+                double decalageX = position1X - position0X;
+                double decalageY = position1Y - position0Y;
+
+                double xHautGauche = this.property.get().xHautGauche() - decalageX;
+                double yHautGauche = this.property.get().yHautGauche() - decalageY;
+
+                MapViewParameters mapViewParameters = this.property.get().withMinXY(xHautGauche, yHautGauche);
+                this.property.set(mapViewParameters);
+
+                dessinCarte();
+            });
+        });
 
     }
 
