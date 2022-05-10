@@ -106,29 +106,32 @@ public final class BaseMapManager {
 
         dessinCarte();
 
+        double position0X;
+        double position0Y;
+
         pane.setOnMousePressed(event -> {
 
-            double position0X = event.getX();
-            double position0Y = event.getY();
+            position0X = event.getX();
+            position0Y = event.getY();
 
-            pane.setOnMouseDragged(event1 -> {
-
-                double position1X = event1.getX();
-                double position1Y = event1.getY();
-
-                double decalageX = position1X - position0X;
-                double decalageY = position1Y - position0Y;
-
-                double xHautGauche = this.property.get().xHautGauche() - decalageX;
-                double yHautGauche = this.property.get().yHautGauche() - decalageY;
-
-                MapViewParameters mapViewParameters = this.property.get().withMinXY(xHautGauche, yHautGauche);
-                this.property.set(mapViewParameters);
-
-                dessinCarte();
-            });
         });
 
+        pane.setOnMouseDragged(event1 -> {
+
+            double position1X = event1.getX();
+            double position1Y = event1.getY();
+
+            double decalageX = position1X - position0X;
+            double decalageY = position1Y - position0Y;
+
+            double xHautGauche = this.property.get().xHautGauche() - decalageX;
+            double yHautGauche = this.property.get().yHautGauche() - decalageY;
+
+            MapViewParameters mapViewParameters = this.property.get().withMinXY(xHautGauche, yHautGauche);
+            this.property.set(mapViewParameters);
+
+            dessinCarte();
+        });
     }
 
 
