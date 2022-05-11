@@ -135,7 +135,6 @@ public final class WaypointsManager {
                         errorHandler.accept(MESSAGE_ERREUR);
                         creationMarqueurs();
                     }
-
                 }
 
             });

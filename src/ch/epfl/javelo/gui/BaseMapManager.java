@@ -24,8 +24,10 @@ import java.io.IOException;
  */
 public final class BaseMapManager {
 
+    public static final int TAILLE_TUILLE = 256;
     private final static int ZOOM_MIN_VALUE = 8;
     private final static int ZOOM_MAX_VALUE = 19;
+
 
     private final TileManager tileManager;
     private final ObjectProperty<MapViewParameters> property;
@@ -138,20 +140,20 @@ public final class BaseMapManager {
         int zoom = this.property.get().zoom();
         int indexXHautGauche = (int) this.property.get().xHautGauche();
         int indexYHautGauche = (int) this.property.get().yHautGauche();
-        int indexXTuileHautGauche = Math.floorDiv(indexXHautGauche, 256);
-        int indexYTuileHautGauche = Math.floorDiv(indexYHautGauche, 256);
+        int indexXTuileHautGauche = Math.floorDiv(indexXHautGauche, TAILLE_TUILLE);
+        int indexYTuileHautGauche = Math.floorDiv(indexYHautGauche, TAILLE_TUILLE);
 
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
-        int nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), 256);
-        int nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), 256);
+        int nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), TAILLE_TUILLE);
+        int nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), TAILLE_TUILLE);
 
-        if (this.property.get().xHautGauche() - indexXTuileHautGauche * 256 > 0) {
-            nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), 256) + 1;
+        if (this.property.get().xHautGauche() - indexXTuileHautGauche * TAILLE_TUILLE > 0) {
+            nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), TAILLE_TUILLE) + 1;
         }
 
-        if (this.property.get().yHautGauche() - indexYTuileHautGauche * 256 > 0) {
-            nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), 256) + 1;
+        if (this.property.get().yHautGauche() - indexYTuileHautGauche * TAILLE_TUILLE > 0) {
+            nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), TAILLE_TUILLE) + 1;
         }
 
         for (int i = 0; i < nombreDeTuilesEnX; ++i) {
@@ -161,10 +163,10 @@ public final class BaseMapManager {
                 try {
                     if (TileManager.TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
                         Image image = this.tileManager.imageForTileAt(tileId);
-                        double departX = this.property.get().xHautGauche() - (indexXTuileHautGauche) * 256;
-                        double departY = this.property.get().yHautGauche() - (indexYTuileHautGauche) * 256;
+                        double departX = this.property.get().xHautGauche() - (indexXTuileHautGauche) * TAILLE_TUILLE;
+                        double departY = this.property.get().yHautGauche() - (indexYTuileHautGauche) * TAILLE_TUILLE;
                         graphicsContext.drawImage(image,
-                                i * 256 - departX, j * 256 - departY);
+                                i * TAILLE_TUILLE - departX, j * TAILLE_TUILLE - departY);
                     }
                 } catch (IOException ignored) {
                 }
@@ -197,12 +199,8 @@ public final class BaseMapManager {
         redrawNeeded = true;
         Platform.requestNextPulse();
     }
-    private Point2D point2DPositionSouris(MouseEvent event) {
-        /*PointWebMercator positionSourisCarte = property.get().pointAt2(event.getSceneX(), event.getSceneY());
-        double xAtZoomLevel = positionSourisCarte.xAtZoomLevel(property.get().zoom());
-        double yAtZoomLevel = positionSourisCarte.yAtZoomLevel(property.get().zoom());
 
-         */
+    private Point2D point2DPositionSouris(MouseEvent event) {
         return new Point2D(event.getX(), event.getY());
     }
 
