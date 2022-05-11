@@ -99,18 +99,16 @@ public final class BaseMapManager {
                 double newXzoom = Math.scalb(newX, deltaZoom);
                 double newYzoom = Math.scalb(newY, deltaZoom);
 
-                MapViewParameters newMapViewParameters = new MapViewParameters(zoom1, newXzoom, newYzoom);
+                MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, newXzoom, newYzoom);
                 this.property.set(newMapViewParameters);
             }
         } );
 
         dessinCarte();
 
-        double position0X;
-        double position0Y;
 
         pane.setOnMousePressed(event -> {
-            Point2D point2D = calculPointSouris(event);
+            Point2D point2D = point2DPositionSouris(event);
             pointBaseDrag.set(point2D);
             //Point2D positionSourisAvant = new Point2D(event.getX(), event.getY());
         });
@@ -121,21 +119,24 @@ public final class BaseMapManager {
             //Point2D position = positionSourisApres.subtract(positionSourisAvant);
             //double xHautGauche = position.getX();
             //double yHautGauche = position.getY();
+/*
 
-            /*
+
             double decalageX = event.getX() - event.getX();
             double decalageY = event.getY() - event.getY();
 
             double xHautGauche = this.property.get().xHautGauche() - decalageX;
             double yHautGauche = this.property.get().yHautGauche() - decalageY;
-            */
-
-            Point2D point2DSouris = calculPointSouris(event);
+*/
+            Point2D point2DSouris = point2DPositionSouris(event);
             Point2D difference =  point2DSouris.subtract(pointBaseDrag.get());
-            Point2D newTopLeft = property.get().topLeft().add(difference);
+            pointBaseDrag.set(point2DSouris);
+            Point2D newTopLeft = property.get().topLeft().subtract(difference);
             MapViewParameters mapViewParameters = this.property.get().withMinXY(newTopLeft.getX(), newTopLeft.getY());
             this.property.set(mapViewParameters);
         });
+
+
     }
 
 
@@ -205,11 +206,13 @@ public final class BaseMapManager {
         redrawNeeded = true;
         Platform.requestNextPulse();
     }
-    private Point2D calculPointSouris(MouseEvent event) {
-        PointWebMercator positionSourisCarte = property.get().pointAt2(event.getX(), event.getY());
+    private Point2D point2DPositionSouris(MouseEvent event) {
+        /*PointWebMercator positionSourisCarte = property.get().pointAt2(event.getSceneX(), event.getSceneY());
         double xAtZoomLevel = positionSourisCarte.xAtZoomLevel(property.get().zoom());
         double yAtZoomLevel = positionSourisCarte.yAtZoomLevel(property.get().zoom());
-        return new Point2D(xAtZoomLevel, yAtZoomLevel);
+
+         */
+        return new Point2D(event.getX(), event.getY());
     }
 
 }
