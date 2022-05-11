@@ -115,19 +115,6 @@ public final class BaseMapManager {
 
         pane.setOnMouseDragged(event -> {
 
-            //Point2D positionSourisApres = new Point2D(event.getX(), event.getY());
-            //Point2D position = positionSourisApres.subtract(positionSourisAvant);
-            //double xHautGauche = position.getX();
-            //double yHautGauche = position.getY();
-/*
-
-
-            double decalageX = event.getX() - event.getX();
-            double decalageY = event.getY() - event.getY();
-
-            double xHautGauche = this.property.get().xHautGauche() - decalageX;
-            double yHautGauche = this.property.get().yHautGauche() - decalageY;
-*/
             Point2D point2DSouris = point2DPositionSouris(event);
             Point2D difference =  point2DSouris.subtract(pointBaseDrag.get());
             pointBaseDrag.set(point2DSouris);
@@ -136,7 +123,11 @@ public final class BaseMapManager {
             this.property.set(mapViewParameters);
         });
 
-
+        pane.setOnMouseClicked(event -> {
+            if (event.isStillSincePress()){
+                waypointsManager.addWaypoint(event.getX(), event.getY());
+            }
+        });
     }
 
 
