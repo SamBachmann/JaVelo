@@ -20,7 +20,7 @@ public final class MultiRoute implements Route{
     private final List<Route> segments;
 
     /**
-     * Constructeur de l'itinéraire multiple, è partir d'une liste de segments.
+     * Constructeur de l'itinéraire multiple, à partir d'une liste de segments.
      *
      * @param segments La liste des segments de cet itinéraire.
      */

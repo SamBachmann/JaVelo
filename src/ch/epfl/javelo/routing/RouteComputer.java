@@ -42,7 +42,7 @@ public final class RouteComputer {
      * @param endNodeId L'index du nœud d'arrivée.
      * @return Une Route représentant le meilleur itinéraire entre ces 2 nœuds.
      */
-    public Route  bestRouteBetween(int startNodeId, int endNodeId){
+    public Route bestRouteBetween(int startNodeId, int endNodeId){
         Preconditions.checkArgument(startNodeId != endNodeId);
 
         //Enregistrement imbriqué pour représenter un nœud à une distance donnée
