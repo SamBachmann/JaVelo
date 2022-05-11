@@ -119,17 +119,25 @@ public final class WaypointsManager {
             });
 
 
-            marqueur.setOnMouseReleased(event -> {
+            marqueur.setOnMouseReleased(e -> {
                 //Cas du clic
-                if (event.isStillSincePress()) {
+                if (e.isStillSincePress()) {
                     waypointsList.remove(waypoint);
                 } else {
 
                     //Cas du relachement de drag
-                    PointWebMercator positionPostDrag = parametersCarte.get().pointAt2(event.getSceneX(), event.getSceneY());
-                    if (positionValide(positionPostDrag)) {
-                        addWaypoint(event.getSceneX(), event.getSceneY());
-                        waypointsList.remove(waypoint);
+                    PointWebMercator positionPostDrag = parametersCarte.get().pointAt2(e.getSceneX(), e.getSceneY());
+                    PointCh pointDonneEnCH = positionPostDrag.toPointCh();
+                    int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
+                    if (nodeNewWaypoint != NO_NODE) {
+                        int index = waypointsList.indexOf(waypoint);
+                        PointCh positionNoeud = graph.nodePoint(nodeNewWaypoint);
+                        Waypoint newWaypoint = new Waypoint(positionNoeud, nodeNewWaypoint);
+
+                        waypointsList.set(index, newWaypoint);
+
+                        //addWaypoint(e.getSceneX(), e.getSceneY());
+                        //waypointsList.remove(waypoint);
 
                     }else{
                         errorHandler.accept(MESSAGE_ERREUR);
