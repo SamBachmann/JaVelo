@@ -66,6 +66,10 @@ public final class RouteBean {
         return route;
     }
 
+    public Route route() {
+        return route.get();
+    }
+
     public ReadOnlyObjectProperty elevationProfilProperty(){
         return elevationProfil;
     }

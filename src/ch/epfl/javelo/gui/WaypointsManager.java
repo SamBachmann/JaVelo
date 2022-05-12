@@ -28,7 +28,7 @@ public final class WaypointsManager {
     private final static int NO_NODE = -1;
 
     private final Graph graph;
-    private final ObjectProperty<MapViewParameters> parametersCarte;
+    private final ObjectProperty<MapViewParameters> parametresCarte;
     private final ObservableList<Waypoint> waypointsList;
     private final Consumer<String> errorHandler;
     private final Pane waypointPane;
@@ -37,14 +37,14 @@ public final class WaypointsManager {
      * Constructeur de WaypointsManager.
      *
      * @param graph Le graphe du réseau JaVelo.
-     * @param parametersCarte Les paramètres de la carte affichée.
+     * @param parametresCarte Les paramètres de la carte affichée.
      * @param waypointsList Une liste observable des Waypoints.
      * @param errorHandler Objet affichant un message en cas d'erreur.
      */
-    public WaypointsManager (Graph graph, ObjectProperty<MapViewParameters> parametersCarte,
+    public WaypointsManager (Graph graph, ObjectProperty<MapViewParameters> parametresCarte,
                              ObservableList<Waypoint> waypointsList, Consumer<String> errorHandler){
         this.graph = graph;
-        this.parametersCarte = parametersCarte;
+        this.parametresCarte = parametresCarte;
         this.waypointsList = waypointsList;
         this.errorHandler = errorHandler;
         this.waypointPane = new Pane();
@@ -52,7 +52,7 @@ public final class WaypointsManager {
 
         creationMarqueurs();
 
-        parametersCarte.addListener(observable -> {
+        parametresCarte.addListener(observable -> {
             for (int i = 0; i < waypointPane.getChildren().size(); ++i){
                 PointWebMercator positionDeplacee = PointWebMercator.ofPointCh(
                         waypointsList.get(i).PointPassage());
@@ -87,14 +87,13 @@ public final class WaypointsManager {
     * @param y Coordonnée y dans la fenêtre.
     */
     public void addWaypoint ( double x, double y){
-        PointWebMercator pointDonne = parametersCarte.get().pointAt2(x, y);
+        PointWebMercator pointDonne = parametresCarte.get().pointAt2(x, y);
         PointCh pointDonneEnCH = pointDonne.toPointCh();
         int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
         if (nodeNewWaypoint == NO_NODE) {
             errorHandler.accept(MESSAGE_ERREUR);
         } else {
-            PointCh positionNoeud = graph.nodePoint(nodeNewWaypoint);
-            waypointsList.add(new Waypoint(positionNoeud, nodeNewWaypoint));
+            waypointsList.add(new Waypoint(pointDonneEnCH, nodeNewWaypoint));
         }
     }
     /**
@@ -112,7 +111,7 @@ public final class WaypointsManager {
 
             // Déplacer le visuel, mais pas de création de nouveau waypoint avant le relase
             marqueur.setOnMouseDragged(event -> {
-                PointWebMercator positionActuelle = parametersCarte.
+                PointWebMercator positionActuelle = parametresCarte.
                         get()
                         .pointAt2(event.getSceneX(), event.getSceneY());
                 setPositionMarqueur(positionActuelle, marqueur);
@@ -126,18 +125,14 @@ public final class WaypointsManager {
                 } else {
 
                     //Cas du relachement de drag
-                    PointWebMercator positionPostDrag = parametersCarte.get().pointAt2(e.getSceneX(), e.getSceneY());
+                    PointWebMercator positionPostDrag = parametresCarte.get().pointAt2(e.getSceneX(), e.getSceneY());
                     PointCh pointDonneEnCH = positionPostDrag.toPointCh();
                     int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
                     if (nodeNewWaypoint != NO_NODE) {
                         int index = waypointsList.indexOf(waypoint);
-                        PointCh positionNoeud = graph.nodePoint(nodeNewWaypoint);
-                        Waypoint newWaypoint = new Waypoint(positionNoeud, nodeNewWaypoint);
+                        Waypoint newWaypoint = new Waypoint(pointDonneEnCH, nodeNewWaypoint);
 
                         waypointsList.set(index, newWaypoint);
-
-                        //addWaypoint(e.getSceneX(), e.getSceneY());
-                        //waypointsList.remove(waypoint);
 
                     }else{
                         errorHandler.accept(MESSAGE_ERREUR);
@@ -183,8 +178,8 @@ public final class WaypointsManager {
      * @param marqueur Le Group que l'on veut positionner.
      */
     private void setPositionMarqueur (PointWebMercator positionMarqueur, Group marqueur){
-        double xEcran = parametersCarte.get().viewX(positionMarqueur);
-        double yEcran = parametersCarte.get().viewY(positionMarqueur);
+        double xEcran = parametresCarte.get().viewX(positionMarqueur);
+        double yEcran = parametresCarte.get().viewY(positionMarqueur);
         marqueur.setLayoutX(xEcran);
         marqueur.setLayoutY(yEcran);
     }
