@@ -10,6 +10,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
+/**
+ * Bean JavaFX contenant les propriétés relatives aux points de passage et à un itinéraire correspondant.
+ * En particulier appelle la construction de l'itinéraire.
+ *
+ *  @author Samuel Bachmann (340373)
+ *  @author Cyrus Giblain (312042)
+ * <br>
+ * 11/05/2022
+ */
+import java.sql.Array;
 import java.util.*;
 
 public final class RouteBean {
@@ -19,7 +29,7 @@ public final class RouteBean {
     private ObservableList<Waypoint> waypointsList;
     private ObjectProperty<Route> route;
     private DoubleProperty highlightedPosition;
-    private final ObjectProperty<ElevationProfile> elevationProfil;
+    private ObjectProperty<ElevationProfile> elevationProfil;
     private final Map< Map<Integer, Integer>, Route> cacheItineraires =
             new LinkedHashMap<>(100, 0.75f, true);
 
@@ -29,7 +39,6 @@ public final class RouteBean {
         this.waypointsList = FXCollections.observableArrayList(
                 new Waypoint(new PointCh(2532697, 1152350), 159049));
         List<Route> listeDeRoutes = new ArrayList<>();
-
 
         waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> {
             if (waypointsList.size() >= 2) {
@@ -65,8 +74,10 @@ public final class RouteBean {
                     }
                 }
                 Route multiRoute = new MultiRoute(listeDeRoutes);
-                this.route = new SimpleObjectProperty<>(multiRoute);
+                this.route.set(multiRoute);
                 }
+
+            }
         });
     }
 
