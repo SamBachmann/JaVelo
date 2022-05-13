@@ -58,7 +58,7 @@ public final class RouteBean {
                         }
                         else {
                             listeDeRoutes.clear();
-                            this.route = null;
+                            this.route.set(null);
                             this.highlightedPosition = null;
                             this.elevationProfil.set(null);
                             break;
