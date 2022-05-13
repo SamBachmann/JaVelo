@@ -39,7 +39,7 @@ public final class RouteManager {
         this.highlightPosition = new Circle();
 
         pane.setPickOnBounds(false);
-        dessinItineraire();
+        //dessinItineraire();
         dessin.setId("route");
         highlightPosition.setId("highlight");
         pane.getChildren().add(dessin);

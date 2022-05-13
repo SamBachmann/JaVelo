@@ -185,9 +185,4 @@ public final class WaypointsManager {
     }
 
 
-    private boolean positionValide(PointWebMercator pointAverifier){
-        PointCh pointDonneEnCH = pointAverifier.toPointCh();
-        int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
-        return nodeNewWaypoint != NO_NODE;
-    }
 }

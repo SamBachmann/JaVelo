@@ -30,7 +30,7 @@ public final class BaseMapManager {
 
 
     private final TileManager tileManager;
-    private final ObjectProperty<MapViewParameters> property;
+    private final ObjectProperty<MapViewParameters> parametresCarte;
     private final ObjectProperty<Point2D> pointBaseDrag = new SimpleObjectProperty<>();
     private final Pane pane;
     private final Canvas canvas;
@@ -43,13 +43,14 @@ public final class BaseMapManager {
      *
      * @param tileManager Un gestionnaire de tuiles.
      * @param waypointsManager Un gestionnaire des points de passage.
-     * @param property Des propriétés de type MapViewParameters.
+     * @param parametresCarte Des propriétés de type MapViewParameters.
      */
-    public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager, ObjectProperty<MapViewParameters> property) {
+    public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager,
+                          ObjectProperty<MapViewParameters> parametresCarte) {
 
         this.tileManager = tileManager;
         this.waypointsManager = waypointsManager;
-        this.property = property;
+        this.parametresCarte = parametresCarte;
 
         canvas = new Canvas();
         pane = new Pane();
@@ -69,13 +70,13 @@ public final class BaseMapManager {
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
 
-        this.property.addListener(observable -> redrawOnNextPulse());
+        this.parametresCarte.addListener(observable -> redrawOnNextPulse());
         //pane.setPickOnBounds(false);
 
         //interaction du zoom
         pane.setOnScroll(event -> {
 
-            int zoom = this.property.get().zoom();
+            int zoom = this.parametresCarte.get().zoom();
             int zoom1 = (int) Math2.clamp(ZOOM_MIN_VALUE, Math.round(zoom + event.getDeltaY()), ZOOM_MAX_VALUE);
             int zoom2 = 0;
             if (event.getDeltaY() > 0) {
@@ -87,13 +88,13 @@ public final class BaseMapManager {
                     System.out.println(zoom2);
                 }
             }
-            //int zoom2 = (int) Math.round(this.property.get().zoom() + event.getDeltaY());
+            //int zoom2 = (int) Math.round(this.parametresCarte.get().zoom() + event.getDeltaY());
 
             int deltaZoom = zoom2 - zoom;
             if (deltaZoom != 0){
-                PointWebMercator pointclic = property.get().pointAt2(event.getX(), event.getY());
-                double decalageX = pointclic.xAtZoomLevel(zoom) - property.get().xHautGauche();
-                double decalageY = pointclic.yAtZoomLevel(zoom) - property.get().yHautGauche();
+                PointWebMercator pointclic = parametresCarte.get().pointAt2(event.getX(), event.getY());
+                double decalageX = pointclic.xAtZoomLevel(zoom) - parametresCarte.get().xHautGauche();
+                double decalageY = pointclic.yAtZoomLevel(zoom) - parametresCarte.get().yHautGauche();
 
                 double newX = pointclic.xAtZoomLevel(zoom) - Math.scalb(decalageX, -deltaZoom);
                 double newY = pointclic.yAtZoomLevel(zoom) - Math.scalb(decalageY, -deltaZoom);
@@ -102,7 +103,7 @@ public final class BaseMapManager {
                 double newYzoom = Math.scalb(newY, deltaZoom);
 
                 MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, newXzoom, newYzoom);
-                this.property.set(newMapViewParameters);
+                this.parametresCarte.set(newMapViewParameters);
             }
         } );
 
@@ -120,9 +121,9 @@ public final class BaseMapManager {
             Point2D point2DSouris = point2DPositionSouris(event);
             Point2D difference =  point2DSouris.subtract(pointBaseDrag.get());
             pointBaseDrag.set(point2DSouris);
-            Point2D newTopLeft = property.get().topLeft().subtract(difference);
-            MapViewParameters mapViewParameters = this.property.get().withMinXY(newTopLeft.getX(), newTopLeft.getY());
-            this.property.set(mapViewParameters);
+            Point2D newTopLeft = parametresCarte.get().topLeft().subtract(difference);
+            MapViewParameters mapViewParameters = this.parametresCarte.get().withMinXY(newTopLeft.getX(), newTopLeft.getY());
+            this.parametresCarte.set(mapViewParameters);
         });
 
         pane.setOnMouseClicked(event -> {
@@ -137,9 +138,9 @@ public final class BaseMapManager {
      * Méthode privée qui permet de dessiner la carte.
      */
     private void dessinCarte() {
-        int zoom = this.property.get().zoom();
-        int indexXHautGauche = (int) this.property.get().xHautGauche();
-        int indexYHautGauche = (int) this.property.get().yHautGauche();
+        int zoom = this.parametresCarte.get().zoom();
+        int indexXHautGauche = (int) this.parametresCarte.get().xHautGauche();
+        int indexYHautGauche = (int) this.parametresCarte.get().yHautGauche();
         int indexXTuileHautGauche = Math.floorDiv(indexXHautGauche, TAILLE_TUILLE);
         int indexYTuileHautGauche = Math.floorDiv(indexYHautGauche, TAILLE_TUILLE);
 
@@ -148,11 +149,11 @@ public final class BaseMapManager {
         int nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), TAILLE_TUILLE);
         int nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), TAILLE_TUILLE);
 
-        if (this.property.get().xHautGauche() - indexXTuileHautGauche * TAILLE_TUILLE > 0) {
+        if (this.parametresCarte.get().xHautGauche() - indexXTuileHautGauche * TAILLE_TUILLE > 0) {
             nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), TAILLE_TUILLE) + 1;
         }
 
-        if (this.property.get().yHautGauche() - indexYTuileHautGauche * TAILLE_TUILLE > 0) {
+        if (this.parametresCarte.get().yHautGauche() - indexYTuileHautGauche * TAILLE_TUILLE > 0) {
             nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), TAILLE_TUILLE) + 1;
         }
 
@@ -163,8 +164,8 @@ public final class BaseMapManager {
                 try {
                     if (TileManager.TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
                         Image image = this.tileManager.imageForTileAt(tileId);
-                        double departX = this.property.get().xHautGauche() - (indexXTuileHautGauche) * TAILLE_TUILLE;
-                        double departY = this.property.get().yHautGauche() - (indexYTuileHautGauche) * TAILLE_TUILLE;
+                        double departX = this.parametresCarte.get().xHautGauche() - (indexXTuileHautGauche) * TAILLE_TUILLE;
+                        double departY = this.parametresCarte.get().yHautGauche() - (indexYTuileHautGauche) * TAILLE_TUILLE;
                         graphicsContext.drawImage(image,
                                 i * TAILLE_TUILLE - departX, j * TAILLE_TUILLE - departY);
                     }

@@ -1,7 +1,6 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
-import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.routing.CityBikeCF;
 import ch.epfl.javelo.routing.CostFunction;
 import ch.epfl.javelo.routing.RouteComputer;
@@ -35,23 +34,22 @@ public final class Stage9Test extends Application {
         ObjectProperty<MapViewParameters> mapViewParametersP = new SimpleObjectProperty<>(mapViewParameters);
 
         ObservableList<Waypoint> waypoints =
-                FXCollections.observableArrayList(
-                        new Waypoint(new PointCh(2532697, 1152350), 159049),
-                        new Waypoint(new PointCh(2538659, 1154350), 117669));
+                FXCollections.observableArrayList();
+
 
         Consumer<String> errorConsumer = new ErrorConsumer();
-
-        WaypointsManager waypointsManager = new WaypointsManager(graph, mapViewParametersP, waypoints, errorConsumer);
-
-        BaseMapManager baseMapManager = new BaseMapManager(tileManager, waypointsManager, mapViewParametersP);
 
         RouteComputer routeComputer = new RouteComputer(graph,costFunction);
 
         RouteBean routeBean = new RouteBean(routeComputer);
 
-        RouteManager routeManager = new RouteManager(routeBean,mapViewParametersP,errorConsumer);
+        WaypointsManager waypointsManager = new WaypointsManager(graph, mapViewParametersP, routeBean.WaypointsListProperty(), errorConsumer);
 
-        StackPane mainPane = new StackPane(baseMapManager.pane(), waypointsManager.pane(), routeManager.pane());
+        BaseMapManager baseMapManager = new BaseMapManager(tileManager, waypointsManager, mapViewParametersP);
+
+        //RouteManager routeManager = new RouteManager(routeBean,mapViewParametersP,errorConsumer);
+
+        StackPane mainPane = new StackPane(baseMapManager.pane(), waypointsManager.pane() /*routeManager.pane()*/);
 
         mainPane.getStylesheets().add("map.css");
         primaryStage.setMinWidth(600);
