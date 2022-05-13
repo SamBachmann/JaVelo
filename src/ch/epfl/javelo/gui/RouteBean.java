@@ -1,7 +1,9 @@
 package ch.epfl.javelo.gui;
 
-import ch.epfl.javelo.projection.PointCh;
-import ch.epfl.javelo.routing.*;
+import ch.epfl.javelo.routing.ElevationProfile;
+import ch.epfl.javelo.routing.MultiRoute;
+import ch.epfl.javelo.routing.Route;
+import ch.epfl.javelo.routing.RouteComputer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -30,10 +32,10 @@ public final class RouteBean {
         this.route = new SimpleObjectProperty<>();
         this.elevationProfil = new SimpleObjectProperty<>();
         this.waypointsList = FXCollections.observableArrayList();
-        List<Route> listeDeRoutes = new ArrayList<>();
 
         waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> {
             if (waypointsList.size() >= 2) {
+                List<Route> listeDeRoutes = new ArrayList<>();
                 for (int i = 0; i < waypointsList.size() - 1; ++i) {
                     int startNodeIndex = waypointsList.get(i).nodeId();
                     int endNodeIndex = waypointsList.get(i + 1).nodeId();
@@ -43,27 +45,32 @@ public final class RouteBean {
 
                     if (cacheItineraires.containsKey(routeNodes)) {
                         routeX = cacheItineraires.get(routeNodes);
+                        listeDeRoutes.add(routeX);
                     } else {
                         if (cacheItineraires.size() >= 100) {
                             Iterator<RouteNodes> iterator = cacheItineraires.keySet().iterator();
                             cacheItineraires.remove(iterator.next());
                         }
-
                         routeX = routeComputer.bestRouteBetween(startNodeIndex, endNodeIndex);
+                        if (routeX != null) {
+                            listeDeRoutes.add(routeX);
+                            cacheItineraires.put(routeNodes, routeX);
+                        }
+                        else {
+                            listeDeRoutes.clear();
+                            this.route = null;
+                            this.highlightedPosition = null;
+                            this.elevationProfil.set(null);
+                            break;
+                        }
                     }
-                    if (routeX != null) {
-                        listeDeRoutes.add(routeX);
-                        cacheItineraires.put(routeNodes, routeX);
-                        Route multiRoute = new MultiRoute(listeDeRoutes);
-                        this.route.set(multiRoute);
-                        System.out.println(multiRoute);
-                    } else {
-                        listeDeRoutes.clear();
-                        this.route = null;
-                        this.highlightedPosition = null;
-                        this.elevationProfil.set(null);
-                        break;
-                    }
+
+
+                }
+                if (!listeDeRoutes.isEmpty()) {
+                    Route multiRoute = new MultiRoute(listeDeRoutes);
+                    this.route.set(multiRoute);
+                    System.out.println(multiRoute);
                 }
 
             }
