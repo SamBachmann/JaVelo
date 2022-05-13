@@ -47,9 +47,12 @@ public final class RouteManager {
         highlightPosition.setId("highlight");
         pane.getChildren().add(dessin);
 
+
         routeBean.routeProperty().addListener(observable ->{
             dessinItineraire();
+
         });
+
     }
 
     /**
@@ -76,11 +79,12 @@ public final class RouteManager {
         }
 
         dessin.getPoints().setAll(listPoints);
-        double xEcran = dessin.getLayoutX() - parametresCarte.get().xHautGauche();
-        double yEcran = dessin.getLayoutY() - parametresCarte.get().yHautGauche();
-
+        double xEcran = - parametresCarte.get().xHautGauche();
+        double yEcran = - parametresCarte.get().yHautGauche();
         dessin.setLayoutX(xEcran);
         dessin.setLayoutY(yEcran);
+
+
     }
 
     private void dessinCercle(){
