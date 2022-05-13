@@ -8,6 +8,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -47,12 +49,7 @@ public final class RouteManager {
 
         routeBean.routeProperty().addListener(observable ->{
             dessinItineraire();
-            highlightPosition.setId("highlight");
-            pane.getChildren().add(dessin);
-            highlightPosition.setRadius(RAYON_CERCLE);
         });
-
-        pane.getChildren().add(dessin);
     }
 
     /**
@@ -74,10 +71,11 @@ public final class RouteManager {
 
         for (PointCh pointExtremite: itineraire.points()) {
             PointWebMercator pointEnWebMercator = PointWebMercator.ofPointCh(pointExtremite);
-                        highlightPosition.setRadius(RAYON_CERCLE);            dessin.getPoints().add(pointEnWebMercator.xAtZoomLevel(zoom));
-            dessin.getPoints().add(pointEnWebMercator.yAtZoomLevel(zoom));
-        }listPoints.add(pointEnWebMercator.xAtZoomLevel(zoom));
+            listPoints.add(pointEnWebMercator.xAtZoomLevel(zoom));
             listPoints.add(pointEnWebMercator.yAtZoomLevel(zoom));
+        }
+
+        dessin.getPoints().setAll(listPoints);
         double xEcran = dessin.getLayoutX() - parametresCarte.get().xHautGauche();
         double yEcran = dessin.getLayoutY() - parametresCarte.get().yHautGauche();
 

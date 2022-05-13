@@ -54,6 +54,9 @@ public final class RouteBean {
                     if (routeX != null) {
                         listeDeRoutes.add(routeX);
                         cacheItineraires.put(routeNodes, routeX);
+                        Route multiRoute = new MultiRoute(listeDeRoutes);
+                        this.route.set(multiRoute);
+                        System.out.println(multiRoute);
                     } else {
                         listeDeRoutes.clear();
                         this.route = null;
@@ -62,9 +65,7 @@ public final class RouteBean {
                         break;
                     }
                 }
-                Route multiRoute = new MultiRoute(listeDeRoutes);
-                this.route.set(multiRoute);
-                System.out.println(multiRoute);
+
             }
 
         });
