@@ -10,16 +10,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
-/**
- * Bean JavaFX contenant les propriétés relatives aux points de passage et à un itinéraire correspondant.
- * En particulier appelle la construction de l'itinéraire.
- *
- *  @author Samuel Bachmann (340373)
- *  @author Cyrus Giblain (312042)
- * <br>
- * 11/05/2022
- */
-import java.sql.Array;
 import java.util.*;
 
 public final class RouteBean {
@@ -75,9 +65,8 @@ public final class RouteBean {
                 }
                 Route multiRoute = new MultiRoute(listeDeRoutes);
                 this.route.set(multiRoute);
-                }
-
             }
+
         });
     }
 
