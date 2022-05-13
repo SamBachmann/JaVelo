@@ -61,6 +61,7 @@ public final class RouteManager {
      * Construction et positionnement de la polyline représentant l'itinéraire.
      */
     private void dessinItineraire(){
+
         Route itineraire = routeBean.route();
         int zoom = parametresCarte.get().zoom();
 

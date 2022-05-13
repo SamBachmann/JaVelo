@@ -5,6 +5,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
@@ -17,6 +18,7 @@ import javafx.collections.ObservableList;
  * <br>
  * 11/05/2022
  */
+import java.sql.Array;
 import java.util.*;
 
 public final class RouteBean {
@@ -30,10 +32,10 @@ public final class RouteBean {
     private final Map< Map<Integer, Integer>, Route> cacheItineraires =
             new LinkedHashMap<>(100, 0.75f, true);
 
-    public RouteBean(RouteComputer routeComputer, ObservableList<Waypoint> waypointsList) {
+    public RouteBean(RouteComputer routeComputer) {
         this.routeComputer = routeComputer;
-        this.waypointsList = waypointsList;
         List<Route> listeDeRoutes = new ArrayList<>();
+        this.waypointsList = FXCollections.observableArrayList();
 
         waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> {
             if (waypointsList.size() >= 2) {
@@ -66,8 +68,8 @@ public final class RouteBean {
                     }
                 }
                 Route multiRoute = new MultiRoute(listeDeRoutes);
-                this.route = new SimpleObjectProperty<>(multiRoute);
-                }
+                this.route.set(multiRoute);
+            }
 
                 this.elevationProfil.set(
                         ElevationProfileComputer.elevationProfile(route.get(), DISTANCE_MAX_ECHANTILLONS)
