@@ -36,16 +36,23 @@ public final class RouteManager {
         this.parametresCarte = parametresCarte;
         this.errorHandler = errorHandler;
         this.pane = new Pane();
+        this.dessin = new Polyline();
         this.highlightPosition = new Circle();
 
         pane.setPickOnBounds(false);
-        //dessinItineraire();
         dessin.setId("route");
+        highlightPosition.setRadius(RAYON_CERCLE);
         highlightPosition.setId("highlight");
         pane.getChildren().add(dessin);
 
-        highlightPosition.setRadius(RAYON_CERCLE);
+        routeBean.routeProperty().addListener(observable ->{
+            dessinItineraire();
+            highlightPosition.setId("highlight");
+            pane.getChildren().add(dessin);
+            highlightPosition.setRadius(RAYON_CERCLE);
+        });
 
+        pane.getChildren().add(dessin);
     }
 
     /**
@@ -61,16 +68,16 @@ public final class RouteManager {
      * Construction et positionnement de la polyline représentant l'itinéraire.
      */
     private void dessinItineraire(){
-
         Route itineraire = routeBean.route();
         int zoom = parametresCarte.get().zoom();
+        List<Double> listPoints = new ArrayList<>();
 
-        dessin = new Polyline();
         for (PointCh pointExtremite: itineraire.points()) {
             PointWebMercator pointEnWebMercator = PointWebMercator.ofPointCh(pointExtremite);
-            dessin.getPoints().add(pointEnWebMercator.xAtZoomLevel(zoom));
+                        highlightPosition.setRadius(RAYON_CERCLE);            dessin.getPoints().add(pointEnWebMercator.xAtZoomLevel(zoom));
             dessin.getPoints().add(pointEnWebMercator.yAtZoomLevel(zoom));
-        }
+        }listPoints.add(pointEnWebMercator.xAtZoomLevel(zoom));
+            listPoints.add(pointEnWebMercator.yAtZoomLevel(zoom));
         double xEcran = dessin.getLayoutX() - parametresCarte.get().xHautGauche();
         double yEcran = dessin.getLayoutY() - parametresCarte.get().yHautGauche();
 

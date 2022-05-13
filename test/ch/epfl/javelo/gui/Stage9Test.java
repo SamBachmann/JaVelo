@@ -47,9 +47,9 @@ public final class Stage9Test extends Application {
 
         BaseMapManager baseMapManager = new BaseMapManager(tileManager, waypointsManager, mapViewParametersP);
 
-        //RouteManager routeManager = new RouteManager(routeBean,mapViewParametersP,errorConsumer);
+        RouteManager routeManager = new RouteManager(routeBean,mapViewParametersP,errorConsumer);
 
-        StackPane mainPane = new StackPane(baseMapManager.pane(), waypointsManager.pane() /*routeManager.pane()*/);
+        StackPane mainPane = new StackPane(baseMapManager.pane(), waypointsManager.pane(), routeManager.pane());
 
         mainPane.getStylesheets().add("map.css");
         primaryStage.setMinWidth(600);

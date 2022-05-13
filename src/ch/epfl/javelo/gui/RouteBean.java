@@ -14,20 +14,22 @@ import java.util.*;
 
 public final class RouteBean {
 
+    private record RouteNodes(int startNodeIndex, int endNodeIndex) {}
+
     public static final int DISTANCE_MAX_ECHANTILLONS = 5;
     private final RouteComputer routeComputer;
     private ObservableList<Waypoint> waypointsList;
     private ObjectProperty<Route> route;
     private DoubleProperty highlightedPosition;
     private ObjectProperty<ElevationProfile> elevationProfil;
-    private final Map< Map<Integer, Integer>, Route> cacheItineraires =
+    private final Map< RouteNodes, Route> cacheItineraires =
             new LinkedHashMap<>(100, 0.75f, true);
 
     public RouteBean(RouteComputer routeComputer) {
         this.routeComputer = routeComputer;
+        this.route = new SimpleObjectProperty<>();
         this.elevationProfil = new SimpleObjectProperty<>();
-        this.waypointsList = FXCollections.observableArrayList(
-                new Waypoint(new PointCh(2532697, 1152350), 159049));
+        this.waypointsList = FXCollections.observableArrayList();
         List<Route> listeDeRoutes = new ArrayList<>();
 
         waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> {
@@ -35,26 +37,23 @@ public final class RouteBean {
                 for (int i = 0; i < waypointsList.size() - 1; ++i) {
                     int startNodeIndex = waypointsList.get(i).nodeId();
                     int endNodeIndex = waypointsList.get(i + 1).nodeId();
-                    Map<Integer, Integer> nodesId = new HashMap<>();
-                    nodesId.put(startNodeIndex, endNodeIndex);
+                    RouteNodes routeNodes = new RouteNodes(startNodeIndex, endNodeIndex);
 
                     Route routeX;
 
-                    if (cacheItineraires.containsKey(nodesId)) {
-                        routeX = cacheItineraires.get(nodesId);
+                    if (cacheItineraires.containsKey(routeNodes)) {
+                        routeX = cacheItineraires.get(routeNodes);
                     } else {
                         if (cacheItineraires.size() >= 100) {
-                            Iterator<Map<Integer, Integer>> iterator = cacheItineraires.keySet().iterator();
+                            Iterator<RouteNodes> iterator = cacheItineraires.keySet().iterator();
                             cacheItineraires.remove(iterator.next());
                         }
+
                         routeX = routeComputer.bestRouteBetween(startNodeIndex, endNodeIndex);
                     }
                     if (routeX != null) {
                         listeDeRoutes.add(routeX);
-                        cacheItineraires.put(nodesId, routeX);
-                        this.elevationProfil.set(
-                                ElevationProfileComputer.elevationProfile(routeX, DISTANCE_MAX_ECHANTILLONS)
-                        );
+                        cacheItineraires.put(routeNodes, routeX);
                     } else {
                         listeDeRoutes.clear();
                         this.route = null;
@@ -65,6 +64,7 @@ public final class RouteBean {
                 }
                 Route multiRoute = new MultiRoute(listeDeRoutes);
                 this.route.set(multiRoute);
+                System.out.println(multiRoute);
             }
 
         });
