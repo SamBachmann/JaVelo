@@ -22,7 +22,7 @@ public final class Stage9Test extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        Graph graph = Graph.loadFrom(Path.of("lausanne"));
+        Graph graph = Graph.loadFrom(Path.of("ch_west"));
         Path cacheBasePath = Path.of(".");
         String tileServerHost = "tile.openstreetmap.org";
         CostFunction costFunction = new CityBikeCF(graph);

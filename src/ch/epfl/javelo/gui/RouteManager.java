@@ -50,7 +50,6 @@ public final class RouteManager {
 
         routeBean.routeProperty().addListener(observable ->{
             dessinItineraire();
-
         });
 
     }
@@ -69,13 +68,16 @@ public final class RouteManager {
      */
     private void dessinItineraire(){
         Route itineraire = routeBean.route();
+
         int zoom = parametresCarte.get().zoom();
         List<Double> listPoints = new ArrayList<>();
 
-        for (PointCh pointExtremite: itineraire.points()) {
-            PointWebMercator pointEnWebMercator = PointWebMercator.ofPointCh(pointExtremite);
-            listPoints.add(pointEnWebMercator.xAtZoomLevel(zoom));
-            listPoints.add(pointEnWebMercator.yAtZoomLevel(zoom));
+        if (itineraire != null) {
+            for (PointCh pointExtremite : itineraire.points()) {
+                PointWebMercator pointEnWebMercator = PointWebMercator.ofPointCh(pointExtremite);
+                listPoints.add(pointEnWebMercator.xAtZoomLevel(zoom));
+                listPoints.add(pointEnWebMercator.yAtZoomLevel(zoom));
+            }
         }
 
         dessin.getPoints().setAll(listPoints);
@@ -86,7 +88,7 @@ public final class RouteManager {
 
 
     }
-
+    //RouteManger doit
     private void dessinCercle(){
 
     }
