@@ -1,9 +1,6 @@
 package ch.epfl.javelo.gui;
 
-import ch.epfl.javelo.routing.ElevationProfile;
-import ch.epfl.javelo.routing.MultiRoute;
-import ch.epfl.javelo.routing.Route;
-import ch.epfl.javelo.routing.RouteComputer;
+import ch.epfl.javelo.routing.*;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -14,19 +11,25 @@ import javafx.collections.ObservableList;
 
 import java.util.*;
 
+/**
+ * Bean JavaFX qui contient les propriétés relatives à un itinéraire.
+ * En particulier, appelle le constructeur de l'itinéraire
+ *
+ */
 public final class RouteBean {
 
-    private record RouteNodes(int startNodeIndex, int endNodeIndex) {}
+    private final ObservableList<Waypoint> waypointsList;
 
     public static final int DISTANCE_MAX_ECHANTILLONS = 5;
     private final RouteComputer routeComputer;
-    private ObservableList<Waypoint> waypointsList;
-    private ObjectProperty<Route> route;
+    private final ObjectProperty<Route> route;
+    private final ObjectProperty<ElevationProfile> elevationProfil;
     private DoubleProperty highlightedPosition;
-    private ObjectProperty<ElevationProfile> elevationProfil;
-    private final Map< RouteNodes, Route> cacheItineraires =
-            new LinkedHashMap<>(100, 0.75f, true);
-
+    /**
+     * Constructeur de RouteBean
+     *
+     * @param routeComputer Un calculateur d'itinéraire.
+     */
     public RouteBean(RouteComputer routeComputer) {
         this.routeComputer = routeComputer;
         this.route = new SimpleObjectProperty<>();
@@ -69,24 +72,47 @@ public final class RouteBean {
                 }
                 if (!listeDeRoutes.isEmpty()) {
                     Route multiRoute = new MultiRoute(listeDeRoutes);
+                    this.elevationProfil.set(
+                            ElevationProfileComputer.elevationProfile(multiRoute,DISTANCE_MAX_ECHANTILLONS)
+                    );
                     this.route.set(multiRoute);
                     System.out.println(multiRoute);
                 }
 
+            }else{
+                this.route.set(null);
             }
 
         });
     }
+    private final Map< RouteNodes, Route> cacheItineraires =
+            new LinkedHashMap<>(100, 0.75f, true);
 
-
-
+    /**
+     * Accesseur de la propriété contenant la position mise en évidence.
+     *
+     * @return La propriété contenant la position mise en évidence.
+     */
     public DoubleProperty highlightedPositionProperty(){
         return highlightedPosition;
     }
 
+    /**
+     * Accesseur de la position mise en évidence, en metre sur l'itinéraire.
+     *
+     * @return La position le long de l'itinéraire
+     */
     public double highlightedPosition(){
         return highlightedPosition.get();
     }
+
+    /**
+     * Enregistrement imbriqué représentant un itinéraire par ses noeuds de départ et d'arrivée.
+     *
+     * @param startNodeIndex L'index du noeud Javelo de départ.
+     * @param endNodeIndex L'index du noeud Javelo de départ.
+     */
+    private record RouteNodes(int startNodeIndex, int endNodeIndex) {}
 
     public void setHighlightedPosition(double highlightedPosition) {
         this.highlightedPosition.set(highlightedPosition);

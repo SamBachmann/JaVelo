@@ -28,7 +28,7 @@ public final class RouteManager {
     private final ObjectProperty<MapViewParameters> parametresCarte;
     private final Consumer<String> errorHandler;
     private final Pane pane;
-    private Polyline dessin;
+    private Polyline dessinItineraire;
     private Circle highlightPosition;
 
     public RouteManager (RouteBean routeBean,
@@ -38,18 +38,31 @@ public final class RouteManager {
         this.parametresCarte = parametresCarte;
         this.errorHandler = errorHandler;
         this.pane = new Pane();
-        this.dessin = new Polyline();
+        this.dessinItineraire = new Polyline();
         this.highlightPosition = new Circle();
 
         pane.setPickOnBounds(false);
-        dessin.setId("route");
+        dessinItineraire.setId("route");
         highlightPosition.setRadius(RAYON_CERCLE);
         highlightPosition.setId("highlight");
-        pane.getChildren().add(dessin);
+        pane.getChildren().add(dessinItineraire);
 
 
         routeBean.routeProperty().addListener(observable ->{
             dessinItineraire();
+        });
+
+        parametresCarte.addListener((observable, oldValue, newValue) -> {
+            //changement niveau zoom
+            if (oldValue.zoom() != newValue.zoom()){
+                dessinItineraire();
+            }
+            //déplacement carte
+            if (oldValue.yHautGauche() != newValue.yHautGauche()
+                    || oldValue.xHautGauche() != newValue.xHautGauche()){
+                dessinItineraire.setLayoutX( - newValue.xHautGauche());
+                dessinItineraire.setLayoutY( - newValue.yHautGauche());
+            }
         });
 
     }
@@ -80,15 +93,13 @@ public final class RouteManager {
             }
         }
 
-        dessin.getPoints().setAll(listPoints);
-        double xEcran = - parametresCarte.get().xHautGauche();
-        double yEcran = - parametresCarte.get().yHautGauche();
-        dessin.setLayoutX(xEcran);
-        dessin.setLayoutY(yEcran);
+        dessinItineraire.getPoints().setAll(listPoints);
+        dessinItineraire.setLayoutX( - parametresCarte.get().xHautGauche());
+        dessinItineraire.setLayoutY( - parametresCarte.get().yHautGauche());
 
 
     }
-    //RouteManger doit
+
     private void dessinCercle(){
 
     }
