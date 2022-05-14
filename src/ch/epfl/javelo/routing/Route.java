@@ -13,7 +13,7 @@ import java.util.List;
  * 17/03/2022
  */
 
-public interface Route {
+public abstract interface Route {
     /**
      * Retourne l'index du segment se trouvant à la position donnée.
      *
