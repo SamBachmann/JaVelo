@@ -21,21 +21,23 @@ public final class RouteBean {
     private final RouteComputer routeComputer;
     private final ObjectProperty<Route> route;
     private final ObjectProperty<ElevationProfile> elevationProfil;
-    private DoubleProperty highlightedPosition = new SimpleDoubleProperty(100);
+    private DoubleProperty highlightedPosition = new SimpleDoubleProperty(1000);
+
     /**
      * Constructeur de RouteBean
      *
      * @param routeComputer Un calculateur d'itinéraire.
      */
     public RouteBean(RouteComputer routeComputer) {
+
         this.routeComputer = routeComputer;
         this.route = new SimpleObjectProperty<>();
         this.elevationProfil = new SimpleObjectProperty<>();
         this.waypointsList = FXCollections.observableArrayList();
 
         waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> {
+            List<Route> listeDeRoutes = new ArrayList<>();
             if (waypointsList.size() >= 2) {
-                List<Route> listeDeRoutes = new ArrayList<>();
                 for (int i = 0; i < waypointsList.size() - 1; ++i) {
                     int startNodeIndex = waypointsList.get(i).nodeId();
                     int endNodeIndex = waypointsList.get(i + 1).nodeId();
@@ -64,8 +66,6 @@ public final class RouteBean {
                             break;
                         }
                     }
-
-
                 }
                 if (!listeDeRoutes.isEmpty()) {
                     Route multiRoute = new MultiRoute(listeDeRoutes);
@@ -76,7 +76,7 @@ public final class RouteBean {
                     System.out.println(multiRoute);
                 }
 
-            }else{
+            }else {
                 this.route.set(null);
             }
 

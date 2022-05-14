@@ -5,6 +5,7 @@ import ch.epfl.javelo.projection.PointWebMercator;
 import ch.epfl.javelo.routing.Route;
 import ch.epfl.javelo.routing.RoutePoint;
 import javafx.beans.property.ObjectProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
@@ -35,6 +36,7 @@ public final class RouteManager {
     public RouteManager (RouteBean routeBean,
                          ObjectProperty<MapViewParameters> parametresCarte,
                          Consumer<String> errorHandler ){
+
         this.routeBean = routeBean;
         this.parametresCarte = parametresCarte;
         this.errorHandler = errorHandler;
@@ -53,21 +55,45 @@ public final class RouteManager {
 
         routeBean.routeProperty().addListener(observable ->{
             dessinItineraire();
+            dessinCercle();
         });
 
         parametresCarte.addListener((observable, oldValue, newValue) -> {
             //changement niveau zoom
             if (oldValue.zoom() != newValue.zoom()){
                 dessinItineraire();
+                dessinCercle();
             }
             //déplacement carte
             if (oldValue.yHautGauche() != newValue.yHautGauche()
                     || oldValue.xHautGauche() != newValue.xHautGauche()){
                 dessinItineraire.setLayoutX( - newValue.xHautGauche());
                 dessinItineraire.setLayoutY( - newValue.yHautGauche());
+                dessinCercle();
             }
         });
 
+        pane.setOnMouseClicked(event -> {
+
+            Point2D point2D = pane.localToParent(event.getX(), event.getY());
+            double xSouris = point2D.getX();
+            double ySouris = point2D.getY();
+
+            PointWebMercator pointWebMercatorCurseur = PointWebMercator.ofPointCh(routeBean.route().pointAt(routeBean.highlightedPosition()));
+            double xCurseur = this.parametresCarte.get().viewX(pointWebMercatorCurseur);
+            double yCurseur = this.parametresCarte.get().viewY(pointWebMercatorCurseur);
+
+            if (xCurseur - 5 <= xSouris && xSouris <= xCurseur + 5 && yCurseur - 5 <= ySouris && ySouris <= yCurseur + 5) {
+                Waypoint newWaypoint = new Waypoint(pointWebMercatorCurseur.toPointCh(), routeBean.route().nodeClosestTo(routeBean.highlightedPosition()));
+
+                if (routeBean.WaypointsListProperty().contains(newWaypoint)) {
+                    System.out.println("Un point de passage est déjà présent à cet endroit !");
+                } else {
+                    routeBean.WaypointsListProperty().add(routeBean.route().indexOfSegmentAt(routeBean.highlightedPosition()) + 1, newWaypoint);
+                }
+            }
+
+        });
     }
 
     /**
@@ -90,10 +116,6 @@ public final class RouteManager {
 
         if (itineraire != null) {
             dessinItineraire.setVisible(true);
-            highlightPosition.setVisible(true);
-
-            highlightPosition.setCenterX(PointWebMercator.ofPointCh(routeBean.route().pointAt(routeBean.highlightedPosition())).xAtZoomLevel(zoom));
-            highlightPosition.setCenterY(PointWebMercator.ofPointCh(routeBean.route().pointAt(routeBean.highlightedPosition())).yAtZoomLevel(zoom));
 
             for (PointCh pointExtremite : itineraire.points()) {
                 PointWebMercator pointEnWebMercator = PointWebMercator.ofPointCh(pointExtremite);
@@ -113,7 +135,17 @@ public final class RouteManager {
 
     private void dessinCercle(){
 
+        Route itineraire = routeBean.route();
+
+        if (itineraire != null) {
+            highlightPosition.setVisible(true);
+
+            PointWebMercator pointWebMercator = PointWebMercator.ofPointCh(routeBean.route().pointAt(routeBean.highlightedPosition()));
+            highlightPosition.setCenterX(this.parametresCarte.get().viewX(pointWebMercator));
+            highlightPosition.setCenterY(this.parametresCarte.get().viewY(pointWebMercator));
+
+        } else {
+            highlightPosition.setVisible(false);
+        }
     }
-
-
 }
