@@ -86,11 +86,14 @@ public final class RouteManager {
         List<Double> listPoints = new ArrayList<>();
 
         if (itineraire != null) {
+            dessinItineraire.setVisible(true);
             for (PointCh pointExtremite : itineraire.points()) {
                 PointWebMercator pointEnWebMercator = PointWebMercator.ofPointCh(pointExtremite);
                 listPoints.add(pointEnWebMercator.xAtZoomLevel(zoom));
                 listPoints.add(pointEnWebMercator.yAtZoomLevel(zoom));
             }
+        }else{
+            dessinItineraire.setVisible(false);
         }
 
         dessinItineraire.getPoints().setAll(listPoints);
