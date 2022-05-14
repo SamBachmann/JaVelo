@@ -1,10 +1,7 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.routing.*;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -24,7 +21,7 @@ public final class RouteBean {
     private final RouteComputer routeComputer;
     private final ObjectProperty<Route> route;
     private final ObjectProperty<ElevationProfile> elevationProfil;
-    private DoubleProperty highlightedPosition;
+    private DoubleProperty highlightedPosition = new SimpleDoubleProperty(100);
     /**
      * Constructeur de RouteBean
      *

@@ -3,6 +3,7 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
 import ch.epfl.javelo.routing.Route;
+import ch.epfl.javelo.routing.RoutePoint;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
@@ -46,6 +47,8 @@ public final class RouteManager {
         highlightPosition.setRadius(RAYON_CERCLE);
         highlightPosition.setId("highlight");
         pane.getChildren().add(dessinItineraire);
+        pane.getChildren().add(highlightPosition);
+
 
 
         routeBean.routeProperty().addListener(observable ->{
@@ -87,6 +90,11 @@ public final class RouteManager {
 
         if (itineraire != null) {
             dessinItineraire.setVisible(true);
+            highlightPosition.setVisible(true);
+
+            highlightPosition.setCenterX(PointWebMercator.ofPointCh(routeBean.route().pointAt(routeBean.highlightedPosition())).xAtZoomLevel(zoom));
+            highlightPosition.setCenterY(PointWebMercator.ofPointCh(routeBean.route().pointAt(routeBean.highlightedPosition())).yAtZoomLevel(zoom));
+
             for (PointCh pointExtremite : itineraire.points()) {
                 PointWebMercator pointEnWebMercator = PointWebMercator.ofPointCh(pointExtremite);
                 listPoints.add(pointEnWebMercator.xAtZoomLevel(zoom));
