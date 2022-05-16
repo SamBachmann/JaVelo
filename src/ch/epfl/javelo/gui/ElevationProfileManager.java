@@ -9,6 +9,10 @@ import javafx.scene.layout.Pane;
 /**
  * Classe gérant l'affichage et les interactions avec le profil en long d'un itinéraire
  *
+ *  @author Samuel Bachmann (340373)
+ *  @author Cyrus Giblain (312042)
+ * <br>
+ * 14/05/2022
  */
 public final class ElevationProfileManager {
 

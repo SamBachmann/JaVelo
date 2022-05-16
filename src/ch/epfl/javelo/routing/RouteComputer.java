@@ -4,6 +4,7 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
+
 import java.util.*;
 
 /**
@@ -15,6 +16,7 @@ import java.util.*;
  * 31/03/2022
  */
 public final class RouteComputer {
+    public static final float VALEUR_NON_ATTRIBUEE = Float.POSITIVE_INFINITY;
     private final Graph graph;
     private final CostFunction costFunction;
     private final float [] distance;
@@ -58,7 +60,7 @@ public final class RouteComputer {
         boolean itineraireExiste = false;
 
         // initialisation des tableaux.
-        Arrays.fill(distance, Float.POSITIVE_INFINITY);
+        Arrays.fill(distance, VALEUR_NON_ATTRIBUEE);
         Arrays.fill(predecesseur, 0);
 
 

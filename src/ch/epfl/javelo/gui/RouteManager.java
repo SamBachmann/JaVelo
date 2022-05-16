@@ -3,7 +3,6 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
 import ch.epfl.javelo.routing.Route;
-import ch.epfl.javelo.routing.RoutePoint;
 import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
@@ -79,15 +78,20 @@ public final class RouteManager {
             double xSouris = point2D.getX();
             double ySouris = point2D.getY();
 
-            PointWebMercator pointWebMercatorCurseur = PointWebMercator.ofPointCh(routeBean.route().pointAt(routeBean.highlightedPosition()));
+            PointWebMercator pointWebMercatorCurseur = PointWebMercator.ofPointCh(
+                    routeBean.route().pointAt(routeBean.highlightedPosition())
+            );
+
             double xCurseur = this.parametresCarte.get().viewX(pointWebMercatorCurseur);
             double yCurseur = this.parametresCarte.get().viewY(pointWebMercatorCurseur);
 
-            if (xCurseur - 5 <= xSouris && xSouris <= xCurseur + 5 && yCurseur - 5 <= ySouris && ySouris <= yCurseur + 5) {
-                Waypoint newWaypoint = new Waypoint(pointWebMercatorCurseur.toPointCh(), routeBean.route().nodeClosestTo(routeBean.highlightedPosition()));
+            if (xCurseur - RAYON_CERCLE <= xSouris && xSouris <= xCurseur + RAYON_CERCLE
+                    && yCurseur - RAYON_CERCLE <= ySouris && ySouris <= yCurseur + RAYON_CERCLE) {
+                Waypoint newWaypoint = new Waypoint(pointWebMercatorCurseur.toPointCh(),
+                        routeBean.route().nodeClosestTo(routeBean.highlightedPosition()));
 
                 if (routeBean.WaypointsListProperty().contains(newWaypoint)) {
-                    System.out.println("Un point de passage est déjà présent à cet endroit !");
+                    errorHandler.accept("Un point de passage est déjà présent à cet endroit !");
                 } else {
                     routeBean.WaypointsListProperty().add(routeBean.route().indexOfSegmentAt(routeBean.highlightedPosition()) + 1, newWaypoint);
                 }

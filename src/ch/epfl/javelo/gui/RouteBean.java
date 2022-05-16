@@ -18,9 +18,9 @@ public final class RouteBean {
     private final ObservableList<Waypoint> waypointsList;
 
     public static final int DISTANCE_MAX_ECHANTILLONS = 5;
-    private final RouteComputer routeComputer;
     private final ObjectProperty<Route> route;
     private final ObjectProperty<ElevationProfile> elevationProfil;
+    //Valeur de 1000 pour le test. A changer quand l'interaction sera prête
     private DoubleProperty highlightedPosition = new SimpleDoubleProperty(1000);
 
     /**
@@ -30,7 +30,6 @@ public final class RouteBean {
      */
     public RouteBean(RouteComputer routeComputer) {
 
-        this.routeComputer = routeComputer;
         this.route = new SimpleObjectProperty<>();
         this.elevationProfil = new SimpleObjectProperty<>();
         this.waypointsList = FXCollections.observableArrayList();
@@ -73,7 +72,6 @@ public final class RouteBean {
                             ElevationProfileComputer.elevationProfile(multiRoute,DISTANCE_MAX_ECHANTILLONS)
                     );
                     this.route.set(multiRoute);
-                    System.out.println(multiRoute);
                 }
 
             }else {
@@ -84,6 +82,15 @@ public final class RouteBean {
     }
     private final Map< RouteNodes, Route> cacheItineraires =
             new LinkedHashMap<>(100, 0.75f, true);
+
+
+    /**
+     * Enregistrement imbriqué représentant un itinéraire par ses noeuds de départ et d'arrivée.
+     *
+     * @param startNodeIndex L'index du noeud Javelo de départ.
+     * @param endNodeIndex L'index du noeud Javelo de départ.
+     */
+    private record RouteNodes(int startNodeIndex, int endNodeIndex) {}
 
     /**
      * Accesseur de la propriété contenant la position mise en évidence.
@@ -102,14 +109,6 @@ public final class RouteBean {
     public double highlightedPosition(){
         return highlightedPosition.get();
     }
-
-    /**
-     * Enregistrement imbriqué représentant un itinéraire par ses noeuds de départ et d'arrivée.
-     *
-     * @param startNodeIndex L'index du noeud Javelo de départ.
-     * @param endNodeIndex L'index du noeud Javelo de départ.
-     */
-    private record RouteNodes(int startNodeIndex, int endNodeIndex) {}
 
     public void setHighlightedPosition(double highlightedPosition) {
         this.highlightedPosition.set(highlightedPosition);

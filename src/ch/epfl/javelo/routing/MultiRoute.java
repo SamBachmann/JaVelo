@@ -18,6 +18,7 @@ import java.util.List;
 public final class MultiRoute implements Route{
 
     private final List<Route> segments;
+    private final double length;
 
     /**
      * Constructeur de l'itinéraire multiple, à partir d'une liste de segments.
@@ -25,9 +26,11 @@ public final class MultiRoute implements Route{
      * @param segments La liste des segments de cet itinéraire.
      */
     public MultiRoute(List<Route> segments) {
-
         Preconditions.checkArgument(!segments.isEmpty());
         this.segments = List.copyOf(segments);
+
+        int indexFinItineraire = this.segments.size();
+        this.length = distanceItineraire(indexFinItineraire);
     }
 
     /**
@@ -64,9 +67,7 @@ public final class MultiRoute implements Route{
      */
     @Override
     public double length() {
-
-        int indexFinItineraire = this.segments.size();
-        return distanceItineraire(indexFinItineraire);
+        return length;
     }
 
     /**

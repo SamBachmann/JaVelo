@@ -20,6 +20,7 @@ public final class SingleRoute implements Route{
 
     private final List<Edge> edges;
     private final double[] positionTable;
+    private final double longueur;
 
     /**
      * Construit l'itinéraire en long à partir d'une liste d'arêtes.
@@ -30,7 +31,14 @@ public final class SingleRoute implements Route{
         Preconditions.checkArgument(!edges.isEmpty());
         this.edges = List.copyOf(edges);
         this.positionTable = new double[edges().size()];
-        initialisePositionTable();
+
+        //initialisation du tableau des positions.
+        double distance = 0.0;
+        for (int i = 0; i < edges().size(); ++i) {
+            positionTable[i] = distance;
+            distance = distance + edges().get(i).length();
+        }
+        this.longueur = distance;
 
     }
 
@@ -52,7 +60,7 @@ public final class SingleRoute implements Route{
      */
     @Override
     public double length() {
-        return positionTable[positionTable.length - 1];
+        return this.longueur;
     }
 
     /**
@@ -77,7 +85,7 @@ public final class SingleRoute implements Route{
         for (Edge edge : edges()) {
             listeDesPoints.add(edge.toPoint());
         }
-        return listeDesPoints;
+        return List.copyOf(listeDesPoints);
     }
 
     /**
@@ -172,15 +180,4 @@ public final class SingleRoute implements Route{
         return routePointClosest;
     }
 
-    /**
-     * Méthode privée lancée depuis le constructeur qui initialise le tableau des positions de
-     * chaque arête
-     */
-    private void initialisePositionTable(){
-        double distance = 0.0;
-        for (int i = 0; i < edges().size(); ++i) {
-            positionTable[i] = distance;
-            distance = distance + edges().get(i).length();
-        }
-    }
 }
