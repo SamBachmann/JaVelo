@@ -104,7 +104,7 @@ public final class ElevationProfileManager {
 
         // parcourir tous les pixels
         for (int x = (int) p1.getX(); x <= p2.getX(); ++x ){
-            this.screenToWorld.get();
+
         }
 
     }
