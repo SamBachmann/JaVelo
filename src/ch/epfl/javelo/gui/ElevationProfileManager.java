@@ -6,6 +6,7 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -14,6 +15,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Affine;
 
 
 /**
@@ -77,7 +79,13 @@ public final class ElevationProfileManager {
         this.pane.getChildren().add(line);
 
 
-
+        //Dessiner dans le meme systeme d'axe. Identifier les pts d'extremiter dans les coordonnées
+         double diffAltitude = profil.get().maxElevation() - profil.get().minElevation();
+        Affine screenToWorld = new Affine();
+        screenToWorld.prependTranslation( - insets.getLeft(), - insets.getBottom());
+        //screenToWorld.prependScale();
+        //screenToWorld.prependTranslation();
+        Point2D pt2d = new Point2D(1,2);
 
     }
 
@@ -88,4 +96,6 @@ public final class ElevationProfileManager {
     public ReadOnlyIntegerProperty mousePositionOnProfileProperty(){
         return null;
     }
+
+
 }
