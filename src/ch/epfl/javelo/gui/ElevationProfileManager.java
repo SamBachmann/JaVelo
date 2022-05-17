@@ -2,9 +2,7 @@ package ch.epfl.javelo.gui;
 
 
 import ch.epfl.javelo.routing.ElevationProfile;
-import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -16,6 +14,8 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
+import javafx.scene.transform.NonInvertibleTransformException;
+import javafx.scene.transform.Transform;
 
 
 /**
@@ -30,6 +30,8 @@ public final class ElevationProfileManager {
 
     private final BorderPane borderPane;
     private final Pane pane;
+    private final ObjectProperty<Transform> screenToWorld = new SimpleObjectProperty<>();
+    private final ObjectProperty<Transform> worldToScreen = new SimpleObjectProperty<>();
 
     /**
      * Constructeur d'ElevationProfileManager
@@ -48,8 +50,6 @@ public final class ElevationProfileManager {
         VBox vBox = new VBox();
         vBox.setId("profile_data");
         Insets insets = new Insets(10, 10, 20, 40);
-        double hauteur = insets.getTop() - insets.getBottom();
-        double largeur = insets.getRight();
 
         Text textVBox = new Text();
         vBox.getChildren().add(textVBox);
@@ -80,12 +80,32 @@ public final class ElevationProfileManager {
 
 
         //Dessiner dans le meme systeme d'axe. Identifier les pts d'extremiter dans les coordonnées
-         double diffAltitude = profil.get().maxElevation() - profil.get().minElevation();
+        //Fonctions affines de transformation définies.
+        double deltaYworld = profil.get().minElevation() - profil.get().maxElevation();
+        double deltaXworld = profil.get().length();
+
+        Point2D p1 = new Point2D(insets.getLeft(), borderPane.getHeight() - insets.getBottom());
+        Point2D p2 =  new Point2D(borderPane.getWidth() - insets.getRight(),insets.getTop());
+        double coeffX = deltaXworld / (p2.getX() - p1.getX());
+        double coeffY = deltaYworld / (p2.getY() - p1.getY());
+
         Affine screenToWorld = new Affine();
-        screenToWorld.prependTranslation( - insets.getLeft(), - insets.getBottom());
-        //screenToWorld.prependScale();
-        //screenToWorld.prependTranslation();
-        Point2D pt2d = new Point2D(1,2);
+        screenToWorld.prependTranslation(- p1.getX(), - p1.getY());
+        screenToWorld.prependScale(coeffX, coeffY);
+        screenToWorld.prependTranslation(0, profil.get().minElevation());
+        this.screenToWorld.set(screenToWorld);
+
+        try {
+            Affine worldToScreen = screenToWorld.createInverse();
+            this.worldToScreen.set(worldToScreen);
+        } catch (NonInvertibleTransformException e) {
+            throw new Error();
+        }
+
+        // parcourir tous les pixels
+        for (int x = (int) p1.getX(); x <= p2.getX(); ++x ){
+            this.screenToWorld.get();
+        }
 
     }
 
