@@ -34,7 +34,6 @@ public final class BaseMapManager {
     private final ObjectProperty<Point2D> pointBaseDrag = new SimpleObjectProperty<>();
     private final Pane pane;
     private final Canvas canvas;
-    private final WaypointsManager waypointsManager;
     private boolean redrawNeeded;
 
 
@@ -49,7 +48,6 @@ public final class BaseMapManager {
                           ObjectProperty<MapViewParameters> parametresCarte) {
 
         this.tileManager = tileManager;
-        this.waypointsManager = waypointsManager;
         this.parametresCarte = parametresCarte;
 
         canvas = new Canvas();
@@ -88,7 +86,6 @@ public final class BaseMapManager {
                     System.out.println(zoom2);
                 }
             }
-            //int zoom2 = (int) Math.round(this.parametresCarte.get().zoom() + event.getDeltaY());
 
             int deltaZoom = zoom2 - zoom;
             if (deltaZoom != 0){
@@ -122,8 +119,8 @@ public final class BaseMapManager {
             Point2D difference =  point2DSouris.subtract(pointBaseDrag.get());
             pointBaseDrag.set(point2DSouris);
             Point2D newTopLeft = parametresCarte.get().topLeft().subtract(difference);
-            MapViewParameters mapViewParameters = this.parametresCarte.get().withMinXY(newTopLeft.getX(), newTopLeft.getY());
-            this.parametresCarte.set(mapViewParameters);
+            MapViewParameters newParameters = this.parametresCarte.get().withMinXY(newTopLeft.getX(),newTopLeft.getY());
+            this.parametresCarte.set(newParameters);
         });
 
         pane.setOnMouseClicked(event -> {
