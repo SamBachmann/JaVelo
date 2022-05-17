@@ -5,6 +5,7 @@ import ch.epfl.javelo.routing.ElevationProfile;
 import javafx.beans.property.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -32,6 +33,7 @@ public final class ElevationProfileManager {
     private final Pane pane;
     private final ObjectProperty<Transform> screenToWorld = new SimpleObjectProperty<>();
     private final ObjectProperty<Transform> worldToScreen = new SimpleObjectProperty<>();
+    private final ObjectProperty<Rectangle2D> rectangleBleu = new SimpleObjectProperty<>();
 
     /**
      * Constructeur d'ElevationProfileManager
@@ -104,8 +106,15 @@ public final class ElevationProfileManager {
 
         // parcourir tous les pixels
         for (int x = (int) p1.getX(); x <= p2.getX(); ++x ){
-
+            for (int y = (int) p1.getY(); y <= p2.getY(); ++y) {
+                screenToWorld.transform(x, y);
+            }
         }
+
+        // À vérifier et/ou simplifier.
+        Rectangle2D rectangle2D = new Rectangle2D(40, 10, borderPane.getWidth() - insets.getRight() -
+                insets.getLeft(), borderPane.getHeight() - insets.getTop() - insets.getBottom());
+        this.rectangleBleu.set(rectangle2D);
 
     }
 
