@@ -37,6 +37,7 @@ public final class ElevationProfileManager {
     private final ObjectProperty<Transform> screenToWorld = new SimpleObjectProperty<>();
     private final ObjectProperty<Transform> worldToScreen = new SimpleObjectProperty<>();
     private final ObjectProperty<Rectangle2D> rectangleBleu = new SimpleObjectProperty<>();
+    private final Polygon dessinProfil;
 
     /**
      * Constructeur d'ElevationProfileManager
@@ -48,19 +49,88 @@ public final class ElevationProfileManager {
                                 ReadOnlyDoubleProperty positionProfil){
         this.pane = new Pane();
         this.borderPane = new BorderPane();
-        borderPane.setPrefWidth(600);
-        borderPane.setPrefHeight(300);
+
+        //Définir des dimentions par défauts si elles ne sont pas définies au démarage
+        pane.setPrefWidth(600);
+        pane.setPrefHeight(300);
 
         this.borderPane.getStylesheets().add("elevation_profile.css");
         this.borderPane.setCenter(this.pane);
 
+        dessinProfil = new Polygon();
+        initHierarchie();
+
+        Insets insets = new Insets(10, 10, 20, 40);
+
+        dessineProfil(profil, insets);
+
+         Rectangle2D rectangle2D = new Rectangle2D(insets.getLeft(), insets.getTop(),
+                 Math.max(pane.getWidth() - insets.getRight() - insets.getLeft(), 0),
+                 Math.max(pane.getHeight() - insets.getTop() - insets.getBottom(), 0));
+         this.rectangleBleu.set(rectangle2D);
+
+
+         //Bindings.createObjectBinding() pour lier la ligne à la zone rectangle bleu
+    }
+
+    /**
+     * Méthode privée qui dessine le profil à partir d'un ElevationProfile et des
+     * décalages du profil sur sa fenêtre.
+     *
+     * @param profil Le profil à dessiner.
+     * @param insets Les marges latérales et verticales autour du profil.
+     */
+    private void dessineProfil(ReadOnlyObjectProperty<ElevationProfile> profil, Insets insets) {
+        //Point bas gauche de l'affichage du profil
+        Point2D p1 = new Point2D(insets.getLeft(), Math.max(pane.getHeight(), 300) - insets.getBottom());
+        //Point haut droite de l'affichage du profil
+        Point2D p2 =  new Point2D(Math.max(pane.getWidth(), 600) - insets.getRight(), insets.getTop());
+
+        double deltaYworld = profil.get().maxElevation() - profil.get().minElevation();
+        double deltaXworld = profil.get().length();
+
+        double coeffX = deltaXworld / (p2.getX() - p1.getX());
+        double coeffY = deltaYworld / (p2.getY() - p1.getY());
+
+        Affine screenToWorld = new Affine();
+        screenToWorld.prependTranslation(- p1.getX(), insets.getBottom());
+        screenToWorld.prependScale(coeffX, coeffY);
+        screenToWorld.prependTranslation(0, profil.get().maxElevation());
+        this.screenToWorld.set(screenToWorld);
+
+        try {
+            Affine worldToScreen = screenToWorld.createInverse();
+            this.worldToScreen.set(worldToScreen);
+        } catch (NonInvertibleTransformException e) {
+            throw new Error();
+        }
+
+        List<Double> listeDePoints = new ArrayList<>(List.of(p2.getX(), p1.getY(), p1.getX(), p1.getY()));
+
+        // parcourir tous les pixels
+        for (int x = (int) p1.getX(); x <= p2.getX(); ++x ){
+            double xItineraire = screenToWorld.transform(x, 0).getX();
+            double elevationAtx = profil.get().elevationAt(xItineraire);
+            Point2D pointAffiche = worldToScreen.get().transform(xItineraire, elevationAtx);
+            System.out.printf("Altitude : %f Y écran : %f  \n", elevationAtx, pointAffiche.getY());
+            listeDePoints.add(pointAffiche.getX());
+            listeDePoints.add(pointAffiche.getY());
+        }
+        dessinProfil.getPoints().setAll(listeDePoints);
+    }
+
+
+    /**
+     * Méthode privée appelée dans le constructeur qui crée la hiérarchie javaFX des éléments.
+     */
+    private void initHierarchie() {
         VBox vBox = new VBox();
         vBox.setId("profile_data");
-        Insets insets = new Insets(10, 10, 20, 40);
+        this.borderPane.setBottom(vBox);
 
         Text textVBox = new Text();
         vBox.getChildren().add(textVBox);
-        
+
         Path grille = new Path();
         this.pane.getChildren().add(grille);
         grille.setId("grid");
@@ -78,63 +148,18 @@ public final class ElevationProfileManager {
         text2.getStyleClass().add("vertical");
         group.getChildren().add(text2);
 
-        Polygon dessinProfil = new Polygon();
         dessinProfil.setId("profile");
         this.pane.getChildren().add(dessinProfil);
 
         Line line = new Line();
         this.pane.getChildren().add(line);
-
-
-        //Dessiner dans le meme systeme d'axe. Identifier les pts d'extremiter dans les coordonnées
-        //Fonctions affines de transformation définies.
-        double deltaYworld = profil.get().maxElevation() - profil.get().minElevation();
-        double deltaXworld = profil.get().length();
-
-        //Point bas gauche de l'affichage du profil
-        Point2D p1 = new Point2D(insets.getLeft(), Math.max(borderPane.getHeight(), 300) - insets.getBottom());
-        //Point haut droite de l'affichage du profil
-        Point2D p2 =  new Point2D(Math.max(borderPane.getWidth(), 600) - insets.getRight(), insets.getTop());
-        double coeffX = deltaXworld / (p2.getX() - p1.getX());
-        double coeffY = deltaYworld / (p2.getY() - p1.getY());
-
-        Affine screenToWorld = new Affine();
-        screenToWorld.prependTranslation(- p1.getX(), insets.getBottom());
-        screenToWorld.prependScale(coeffX, coeffY);
-        screenToWorld.prependTranslation(0, profil.get().maxElevation());
-        this.screenToWorld.set(screenToWorld);
-
-        try {
-            Affine worldToScreen = screenToWorld.createInverse();
-            this.worldToScreen.set(worldToScreen);
-        } catch (NonInvertibleTransformException e) {
-            throw new Error();
-        }
-
-
-        List<Double> listeDePoints = new ArrayList<>(List.of(p2.getX(), p1.getY(), p1.getX(), p1.getY()));
-
-        // parcourir tous les pixels
-        for (int x = (int) p1.getX(); x <= p2.getX(); ++x ){
-            double xItineraire = screenToWorld.transform(x, 0).getX();
-            double elevationAtx = profil.get().elevationAt(xItineraire);
-            Point2D pointAffiche = worldToScreen.get().transform(xItineraire, elevationAtx);
-            System.out.printf("Altitude : %f Y écran : %f  \n", elevationAtx, pointAffiche.getY());
-            listeDePoints.add(pointAffiche.getX());
-            listeDePoints.add(pointAffiche.getY());
-        }
-        dessinProfil.getPoints().setAll(listeDePoints);
-
-        // À vérifier et/ou simplifier.
-//         Rectangle2D rectangle2D = new Rectangle2D(40, 10, borderPane.getWidth() - insets.getRight() -
-//                insets.getLeft(), borderPane.getHeight() - insets.getTop() - insets.getBottom());
-//        this.rectangleBleu.set(rectangle2D);
-
-//        Math.max(borderPane.getWidth(), 600);
-//        Math.max(borderPane.getHeight(), 300);
-
     }
 
+    /**
+     * Accesseur du Pane contenant le profil et les infos corespondantes.
+     *
+     * @return Le Pane du profil
+     */
     public Pane pane(){
         return this.borderPane;
     }
