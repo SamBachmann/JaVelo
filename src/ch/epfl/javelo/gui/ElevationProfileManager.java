@@ -18,6 +18,9 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Classe gérant l'affichage et les interactions avec le profil en long d'un itinéraire.
@@ -45,6 +48,8 @@ public final class ElevationProfileManager {
                                 ReadOnlyDoubleProperty positionProfil){
         this.pane = new Pane();
         this.borderPane = new BorderPane();
+        borderPane.setPrefWidth(600);
+        borderPane.setPrefHeight(300);
 
         this.borderPane.getStylesheets().add("elevation_profile.css");
         this.borderPane.setCenter(this.pane);
@@ -73,9 +78,9 @@ public final class ElevationProfileManager {
         text2.getStyleClass().add("vertical");
         group.getChildren().add(text2);
 
-        Polygon profile = new Polygon();
-        profile.setId("profile");
-        this.pane.getChildren().add(profile);
+        Polygon dessinProfil = new Polygon();
+        dessinProfil.setId("profile");
+        this.pane.getChildren().add(dessinProfil);
 
         Line line = new Line();
         this.pane.getChildren().add(line);
@@ -83,18 +88,20 @@ public final class ElevationProfileManager {
 
         //Dessiner dans le meme systeme d'axe. Identifier les pts d'extremiter dans les coordonnées
         //Fonctions affines de transformation définies.
-        double deltaYworld = profil.get().minElevation() - profil.get().maxElevation();
+        double deltaYworld = profil.get().maxElevation() - profil.get().minElevation();
         double deltaXworld = profil.get().length();
 
-        Point2D p1 = new Point2D(insets.getLeft(), borderPane.getHeight() - insets.getBottom());
-        Point2D p2 =  new Point2D(borderPane.getWidth() - insets.getRight(),insets.getTop());
+        //Point bas gauche de l'affichage du profil
+        Point2D p1 = new Point2D(insets.getLeft(), Math.max(borderPane.getHeight(), 300) - insets.getBottom());
+        //Point haut droite de l'affichage du profil
+        Point2D p2 =  new Point2D(Math.max(borderPane.getWidth(), 600) - insets.getRight(), insets.getTop());
         double coeffX = deltaXworld / (p2.getX() - p1.getX());
         double coeffY = deltaYworld / (p2.getY() - p1.getY());
 
         Affine screenToWorld = new Affine();
-        screenToWorld.prependTranslation(- p1.getX(), - p1.getY());
+        screenToWorld.prependTranslation(- p1.getX(), insets.getBottom());
         screenToWorld.prependScale(coeffX, coeffY);
-        screenToWorld.prependTranslation(0, profil.get().minElevation());
+        screenToWorld.prependTranslation(0, profil.get().maxElevation());
         this.screenToWorld.set(screenToWorld);
 
         try {
@@ -104,17 +111,27 @@ public final class ElevationProfileManager {
             throw new Error();
         }
 
+
+        List<Double> listeDePoints = new ArrayList<>(List.of(p2.getX(), p1.getY(), p1.getX(), p1.getY()));
+
         // parcourir tous les pixels
         for (int x = (int) p1.getX(); x <= p2.getX(); ++x ){
-            for (int y = (int) p1.getY(); y <= p2.getY(); ++y) {
-                screenToWorld.transform(x, y);
-            }
+            double xItineraire = screenToWorld.transform(x, 0).getX();
+            double elevationAtx = profil.get().elevationAt(xItineraire);
+            Point2D pointAffiche = worldToScreen.get().transform(xItineraire, elevationAtx);
+            System.out.printf("Altitude : %f Y écran : %f  \n", elevationAtx, pointAffiche.getY());
+            listeDePoints.add(pointAffiche.getX());
+            listeDePoints.add(pointAffiche.getY());
         }
+        dessinProfil.getPoints().setAll(listeDePoints);
 
         // À vérifier et/ou simplifier.
-        Rectangle2D rectangle2D = new Rectangle2D(40, 10, borderPane.getWidth() - insets.getRight() -
-                insets.getLeft(), borderPane.getHeight() - insets.getTop() - insets.getBottom());
-        this.rectangleBleu.set(rectangle2D);
+//         Rectangle2D rectangle2D = new Rectangle2D(40, 10, borderPane.getWidth() - insets.getRight() -
+//                insets.getLeft(), borderPane.getHeight() - insets.getTop() - insets.getBottom());
+//        this.rectangleBleu.set(rectangle2D);
+
+//        Math.max(borderPane.getWidth(), 600);
+//        Math.max(borderPane.getHeight(), 300);
 
     }
 
