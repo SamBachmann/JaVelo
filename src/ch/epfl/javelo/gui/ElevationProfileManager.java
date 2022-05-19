@@ -2,6 +2,7 @@ package ch.epfl.javelo.gui;
 
 
 import ch.epfl.javelo.routing.ElevationProfile;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -32,6 +33,7 @@ public final class ElevationProfileManager {
 
     private final BorderPane borderPane;
     private final Pane pane;
+    private Line line;
     private final ObjectProperty<Transform> screenToWorld = new SimpleObjectProperty<>();
     private final ObjectProperty<Transform> worldToScreen = new SimpleObjectProperty<>();
     private final ObjectProperty<Rectangle2D> rectangleBleu = new SimpleObjectProperty<>();
@@ -62,17 +64,29 @@ public final class ElevationProfileManager {
 
         dessineProfil(profil, insets);
 
-        Rectangle2D rectangle2D = new Rectangle2D(insets.getLeft(), insets.getTop(),
-                Math.max(pane.getWidth() - insets.getRight() - insets.getLeft(), 0),
-                Math.max(pane.getHeight() - insets.getTop() - insets.getBottom(), 0));
-        this.rectangleBleu.set(rectangle2D);
 
-       pane.widthProperty().addListener(observable -> dessineProfil(profil, insets));
+        pane.widthProperty().addListener(observable -> dessineProfil(profil, insets));
 
-        //Bindings.createObjectBinding() pour lier la ligne à la zone rectangle bleu
-        //this.borderPane.layoutXProperty().bind(Bindings.createDoubleBinding());
-        //this.borderPane.minp
-        //this.borderPane.layoutXProperty().bind(borderPane.layoutXProperty());
+        //binding
+        rectangleBleu.bind(Bindings.createObjectBinding(() -> {
+            return new Rectangle2D(insets.getLeft(),insets.getTop(),
+                    Math.max(pane.getWidth() - insets.getRight() - insets.getLeft(), 0),
+                    Math.max(pane.getHeight() - insets.getTop() - insets.getBottom(), 0));
+                }, pane.widthProperty(), pane.heightProperty()));
+
+        line.layoutXProperty().bind(Bindings.createDoubleBinding(()-> {
+            return worldToScreen.get().transform(positionProfil.get(), 0).getX();
+        }, positionProfil));
+
+        line.startXProperty().bind(Bindings.select(rectangleBleu.get(), "minY"));
+        line.endYProperty().bind(Bindings.select(rectangleBleu.get(), "maxY"));
+        line.visibleProperty().bind(positionProfil.greaterThanOrEqualTo(0));
+
+        //affichage des stats:
+        String stats = "Longueur : %.1f km" +
+                "     Montée : %.0f m" +
+                "     Descente : %.0f m" +
+                "     Altitude : de %.0f m à %.0f m" ;
     }
 
 
@@ -117,7 +131,6 @@ public final class ElevationProfileManager {
             double elevationAtx = profil.get().elevationAt(xItineraire);
 
             Point2D pointAffiche = worldToScreen.get().transform(xItineraire, elevationAtx);
-            System.out.printf("Altitude : %f Y écran : %f  \n", elevationAtx, pointAffiche.getY());
             listeDePoints.add(pointAffiche.getX());
             listeDePoints.add(pointAffiche.getY());
         }
@@ -184,7 +197,7 @@ public final class ElevationProfileManager {
         dessinProfil.setId("profile");
         this.pane.getChildren().add(dessinProfil);
 
-        Line line = new Line();
+        this.line = new Line();
         this.pane.getChildren().add(line);
 
     }
