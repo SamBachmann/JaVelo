@@ -2,7 +2,6 @@ package ch.epfl.javelo.gui;
 
 
 import ch.epfl.javelo.routing.ElevationProfile;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -68,12 +67,12 @@ public final class ElevationProfileManager {
                 Math.max(pane.getHeight() - insets.getTop() - insets.getBottom(), 0));
         this.rectangleBleu.set(rectangle2D);
 
-        pane.widthProperty().addListener(observable -> dessineProfil(profil, insets));
+       pane.widthProperty().addListener(observable -> dessineProfil(profil, insets));
 
         //Bindings.createObjectBinding() pour lier la ligne à la zone rectangle bleu
         //this.borderPane.layoutXProperty().bind(Bindings.createDoubleBinding());
         //this.borderPane.minp
-        this.borderPane.layoutXProperty().bind(borderPane.layoutXProperty());
+        //this.borderPane.layoutXProperty().bind(borderPane.layoutXProperty());
     }
 
 
