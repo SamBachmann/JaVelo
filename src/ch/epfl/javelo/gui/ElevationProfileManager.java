@@ -95,8 +95,9 @@ public final class ElevationProfileManager {
         double coeffX = deltaXworld / (p2.getX() - p1.getX());
         double coeffY = deltaYworld / (p2.getY() - p1.getY());
 
+        //Fonctions de transformations écran-réalité
         Affine screenToWorld = new Affine();
-        screenToWorld.prependTranslation(- p1.getX(), insets.getBottom());
+        screenToWorld.prependTranslation(- p1.getX(), - p2.getY());
         screenToWorld.prependScale(coeffX, coeffY);
         screenToWorld.prependTranslation(0, profil.get().maxElevation());
         this.screenToWorld.set(screenToWorld);
