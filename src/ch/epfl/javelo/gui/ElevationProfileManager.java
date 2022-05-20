@@ -9,7 +9,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -39,6 +38,8 @@ public final class ElevationProfileManager {
     private final ObjectProperty<Transform> screenToWorld = new SimpleObjectProperty<>();
     private final ObjectProperty<Transform> worldToScreen = new SimpleObjectProperty<>();
     private final ObjectProperty<Rectangle2D> rectangleBleu = new SimpleObjectProperty<>();
+    private final DoubleProperty mousePositionOnProfileProperty = new SimpleDoubleProperty();
+
     private final Polygon dessinProfil;
 
     /**
@@ -74,21 +75,23 @@ public final class ElevationProfileManager {
         dessineProfil(profil, insets);
 
 
-        pane.widthProperty().addListener(observable -> dessineProfil(profil, insets));
+        //pane.widthProperty().addListener(observable -> dessineProfil(profil, insets));
 
         //binding
-        rectangleBleu.bind(Bindings.createObjectBinding(() -> {
-            return new Rectangle2D(insets.getLeft(),insets.getTop(),
+        rectangleBleu.bind(Bindings.createObjectBinding(() ->
+             new Rectangle2D(insets.getLeft(),insets.getTop(),
                     Math.max(pane.getWidth() - insets.getRight() - insets.getLeft(), 0),
-                    Math.max(pane.getHeight() - insets.getTop() - insets.getBottom(), 0));
-                }, pane.widthProperty(), pane.heightProperty()));
+                    Math.max(pane.getHeight() - insets.getTop() - insets.getBottom(), 0)),
+                pane.widthProperty(),
+                pane.heightProperty()));
 
-        line.layoutXProperty().bind(Bindings.createDoubleBinding(()-> {
-            return worldToScreen.get().transform(positionProfil.get(), 0).getX();
-        }, positionProfil));
+        line.layoutXProperty().bind(Bindings.createDoubleBinding(()->
+                worldToScreen.get().transform(positionProfil.get(), 0).getX(),
+                positionProfil,
+                worldToScreen));
 
-        line.startYProperty().bind(Bindings.select(rectangleBleu.get(), "minY"));
-        line.endYProperty().bind(Bindings.select(rectangleBleu.get(), "maxY"));
+        line.startYProperty().bind(Bindings.select(rectangleBleu, "minY"));
+        line.endYProperty().bind(Bindings.select(rectangleBleu, "maxY"));
         line.visibleProperty().bind(positionProfil.greaterThanOrEqualTo(0));
 
         //affichage des stats:
@@ -102,6 +105,14 @@ public final class ElevationProfileManager {
                 profil.get().minElevation(),
                 profil.get().maxElevation());
         textVBox.setText(stats);
+
+        //Interractions entre la souris et le pane
+        pane.setOnMouseMoved(event ->{
+            double nouvellePosition = (int) screenToWorld.get().transform(event.getX(), 0).getX();
+            mousePositionOnProfileProperty.set(nouvellePosition);
+
+        } );
+        pane.setOnMouseExited(observable -> mousePositionOnProfileProperty.set(Double.NaN));
     }
 
 
@@ -257,8 +268,13 @@ public final class ElevationProfileManager {
         return this.borderPane;
     }
 
-    public ReadOnlyIntegerProperty mousePositionOnProfileProperty(){
-        return null;
+    /**
+     * Accesseur de la position le long du profil de la souris, à l'entier le plus près.
+     *
+     * @return La position sur le profil.
+     */
+    public ReadOnlyDoubleProperty mousePositionOnProfileProperty(){
+        return (ReadOnlyDoubleProperty) mousePositionOnProfileProperty;
     }
 
 
