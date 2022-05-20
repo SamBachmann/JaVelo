@@ -1,6 +1,7 @@
 package ch.epfl.javelo.gui;
 
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.routing.ElevationProfile;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
@@ -8,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -78,7 +80,7 @@ public final class ElevationProfileManager {
             return worldToScreen.get().transform(positionProfil.get(), 0).getX();
         }, positionProfil));
 
-        line.startXProperty().bind(Bindings.select(rectangleBleu.get(), "minY"));
+        line.startYProperty().bind(Bindings.select(rectangleBleu.get(), "minY"));
         line.endYProperty().bind(Bindings.select(rectangleBleu.get(), "maxY"));
         line.visibleProperty().bind(positionProfil.greaterThanOrEqualTo(0));
 
@@ -137,10 +139,11 @@ public final class ElevationProfileManager {
 
         dessinProfil.getPoints().setAll(listeDePoints);
 
+        //double test = worldToScreen.get().transform(0, 287.5596923828125).getY();
+        //System.out.println("valeur de 287 en javafx : " + test);
 
-        Path path = new Path();
-
-        double deltaElevation = worldToScreen.get().deltaTransform(0, profil.get().maxElevation() - profil.get().minElevation()).getY();
+        double deltaElevation = profil.get().maxElevation() - profil.get().minElevation();
+        System.out.println("Delta élevation totale : " + deltaElevation);
 
         int[] POS_STEPS =
                 { 1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000 };
@@ -149,20 +152,59 @@ public final class ElevationProfileManager {
 
         int ecartAltitude = ELE_STEPS[9];
 
+        double valeurminimale = 25;
+        System.out.println("Valeur minimale : " + valeurminimale);
+
         for (Integer step : ELE_STEPS) {
-            if ((deltaElevation / step) >= 25) {
-               ecartAltitude = step;
-               break;
+
+            System.out.println("step : " + step);
+
+            double nombreDeLignes = Math2.ceilDiv((int) Math.ceil(deltaElevation), step);
+            System.out.println("Nombre de lignes : " + nombreDeLignes);
+
+            double nouvelleDeltaElevation = worldToScreen.get().transform(0, deltaElevation).getY();
+            System.out.println("Nouvelle Delta Elevation : " + nouvelleDeltaElevation);
+
+            double ecartentreligne = Math.ceil(nouvelleDeltaElevation) / nombreDeLignes;
+            System.out.println("Écart entre lignes : " + ecartentreligne);
+
+            if (ecartentreligne >= valeurminimale) {
+                ecartAltitude = step;
+                break;
             }
         }
+        //System.out.println(ecartAltitude);
+        //System.out.println("p1Y : " + p1.getY());
+        //System.out.println("p2Y : " + p2.getY());
 
+        System.out.println("y min en reel : " + profil.get().minElevation());
         double y = profil.get().minElevation();
-        while (y < profil.get().maxElevation()) {
+
+        Path grille = new Path();
+        this.pane.getChildren().add(grille);
+        grille.setId("grid");
+
+        System.out.println("while : " + worldToScreen.get().transform(0, profil.get().maxElevation()).getY());
+        while (y <= profil.get().maxElevation()) {
             y = y + ecartAltitude;
-            PathElement ligneextremite1 = new MoveTo(0,y);
-            PathElement ligneextremite2 = new LineTo(p2.getX(), y);
+
+            double yEnPixels = worldToScreen.get().transform(0, y).getY();
+
+            PathElement ligneextremite1 = new MoveTo(insets.getLeft(),yEnPixels);
+            System.out.println("Extremite ligne gauche : " + ligneextremite1);
+            grille.getElements().add(ligneextremite1);
+
+            PathElement ligneextremite2 = new LineTo(p2.getX(), yEnPixels);
+            System.out.println("Extremite ligne droite : " + ligneextremite2);
+            grille.getElements().add(ligneextremite2);
         }
 
+
+
+
+
+
+        //System.out.println(path.getElements());
     }
 
 
@@ -176,10 +218,6 @@ public final class ElevationProfileManager {
 
         Text textVBox = new Text();
         vBox.getChildren().add(textVBox);
-
-        Path grille = new Path();
-        this.pane.getChildren().add(grille);
-        grille.setId("grid");
 
         Group group = new Group();
         this.pane.getChildren().add(group);
@@ -203,7 +241,7 @@ public final class ElevationProfileManager {
     }
 
     /**
-     * Accesseur du Pane contenant le profil et les infos corespondantes.
+     * Accesseur du Pane contenant le profil et les infos correspondantes.
      *
      * @return Le Pane du profil
      */
