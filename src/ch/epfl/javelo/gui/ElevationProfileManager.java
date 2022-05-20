@@ -156,7 +156,7 @@ public final class ElevationProfileManager {
                 rectangleBleu.get().getMaxY()));
 
         // parcourir tous les pixels
-        for (int x = (int) rectangleBleu.get().getMinX(); x <= rectangleBleu.get().getWidth(); ++x ){
+        for (int x = (int) rectangleBleu.get().getMinX(); x <= rectangleBleu.get().getMaxX(); ++x ){
             double xItineraire = screenToWorld.transform(x, 0).getX();
             double elevationAtx = profil.get().elevationAt(xItineraire);
 
@@ -201,9 +201,7 @@ public final class ElevationProfileManager {
                 break;
             }
         }
-        //System.out.println(ecartAltitude);
-        //System.out.println("p1Y : " + p1.getY());
-        //System.out.println("p2Y : " + p2.getY());
+
 
         System.out.println("y min en reel : " + profil.get().minElevation());
         double y = profil.get().minElevation();
