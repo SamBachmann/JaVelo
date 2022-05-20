@@ -34,13 +34,13 @@ public final class ElevationProfileManager {
 
     private final BorderPane borderPane;
     private final Pane pane;
-    private Line line;
     private final ObjectProperty<Transform> screenToWorld = new SimpleObjectProperty<>();
     private final ObjectProperty<Transform> worldToScreen = new SimpleObjectProperty<>();
     private final ObjectProperty<Rectangle2D> rectangleBleu = new SimpleObjectProperty<>();
     private final DoubleProperty mousePositionOnProfileProperty = new SimpleDoubleProperty();
-
     private final Polygon dessinProfil;
+    private final Path grille;
+
 
     /**
      * Constructeur d'ElevationProfileManager
@@ -51,17 +51,38 @@ public final class ElevationProfileManager {
     public ElevationProfileManager(ReadOnlyObjectProperty<ElevationProfile> profil,
                                    ReadOnlyDoubleProperty positionProfil) {
         this.pane = new Pane();
-        this.borderPane = new BorderPane();
-
         //Définir des dimentions par défauts si elles ne sont pas définies au démarrage
         pane.setPrefWidth(600);
         pane.setPrefHeight(300);
 
+        this.borderPane = new BorderPane();
         this.borderPane.getStylesheets().add("elevation_profile.css");
         this.borderPane.setCenter(this.pane);
 
+        Group group = new Group();
+        this.pane.getChildren().add(group);
+
+        Text text1 = new Text();
+        text1.getStyleClass().add("grid_label");
+        text1.getStyleClass().add("horizontal");
+        group.getChildren().add(text1);
+
+        Text text2 = new Text();
+        text2.getStyleClass().add("grid_label");
+        text2.getStyleClass().add("vertical");
+        group.getChildren().add(text2);
+
         this.dessinProfil = new Polygon();
-        initHierarchie();
+        dessinProfil.setId("profile");
+        this.pane.getChildren().add(dessinProfil);
+
+        this.grille = new Path();
+        this.pane.getChildren().add(grille);
+        grille.setId("grid");
+
+        Line line = new Line();
+        this.pane.getChildren().add(line);
+
         //suite de l'initialisation
         VBox vBox = new VBox();
         vBox.setId("profile_data");
@@ -72,6 +93,7 @@ public final class ElevationProfileManager {
 
         Insets insets = new Insets(10, 10, 20, 40);
 
+        //binding
         rectangleBleu.bind(Bindings.createObjectBinding(() ->
                         new Rectangle2D(insets.getLeft(),insets.getTop(),
                                 Math.max(pane.getWidth() - insets.getRight() - insets.getLeft(), 0),
@@ -81,10 +103,6 @@ public final class ElevationProfileManager {
         dessineProfil(profil,insets);
         rectangleBleu.addListener((observable, oldValue, newValue) -> dessineProfil(profil, insets));
 
-
-        //pane.widthProperty().addListener(observable -> dessineProfil(profil, insets));
-
-        //binding
 
         line.layoutXProperty().bind(Bindings.createDoubleBinding(()->
                 worldToScreen.get().transform(positionProfil.get(), 0).getX(),
@@ -207,11 +225,7 @@ public final class ElevationProfileManager {
 
         //System.out.println("y min en world : " + profil.get().minElevation());
         double y = Math2.ceilDiv((int) profil.get().minElevation(), ecartAltitude) * ecartAltitude;
-
-        Path grille = new Path();
-        this.pane.getChildren().add(grille);
-        grille.setId("grid");
-
+        grille.getElements().clear();
         //System.out.println("while : " + worldToScreen.get().transform(0, profil.get().maxElevation()).getY());
         System.out.println("valeur de y : " + y);
         while (y <= profil.get().maxElevation()) {
@@ -228,37 +242,7 @@ public final class ElevationProfileManager {
             grille.getElements().add(ligneextremite2);
         }
 
-
-
         //System.out.println(path.getElements());
-    }
-
-
-    /**
-     * Méthode privée appelée dans le constructeur qui crée la hiérarchie javaFX des éléments.
-     */
-    private void initHierarchie() {
-
-
-        Group group = new Group();
-        this.pane.getChildren().add(group);
-
-        Text text1 = new Text();
-        text1.getStyleClass().add("grid_label");
-        text1.getStyleClass().add("horizontal");
-        group.getChildren().add(text1);
-
-        Text text2 = new Text();
-        text2.getStyleClass().add("grid_label");
-        text2.getStyleClass().add("vertical");
-        group.getChildren().add(text2);
-
-        dessinProfil.setId("profile");
-        this.pane.getChildren().add(dessinProfil);
-
-        this.line = new Line();
-        this.pane.getChildren().add(line);
-
     }
 
     /**
