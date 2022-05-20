@@ -78,8 +78,8 @@ public final class ElevationProfileManager {
                                 Math.max(pane.getHeight() - insets.getTop() - insets.getBottom(), 0)),
                 pane.widthProperty(),
                 pane.heightProperty()));
-
-        dessineProfil(profil, insets);
+        dessineProfil(profil,insets);
+        rectangleBleu.addListener((observable, oldValue, newValue) -> dessineProfil(profil, insets));
 
 
         //pane.widthProperty().addListener(observable -> dessineProfil(profil, insets));
@@ -126,19 +126,19 @@ public final class ElevationProfileManager {
      */
     private void dessineProfil(ReadOnlyObjectProperty<ElevationProfile> profil, Insets insets) {
         //Point bas gauche de l'affichage du profil
-        Point2D p1 = new Point2D(insets.getLeft(), Math.max(pane.getHeight(), 300) - insets.getBottom());
+        //Point2D p1 = new Point2D(insets.getLeft(), Math.max(pane.getHeight(), 300) - insets.getBottom());
         //Point haut droite de l'affichage du profil
-        Point2D p2 =  new Point2D(Math.max(pane.getWidth(), 600) - insets.getRight(), insets.getTop());
+        //Point2D p2 =  new Point2D(Math.max(pane.getWidth(), 600) - insets.getRight(), insets.getTop());
 
-        double deltaYworld = profil.get().maxElevation() - profil.get().minElevation();
+        double deltaYworld = profil.get().minElevation() - profil.get().maxElevation();
         double deltaXworld = profil.get().length();
 
-        double coeffX = deltaXworld / (p2.getX() - p1.getX());
-        double coeffY = deltaYworld / (p2.getY() - p1.getY());
+        double coeffX = deltaXworld / rectangleBleu.get().getWidth();
+        double coeffY = deltaYworld / (rectangleBleu.get().getHeight());
 
         //Fonctions de transformations écran-réalité
         Affine screenToWorld = new Affine();
-        screenToWorld.prependTranslation(- p1.getX(), - p2.getY());
+        screenToWorld.prependTranslation(- rectangleBleu.get().getMinX(), - rectangleBleu.get().getMinY());
         screenToWorld.prependScale(coeffX, coeffY);
         screenToWorld.prependTranslation(0, profil.get().maxElevation());
         this.screenToWorld.set(screenToWorld);
@@ -150,10 +150,13 @@ public final class ElevationProfileManager {
             throw new Error();
         }
 
-        List<Double> listeDePoints = new ArrayList<>(List.of(p2.getX(), p1.getY(), p1.getX(), p1.getY()));
+        List<Double> listeDePoints = new ArrayList<>(List.of(rectangleBleu.get().getMaxX(),
+                rectangleBleu.get().getMaxY(),
+                rectangleBleu.get().getMinX(),
+                rectangleBleu.get().getMaxY()));
 
         // parcourir tous les pixels
-        for (int x = (int) p1.getX(); x <= p2.getX(); ++x ){
+        for (int x = (int) rectangleBleu.get().getMinX(); x <= rectangleBleu.get().getWidth(); ++x ){
             double xItineraire = screenToWorld.transform(x, 0).getX();
             double elevationAtx = profil.get().elevationAt(xItineraire);
 
@@ -219,7 +222,7 @@ public final class ElevationProfileManager {
             System.out.println("Extremite ligne gauche : " + ligneextremite1);
             grille.getElements().add(ligneextremite1);
 
-            PathElement ligneextremite2 = new LineTo(p2.getX(), yEnPixels);
+            PathElement ligneextremite2 = new LineTo(rectangleBleu.get().getMaxX(), yEnPixels);
             System.out.println("Extremite ligne droite : " + ligneextremite2);
             grille.getElements().add(ligneextremite2);
         }
