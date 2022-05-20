@@ -4,6 +4,7 @@ import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -72,36 +73,35 @@ public final class BaseMapManager {
         //pane.setPickOnBounds(false);
 
         //interaction du zoom
+        SimpleLongProperty minScrollTime = new SimpleLongProperty();
+
         pane.setOnScroll(event -> {
-
             int zoom = this.parametresCarte.get().zoom();
-            int zoom1 = (int) Math2.clamp(ZOOM_MIN_VALUE, Math.round(zoom + event.getDeltaY()), ZOOM_MAX_VALUE);
-            int zoom2 = 0;
-            if (event.getDeltaY() > 0) {
-                zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom + 1, ZOOM_MAX_VALUE);
-                System.out.println(zoom2);
-            } else {
-                if (event.getDeltaY() < 0) {
-                    zoom2 = Math2.clamp(ZOOM_MIN_VALUE, zoom - 1, ZOOM_MAX_VALUE);
-                    System.out.println(zoom2);
-                }
-            }
+            if (event.getDeltaY() == 0d) return;
+            long currentTime = System.currentTimeMillis();
+            if (currentTime < minScrollTime.get()) return;
+            minScrollTime.set(currentTime + 200);
+            int zoomDelta = (int) Math.signum(event.getDeltaY());
+            System.out.println("zoom delta : " + zoomDelta);
 
-            int deltaZoom = zoom2 - zoom;
-            if (deltaZoom != 0){
+            int newZoom = Math2.clamp(ZOOM_MIN_VALUE, zoom + zoomDelta, ZOOM_MAX_VALUE);
+            System.out.println(newZoom);
+
+            if (newZoom > 8 && newZoom <19) {
                 PointWebMercator pointclic = parametresCarte.get().pointAt2(event.getX(), event.getY());
                 double decalageX = pointclic.xAtZoomLevel(zoom) - parametresCarte.get().xHautGauche();
                 double decalageY = pointclic.yAtZoomLevel(zoom) - parametresCarte.get().yHautGauche();
 
-                double newX = pointclic.xAtZoomLevel(zoom) - Math.scalb(decalageX, -deltaZoom);
-                double newY = pointclic.yAtZoomLevel(zoom) - Math.scalb(decalageY, -deltaZoom);
+                double newX = pointclic.xAtZoomLevel(zoom) - Math.scalb(decalageX, -zoomDelta);
+                double newY = pointclic.yAtZoomLevel(zoom) - Math.scalb(decalageY, -zoomDelta);
 
-                double newXzoom = Math.scalb(newX, deltaZoom);
-                double newYzoom = Math.scalb(newY, deltaZoom);
+                double newXzoom = Math.scalb(newX, zoomDelta);
+                double newYzoom = Math.scalb(newY, zoomDelta);
 
-                MapViewParameters newMapViewParameters = new MapViewParameters(zoom2, newXzoom, newYzoom);
+                MapViewParameters newMapViewParameters = new MapViewParameters(newZoom, newXzoom, newYzoom);
                 this.parametresCarte.set(newMapViewParameters);
             }
+
         } );
 
         dessinCarte();
