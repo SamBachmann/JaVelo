@@ -8,6 +8,7 @@ import javafx.beans.property.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -40,6 +41,7 @@ public final class ElevationProfileManager {
     private final DoubleProperty mousePositionOnProfileProperty = new SimpleDoubleProperty();
     private final Polygon dessinProfil;
     private final Path grille;
+    private final Group textConteneur;
 
 
     /**
@@ -51,26 +53,24 @@ public final class ElevationProfileManager {
     public ElevationProfileManager(ReadOnlyObjectProperty<ElevationProfile> profil,
                                    ReadOnlyDoubleProperty positionProfil) {
         this.pane = new Pane();
-        //Définir des dimentions par défauts si elles ne sont pas définies au démarrage
-        pane.setPrefWidth(600);
-        pane.setPrefHeight(300);
 
         this.borderPane = new BorderPane();
         this.borderPane.getStylesheets().add("elevation_profile.css");
         this.borderPane.setCenter(this.pane);
 
-        Group group = new Group();
-        this.pane.getChildren().add(group);
+        this.textConteneur = new Group();
+        this.pane.getChildren().add(textConteneur);
 
         Text text1 = new Text();
         text1.getStyleClass().add("grid_label");
         text1.getStyleClass().add("horizontal");
-        group.getChildren().add(text1);
+        textConteneur.getChildren().add(text1);
+
 
         Text text2 = new Text();
         text2.getStyleClass().add("grid_label");
         text2.getStyleClass().add("vertical");
-        group.getChildren().add(text2);
+        textConteneur.getChildren().add(text2);
 
         this.dessinProfil = new Polygon();
         dessinProfil.setId("profile");
@@ -118,7 +118,7 @@ public final class ElevationProfileManager {
                 "     Montée : %.0f m" +
                 "     Descente : %.0f m" +
                 "     Altitude : de %.0f m à %.0f m",
-                profil.get().length(),
+                profil.get().length() / 1000,
                 profil.get().totalAscent(),
                 profil.get().totalDescent(),
                 profil.get().minElevation(),
@@ -143,11 +143,6 @@ public final class ElevationProfileManager {
      * @param insets Les marges latérales et verticales autour du profil.
      */
     private void dessineProfil(ReadOnlyObjectProperty<ElevationProfile> profil, Insets insets) {
-        //Point bas gauche de l'affichage du profil
-        //Point2D p1 = new Point2D(insets.getLeft(), Math.max(pane.getHeight(), 300) - insets.getBottom());
-        //Point haut droite de l'affichage du profil
-        //Point2D p2 =  new Point2D(Math.max(pane.getWidth(), 600) - insets.getRight(), insets.getTop());
-
         double deltaYworld = profil.get().minElevation() - profil.get().maxElevation();
         double deltaXworld = profil.get().length();
 
@@ -248,6 +243,7 @@ public final class ElevationProfileManager {
 
         while (y <= profil.get().maxElevation()) {
 
+            y = y + ecartAltitude;
             System.out.println("valeur de y : " + y);
 
             double yEnPixels = worldToScreen.get().transform(0, y).getY();
@@ -259,6 +255,16 @@ public final class ElevationProfileManager {
             grille.getElements().add(ligneExtremite2);
 
             y = y + ecartAltitude;
+            PathElement ligneextremite1 = new MoveTo(insets.getLeft(),yEnPixels);
+            grille.getElements().add(ligneextremite1);
+            Text text2 = new Text();
+            text2.getStyleClass().add("grid_label");
+            text2.getStyleClass().add("vertical");
+            text2.setTextOrigin(VPos.CENTER);
+            text2.setLayoutY(yEnPixels);
+            textConteneur.getChildren().add(text2);
+            PathElement ligneextremite2 = new LineTo(rectangleBleu.get().getMaxX(), yEnPixels);
+            grille.getElements().add(ligneextremite2);
         }
 
         while (x <= profil.get().length()) {
