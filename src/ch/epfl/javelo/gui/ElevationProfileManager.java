@@ -72,18 +72,19 @@ public final class ElevationProfileManager {
 
         Insets insets = new Insets(10, 10, 20, 40);
 
+        rectangleBleu.bind(Bindings.createObjectBinding(() ->
+                        new Rectangle2D(insets.getLeft(),insets.getTop(),
+                                Math.max(pane.getWidth() - insets.getRight() - insets.getLeft(), 0),
+                                Math.max(pane.getHeight() - insets.getTop() - insets.getBottom(), 0)),
+                pane.widthProperty(),
+                pane.heightProperty()));
+
         dessineProfil(profil, insets);
 
 
         //pane.widthProperty().addListener(observable -> dessineProfil(profil, insets));
 
         //binding
-        rectangleBleu.bind(Bindings.createObjectBinding(() ->
-             new Rectangle2D(insets.getLeft(),insets.getTop(),
-                    Math.max(pane.getWidth() - insets.getRight() - insets.getLeft(), 0),
-                    Math.max(pane.getHeight() - insets.getTop() - insets.getBottom(), 0)),
-                pane.widthProperty(),
-                pane.heightProperty()));
 
         line.layoutXProperty().bind(Bindings.createDoubleBinding(()->
                 worldToScreen.get().transform(positionProfil.get(), 0).getX(),
@@ -222,9 +223,6 @@ public final class ElevationProfileManager {
             System.out.println("Extremite ligne droite : " + ligneextremite2);
             grille.getElements().add(ligneextremite2);
         }
-
-
-
 
 
 
