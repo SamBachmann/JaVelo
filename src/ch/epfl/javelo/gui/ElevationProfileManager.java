@@ -59,6 +59,13 @@ public final class ElevationProfileManager {
 
         this.dessinProfil = new Polygon();
         initHierarchie();
+        //suite de l'initialisation
+        VBox vBox = new VBox();
+        vBox.setId("profile_data");
+        this.borderPane.setBottom(vBox);
+
+        Text textVBox = new Text();
+        vBox.getChildren().add(textVBox);
 
         Insets insets = new Insets(10, 10, 20, 40);
 
@@ -78,15 +85,21 @@ public final class ElevationProfileManager {
             return worldToScreen.get().transform(positionProfil.get(), 0).getX();
         }, positionProfil));
 
-        line.startXProperty().bind(Bindings.select(rectangleBleu.get(), "minY"));
+        line.startYProperty().bind(Bindings.select(rectangleBleu.get(), "minY"));
         line.endYProperty().bind(Bindings.select(rectangleBleu.get(), "maxY"));
         line.visibleProperty().bind(positionProfil.greaterThanOrEqualTo(0));
 
         //affichage des stats:
-        String stats = "Longueur : %.1f km" +
+        String stats = String.format("Longueur : %.1f km" +
                 "     Montée : %.0f m" +
                 "     Descente : %.0f m" +
-                "     Altitude : de %.0f m à %.0f m" ;
+                "     Altitude : de %.0f m à %.0f m",
+                profil.get().length(),
+                profil.get().totalAscent(),
+                profil.get().totalDescent(),
+                profil.get().minElevation(),
+                profil.get().maxElevation());
+        textVBox.setText(stats);
     }
 
 
@@ -170,12 +183,7 @@ public final class ElevationProfileManager {
      * Méthode privée appelée dans le constructeur qui crée la hiérarchie javaFX des éléments.
      */
     private void initHierarchie() {
-        VBox vBox = new VBox();
-        vBox.setId("profile_data");
-        this.borderPane.setBottom(vBox);
 
-        Text textVBox = new Text();
-        vBox.getChildren().add(textVBox);
 
         Path grille = new Path();
         this.pane.getChildren().add(grille);
