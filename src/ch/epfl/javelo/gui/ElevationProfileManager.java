@@ -187,13 +187,15 @@ public final class ElevationProfileManager {
 
             System.out.println("step : " + step);
 
-            double nombreDeLignes = Math2.ceilDiv((int) Math.ceil(deltaElevation), step);
+            double nombreDeLignes = Math.ceil(deltaElevation / step);
             System.out.println("Nombre de lignes : " + nombreDeLignes);
 
-            double nouvelleDeltaElevation = worldToScreen.get().transform(0, deltaElevation).getY();
-            System.out.println("Nouvelle Delta Elevation : " + nouvelleDeltaElevation);
+            //double nouvelleDeltaElevation = worldToScreen.get().transform(0, deltaElevation).getY();
+            //System.out.println("Nouvelle Delta Elevation : " + nouvelleDeltaElevation);
 
-            double ecartentreligne = Math.ceil(nouvelleDeltaElevation) / nombreDeLignes;
+            double hauteurRectangleBleu = this.pane.getHeight() - insets.getBottom() - insets.getTop();
+            System.out.println("hauteur rectangle bleu : " + hauteurRectangleBleu);
+            double ecartentreligne = Math.ceil(hauteurRectangleBleu) / nombreDeLignes;
             System.out.println("Écart entre lignes : " + ecartentreligne);
 
             if (ecartentreligne >= valeurminimale) {
@@ -203,25 +205,26 @@ public final class ElevationProfileManager {
         }
 
 
-        System.out.println("y min en reel : " + profil.get().minElevation());
-        double y = profil.get().minElevation();
+        //System.out.println("y min en world : " + profil.get().minElevation());
+        double y = Math2.ceilDiv((int) profil.get().minElevation(), ecartAltitude) * ecartAltitude;
 
         Path grille = new Path();
         this.pane.getChildren().add(grille);
         grille.setId("grid");
 
-        System.out.println("while : " + worldToScreen.get().transform(0, profil.get().maxElevation()).getY());
+        //System.out.println("while : " + worldToScreen.get().transform(0, profil.get().maxElevation()).getY());
+        System.out.println("valeur de y : " + y);
         while (y <= profil.get().maxElevation()) {
+
             y = y + ecartAltitude;
+            System.out.println("valeur de y : " + y);
 
             double yEnPixels = worldToScreen.get().transform(0, y).getY();
 
             PathElement ligneextremite1 = new MoveTo(insets.getLeft(),yEnPixels);
-            System.out.println("Extremite ligne gauche : " + ligneextremite1);
             grille.getElements().add(ligneextremite1);
 
             PathElement ligneextremite2 = new LineTo(rectangleBleu.get().getMaxX(), yEnPixels);
-            System.out.println("Extremite ligne droite : " + ligneextremite2);
             grille.getElements().add(ligneextremite2);
         }
 
