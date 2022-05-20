@@ -189,7 +189,7 @@ public final class ElevationProfileManager {
         //System.out.println("valeur de 287 en javafx : " + test);
 
         double deltaElevation = profil.get().maxElevation() - profil.get().minElevation();
-        System.out.println("Delta élevation totale : " + deltaElevation);
+        double deltaWidth = profil.get().length();
 
         int[] POS_STEPS =
                 { 1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000 };
@@ -197,9 +197,10 @@ public final class ElevationProfileManager {
                 { 5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000 };
 
         int ecartAltitude = ELE_STEPS[9];
+        int ecartColonnes = POS_STEPS[6];
 
-        double valeurminimale = 25;
-        System.out.println("Valeur minimale : " + valeurminimale);
+        double valeurminimaleElevation = 25;
+        double valeurminimaleColonnes = 50;
 
         for (Integer step : ELE_STEPS) {
 
@@ -208,41 +209,72 @@ public final class ElevationProfileManager {
             double nombreDeLignes = Math.ceil(deltaElevation / step);
             System.out.println("Nombre de lignes : " + nombreDeLignes);
 
-            //double nouvelleDeltaElevation = worldToScreen.get().transform(0, deltaElevation).getY();
-            //System.out.println("Nouvelle Delta Elevation : " + nouvelleDeltaElevation);
-
             double hauteurRectangleBleu = this.pane.getHeight() - insets.getBottom() - insets.getTop();
             System.out.println("hauteur rectangle bleu : " + hauteurRectangleBleu);
+
             double ecartentreligne = Math.ceil(hauteurRectangleBleu) / nombreDeLignes;
             System.out.println("Écart entre lignes : " + ecartentreligne);
 
-            if (ecartentreligne >= valeurminimale) {
+            if (ecartentreligne >= valeurminimaleElevation) {
                 ecartAltitude = step;
                 break;
             }
         }
 
+        for (Integer step : POS_STEPS) {
 
-        //System.out.println("y min en world : " + profil.get().minElevation());
+            System.out.println("step : " + step);
+
+            double nombreDeColonnes = Math.ceil(deltaWidth / step);
+            System.out.println("Nombre de lignes : " + nombreDeColonnes);
+
+            double largeurRectangleBleu = this.pane.getWidth() - insets.getLeft() - insets.getRight();
+            System.out.println("hauteur rectangle bleu : " + largeurRectangleBleu);
+
+            double ecartentreColonnes = Math.ceil(largeurRectangleBleu) / nombreDeColonnes;
+            System.out.println("Écart entre lignes : " + ecartentreColonnes);
+
+            if (ecartentreColonnes >= valeurminimaleColonnes) {
+                ecartColonnes = step;
+                break;
+            }
+        }
+
+
+
         double y = Math2.ceilDiv((int) profil.get().minElevation(), ecartAltitude) * ecartAltitude;
+        double x = 0.0;
         grille.getElements().clear();
-        //System.out.println("while : " + worldToScreen.get().transform(0, profil.get().maxElevation()).getY());
-        System.out.println("valeur de y : " + y);
+
         while (y <= profil.get().maxElevation()) {
 
-            y = y + ecartAltitude;
             System.out.println("valeur de y : " + y);
 
             double yEnPixels = worldToScreen.get().transform(0, y).getY();
 
-            PathElement ligneextremite1 = new MoveTo(insets.getLeft(),yEnPixels);
-            grille.getElements().add(ligneextremite1);
+            PathElement ligneExtremite1 = new MoveTo(insets.getLeft(),yEnPixels);
+            grille.getElements().add(ligneExtremite1);
 
-            PathElement ligneextremite2 = new LineTo(rectangleBleu.get().getMaxX(), yEnPixels);
-            grille.getElements().add(ligneextremite2);
+            PathElement ligneExtremite2 = new LineTo(rectangleBleu.get().getMaxX(), yEnPixels);
+            grille.getElements().add(ligneExtremite2);
+
+            y = y + ecartAltitude;
         }
 
-        //System.out.println(path.getElements());
+        while (x <= profil.get().length()) {
+
+            System.out.println("valeur de x : " + x);
+
+            double xEnPixels = worldToScreen.get().transform(x, 0).getX();
+
+            PathElement colonneExtremite1 = new MoveTo(xEnPixels,rectangleBleu.get().getMaxY());
+            grille.getElements().add(colonneExtremite1);
+
+            PathElement colonneExtremite2 = new LineTo(xEnPixels, rectangleBleu.get().getMinY());
+            grille.getElements().add(colonneExtremite2);
+
+            x = x + ecartColonnes;
+        }
     }
 
     /**
