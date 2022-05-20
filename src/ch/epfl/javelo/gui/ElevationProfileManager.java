@@ -14,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
@@ -90,6 +91,7 @@ public final class ElevationProfileManager {
                 pane.widthProperty(),
                 pane.heightProperty()));
         dessineProfil(profil,insets);
+
         rectangleBleu.addListener((observable, oldValue, newValue) -> dessineProfil(profil, insets));
 
 
@@ -118,8 +120,9 @@ public final class ElevationProfileManager {
         pane.setOnMouseMoved(event ->{
             double nouvellePosition = (int) screenToWorld.get().transform(event.getX(), 0).getX();
             mousePositionOnProfileProperty.set(nouvellePosition);
-
+            //System.out.println(event.getX());
         } );
+
         pane.setOnMouseExited(observable -> mousePositionOnProfileProperty.set(Double.NaN));
     }
 
@@ -169,8 +172,6 @@ public final class ElevationProfileManager {
 
         dessinProfil.getPoints().setAll(listeDePoints);
 
-        //double test = worldToScreen.get().transform(0, 287.5596923828125).getY();
-        //System.out.println("valeur de 287 en javafx : " + test);
 
         double deltaElevation = profil.get().maxElevation() - profil.get().minElevation();
         double deltaWidth = profil.get().length();
@@ -218,7 +219,7 @@ public final class ElevationProfileManager {
         double x = 0.0;
 
         grille.getElements().clear();
-
+        textConteneur.getChildren().clear();
         while (y <= profil.get().maxElevation()) {
 
             double yEnPixels = worldToScreen.get().transform(0, y).getY();
@@ -229,14 +230,22 @@ public final class ElevationProfileManager {
             PathElement ligneExtremite2 = new LineTo(rectangleBleu.get().getMaxX(), yEnPixels);
             grille.getElements().add(ligneExtremite2);
 
-            y = y + ecartAltitude;
 
+            PathElement ligneextremite1 = new MoveTo(insets.getLeft(),yEnPixels);
+            grille.getElements().add(ligneextremite1);
             Text text2 = new Text();
+            text2.setFont(Font.font("Avenir", 10));
             text2.getStyleClass().add("grid_label");
             text2.getStyleClass().add("vertical");
             text2.setTextOrigin(VPos.CENTER);
+
             text2.setLayoutY(yEnPixels);
+
+            text2.setLayoutX(rectangleBleu.get().getMinX() + text2.prefWidth(0));
+            text2.setText(Integer.toString((int)y));
             textConteneur.getChildren().add(text2);
+
+            y = y + ecartAltitude;
         }
 
         while (x <= profil.get().length()) {
@@ -249,12 +258,20 @@ public final class ElevationProfileManager {
             PathElement colonneExtremite2 = new LineTo(xEnPixels, rectangleBleu.get().getMinY());
             grille.getElements().add(colonneExtremite2);
 
-            x = x + ecartColonnes;
-
             Text text1 = new Text();
+            text1.setFont(Font.font("Avenir", 10));
             text1.getStyleClass().add("grid_label");
             text1.getStyleClass().add("horizontal");
+            text1.setTextOrigin(VPos.TOP);
+
+            text1.setLayoutX(xEnPixels - text1.prefWidth(0));
+            text1.setLayoutY(rectangleBleu.get().getMaxY());
+            text1.setText(Integer.toString((int)x / 1000));
             textConteneur.getChildren().add(text1);
+
+            //textConteneur.getChildren().add(text1);
+
+            x = x + ecartColonnes;
         }
     }
 
