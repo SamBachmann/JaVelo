@@ -61,17 +61,6 @@ public final class ElevationProfileManager {
         this.textConteneur = new Group();
         this.pane.getChildren().add(textConteneur);
 
-        Text text1 = new Text();
-        text1.getStyleClass().add("grid_label");
-        text1.getStyleClass().add("horizontal");
-        textConteneur.getChildren().add(text1);
-
-
-        Text text2 = new Text();
-        text2.getStyleClass().add("grid_label");
-        text2.getStyleClass().add("vertical");
-        textConteneur.getChildren().add(text2);
-
         this.dessinProfil = new Polygon();
         dessinProfil.setId("profile");
         this.pane.getChildren().add(dessinProfil);
@@ -199,16 +188,11 @@ public final class ElevationProfileManager {
 
         for (Integer step : ELE_STEPS) {
 
-            System.out.println("step : " + step);
-
             double nombreDeLignes = Math.ceil(deltaElevation / step);
-            System.out.println("Nombre de lignes : " + nombreDeLignes);
 
             double hauteurRectangleBleu = this.pane.getHeight() - insets.getBottom() - insets.getTop();
-            System.out.println("hauteur rectangle bleu : " + hauteurRectangleBleu);
 
             double ecartentreligne = Math.ceil(hauteurRectangleBleu) / nombreDeLignes;
-            System.out.println("Écart entre lignes : " + ecartentreligne);
 
             if (ecartentreligne >= valeurminimaleElevation) {
                 ecartAltitude = step;
@@ -218,16 +202,11 @@ public final class ElevationProfileManager {
 
         for (Integer step : POS_STEPS) {
 
-            System.out.println("step : " + step);
-
             double nombreDeColonnes = Math.ceil(deltaWidth / step);
-            System.out.println("Nombre de lignes : " + nombreDeColonnes);
 
             double largeurRectangleBleu = this.pane.getWidth() - insets.getLeft() - insets.getRight();
-            System.out.println("hauteur rectangle bleu : " + largeurRectangleBleu);
 
             double ecartentreColonnes = Math.ceil(largeurRectangleBleu) / nombreDeColonnes;
-            System.out.println("Écart entre lignes : " + ecartentreColonnes);
 
             if (ecartentreColonnes >= valeurminimaleColonnes) {
                 ecartColonnes = step;
@@ -235,16 +214,12 @@ public final class ElevationProfileManager {
             }
         }
 
-
-
         double y = Math2.ceilDiv((int) profil.get().minElevation(), ecartAltitude) * ecartAltitude;
         double x = 0.0;
+
         grille.getElements().clear();
 
         while (y <= profil.get().maxElevation()) {
-
-            y = y + ecartAltitude;
-            System.out.println("valeur de y : " + y);
 
             double yEnPixels = worldToScreen.get().transform(0, y).getY();
 
@@ -255,21 +230,16 @@ public final class ElevationProfileManager {
             grille.getElements().add(ligneExtremite2);
 
             y = y + ecartAltitude;
-            PathElement ligneextremite1 = new MoveTo(insets.getLeft(),yEnPixels);
-            grille.getElements().add(ligneextremite1);
+
             Text text2 = new Text();
             text2.getStyleClass().add("grid_label");
             text2.getStyleClass().add("vertical");
             text2.setTextOrigin(VPos.CENTER);
             text2.setLayoutY(yEnPixels);
             textConteneur.getChildren().add(text2);
-            PathElement ligneextremite2 = new LineTo(rectangleBleu.get().getMaxX(), yEnPixels);
-            grille.getElements().add(ligneextremite2);
         }
 
         while (x <= profil.get().length()) {
-
-            System.out.println("valeur de x : " + x);
 
             double xEnPixels = worldToScreen.get().transform(x, 0).getX();
 
@@ -280,6 +250,11 @@ public final class ElevationProfileManager {
             grille.getElements().add(colonneExtremite2);
 
             x = x + ecartColonnes;
+
+            Text text1 = new Text();
+            text1.getStyleClass().add("grid_label");
+            text1.getStyleClass().add("horizontal");
+            textConteneur.getChildren().add(text1);
         }
     }
 
