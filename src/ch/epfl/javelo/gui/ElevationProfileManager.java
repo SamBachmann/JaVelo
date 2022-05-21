@@ -1,7 +1,6 @@
 package ch.epfl.javelo.gui;
 
 
-import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.routing.ElevationProfile;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
@@ -240,11 +239,11 @@ public final class ElevationProfileManager {
             text2.getStyleClass().add("grid_label");
             text2.getStyleClass().add("vertical");
             text2.setTextOrigin(VPos.CENTER);
+            text2.setText(Integer.toString((int)y));
 
             text2.setLayoutY(yEnPixels);
+            text2.setLayoutX(rectangleBleu.get().getMinX() - text2.prefWidth(0) - 2);
 
-            text2.setLayoutX(rectangleBleu.get().getMinX() + text2.prefWidth(0));
-            text2.setText(Integer.toString((int)y));
             textConteneur.getChildren().add(text2);
 
             y = y + ecartAltitude;
@@ -268,12 +267,11 @@ public final class ElevationProfileManager {
             text1.getStyleClass().add("horizontal");
             text1.setTextOrigin(VPos.TOP);
 
-            text1.setLayoutX(xEnPixels - text1.prefWidth(0));
             text1.setLayoutY(rectangleBleu.get().getMaxY());
             text1.setText(Integer.toString((int)x / 1000));
+            text1.setLayoutX(xEnPixels - text1.prefWidth(0)/2);
             textConteneur.getChildren().add(text1);
 
-            //textConteneur.getChildren().add(text1);
 
             x = x + ecartColonnes;
         }
