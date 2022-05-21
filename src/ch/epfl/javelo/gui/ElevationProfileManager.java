@@ -215,7 +215,9 @@ public final class ElevationProfileManager {
             }
         }
 
-        double y = Math2.ceilDiv((int) profil.get().minElevation(), ecartAltitude) * ecartAltitude;
+        double y = Math.ceil(profil.get().minElevation() / ecartAltitude) * ecartAltitude;
+        System.out.println(y);
+        System.out.println(profil.get().minElevation());
         double x = 0.0;
 
         grille.getElements().clear();
@@ -246,6 +248,8 @@ public final class ElevationProfileManager {
             textConteneur.getChildren().add(text2);
 
             y = y + ecartAltitude;
+
+
         }
 
         while (x <= profil.get().length()) {
