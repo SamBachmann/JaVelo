@@ -115,11 +115,19 @@ public final class ElevationProfileManager {
                 profil.get().maxElevation());
         textVBox.setText(stats);
 
-        //Interractions entre la souris et le pane
+        //Interactions entre la souris et le pane
         pane.setOnMouseMoved(event ->{
-            double nouvellePosition = (int) screenToWorld.get().transform(event.getX(), 0).getX();
-            mousePositionOnProfileProperty.set(nouvellePosition);
-            //System.out.println(event.getX());
+            // vérifier la position de la souris.
+            if (rectangleBleu.get().getMinX() < event.getX() && event.getX() < rectangleBleu.get().getMaxX()
+            && rectangleBleu.get().getMinY() < event.getY() && event.getY() < rectangleBleu.get().getMaxY() ){
+
+                double nouvellePosition = (int) screenToWorld.get().transform(event.getX(), 0).getX();
+                mousePositionOnProfileProperty.set(nouvellePosition);
+            }else{
+                mousePositionOnProfileProperty.set(Double.NaN);
+            }
+
+
         } );
 
         pane.setOnMouseExited(observable -> mousePositionOnProfileProperty.set(Double.NaN));
@@ -215,8 +223,8 @@ public final class ElevationProfileManager {
         }
 
         double y = Math.ceil(profil.get().minElevation() / ecartAltitude) * ecartAltitude;
-        System.out.println(y);
-        System.out.println(profil.get().minElevation());
+        //System.out.println(y);
+        //System.out.println(profil.get().minElevation());
         double x = 0.0;
 
         grille.getElements().clear();
