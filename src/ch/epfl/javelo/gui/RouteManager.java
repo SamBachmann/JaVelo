@@ -11,7 +11,6 @@ import javafx.scene.shape.Polyline;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Classe gérant l'affichage de l'itinéraire et certaines des interactions avec celui-ci.
@@ -27,18 +26,15 @@ public final class RouteManager {
 
     private final RouteBean routeBean;
     private final ObjectProperty<MapViewParameters> parametresCarte;
-    private final Consumer<String> errorHandler;
     private final Pane pane;
     private Polyline dessinItineraire;
     private Circle highlightPosition;
 
     public RouteManager (RouteBean routeBean,
-                         ObjectProperty<MapViewParameters> parametresCarte,
-                         Consumer<String> errorHandler ){
+                         ObjectProperty<MapViewParameters> parametresCarte){
 
         this.routeBean = routeBean;
         this.parametresCarte = parametresCarte;
-        this.errorHandler = errorHandler;
         this.pane = new Pane();
         this.dessinItineraire = new Polyline();
         this.highlightPosition = new Circle();
@@ -90,11 +86,10 @@ public final class RouteManager {
                 Waypoint newWaypoint = new Waypoint(pointWebMercatorCurseur.toPointCh(),
                         routeBean.route().nodeClosestTo(routeBean.highlightedPosition()));
 
-                if (routeBean.WaypointsListProperty().contains(newWaypoint)) {
-                    errorHandler.accept("Un point de passage est déjà présent à cet endroit !");
-                } else {
-                    routeBean.WaypointsListProperty().add(routeBean.route().indexOfSegmentAt(routeBean.highlightedPosition()) + 1, newWaypoint);
-                }
+                routeBean.WaypointsListProperty().add(
+                        routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition())+ 1, newWaypoint
+                );
+
             }
 
         });

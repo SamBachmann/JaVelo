@@ -38,7 +38,7 @@ public final class Stage9Test extends Application {
 
 
         Consumer<String> errorConsumer = new ErrorConsumer();
-
+        ErrorManager errorManager = new ErrorManager();
         RouteComputer routeComputer = new RouteComputer(graph,costFunction);
 
         RouteBean routeBean = new RouteBean(routeComputer);
@@ -47,7 +47,7 @@ public final class Stage9Test extends Application {
 
         BaseMapManager baseMapManager = new BaseMapManager(tileManager, waypointsManager, mapViewParametersP);
 
-        RouteManager routeManager = new RouteManager(routeBean,mapViewParametersP,errorConsumer);
+        RouteManager routeManager = new RouteManager(routeBean,mapViewParametersP);
 
         StackPane mainPane = new StackPane(baseMapManager.pane(), waypointsManager.pane(), routeManager.pane());
 
@@ -61,7 +61,10 @@ public final class Stage9Test extends Application {
     private static final class ErrorConsumer
             implements Consumer<String> {
         @Override
-        public void accept(String s) { System.out.println(s); }
+        public void accept(String s) {
+            ErrorManager errorManager = new ErrorManager();
+            errorManager.displayError(s);
+        }
     }
 }
 

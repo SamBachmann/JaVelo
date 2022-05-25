@@ -301,5 +301,4 @@ public final class ElevationProfileManager {
         return (ReadOnlyDoubleProperty) mousePositionOnProfileProperty;
     }
 
-
 }
