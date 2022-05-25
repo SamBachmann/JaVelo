@@ -26,7 +26,7 @@ import java.util.Locale;
  * <br>
  * 25/04/2022
  */
-public class GpxGenerator {
+public final class GpxGenerator {
     //Constructeur privé puisque la classe est non-instanciable.
     private GpxGenerator(){}
 
