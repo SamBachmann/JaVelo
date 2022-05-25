@@ -2,6 +2,8 @@ package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
+import ch.epfl.javelo.projection.PointWebMercator;
+import ch.epfl.javelo.routing.RoutePoint;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -58,8 +60,19 @@ public final class AnnotatedMapManager {
             double yEnWebMercator = positionActuelleDeLaSouris.getY();
 
             PointCh pointCh = this.mapViewParameters.get().pointAt2(xEnWebMercator, yEnWebMercator).toPointCh();
-            double positionItineraire = this.routeBean.route().pointClosestTo(pointCh).position();
-            this.position.set(positionItineraire);
+            RoutePoint sourisItineraire = this.routeBean.route().pointClosestTo(pointCh);
+            double positionItineraire = sourisItineraire.position();
+            double distanceToReference = sourisItineraire.distanceToReference();
+            PointCh routePointCh = sourisItineraire.point();
+            PointWebMercator ptWebMercator = PointWebMercator.ofPointCh(routePointCh);
+            double routePointChXEcran = this.mapViewParameters.get().viewX(ptWebMercator);
+            double routePointChYEcran = this.mapViewParameters.get().viewY(ptWebMercator);
+            Point2D point2DSurEcran = new Point2D(routePointChXEcran, routePointChYEcran);
+            if (positionActuelleDeLaSouris.distance(point2DSurEcran) <= 15) {
+                this.position.set(positionItineraire);
+            } else {
+                this.position.set(Double.NaN);
+            }
 
         });
 
