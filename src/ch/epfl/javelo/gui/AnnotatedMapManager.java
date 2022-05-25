@@ -15,15 +15,14 @@ import java.util.function.Consumer;
 
 public final class AnnotatedMapManager {
 
-    private BaseMapManager baseMapManager;
-    private WaypointsManager waypointsManager;
-    private RouteManager routeManager;
-    private StackPane stackPane;
-    private DoubleProperty position;
-    private ObjectProperty<Point2D> positionActuelleSouris;
-    MapViewParameters mapViewParameters = new MapViewParameters(12, 543200, 370650);
-
-    private RouteBean routeBean;
+    private final BaseMapManager baseMapManager;
+    private final WaypointsManager waypointsManager;
+    private final RouteManager routeManager;
+    private final StackPane stackPane;
+    private final DoubleProperty position;
+    private final ObjectProperty<Point2D> positionActuelleSouris;
+    private final MapViewParameters mapViewParameters = new MapViewParameters(12, 543200, 370650);
+    private final RouteBean routeBean;
 
     public AnnotatedMapManager(Graph graph, TileManager tileManager,
                                RouteBean routeBean, Consumer<String> errorConsumer) {
@@ -31,9 +30,9 @@ public final class AnnotatedMapManager {
 
         ObjectProperty<MapViewParameters> newMapViewParameters = new SimpleObjectProperty<>(this.mapViewParameters);
 
-        this.baseMapManager = new BaseMapManager(tileManager, waypointsManager, newMapViewParameters);
         this.waypointsManager = new WaypointsManager(graph, newMapViewParameters, routeBean.WaypointsListProperty(), errorConsumer);
-        this.routeManager = new RouteManager(routeBean, newMapViewParameters, errorConsumer);
+        this.baseMapManager = new BaseMapManager(tileManager, waypointsManager, newMapViewParameters);
+        this.routeManager = new RouteManager(routeBean, newMapViewParameters);
 
         Pane premierPane = this.baseMapManager.pane();
         Pane deuxiemePane = this.routeManager.pane();
@@ -43,6 +42,8 @@ public final class AnnotatedMapManager {
         this.stackPane.getStylesheets().add("map.css");
 
         this.routeBean = routeBean;
+        this.position = new SimpleDoubleProperty();
+        this.positionActuelleSouris = new SimpleObjectProperty<>();
     }
 
     public Pane pane() {
@@ -61,7 +62,7 @@ public final class AnnotatedMapManager {
 
             PointCh pointCh = this.mapViewParameters.pointAt2(xEnWebMercator, yEnWebMercator).toPointCh();
             double positionItineraire = this.routeBean.route().pointClosestTo(pointCh).position();
-            this.position = new SimpleDoubleProperty(positionItineraire);
+            this.position.set(positionItineraire);
 
         });
 
