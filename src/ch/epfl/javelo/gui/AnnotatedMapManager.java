@@ -2,7 +2,6 @@ package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
-import ch.epfl.javelo.routing.RoutePoint;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -21,18 +20,16 @@ public final class AnnotatedMapManager {
     private final StackPane stackPane;
     private final DoubleProperty position;
     private final ObjectProperty<Point2D> positionActuelleSouris;
-    private final MapViewParameters mapViewParameters = new MapViewParameters(12, 543200, 370650);
+    private final ObjectProperty<MapViewParameters> mapViewParameters = new SimpleObjectProperty<>();
     private final RouteBean routeBean;
 
     public AnnotatedMapManager(Graph graph, TileManager tileManager,
                                RouteBean routeBean, Consumer<String> errorConsumer) {
 
-
-        ObjectProperty<MapViewParameters> newMapViewParameters = new SimpleObjectProperty<>(this.mapViewParameters);
-
-        this.waypointsManager = new WaypointsManager(graph, newMapViewParameters, routeBean.WaypointsListProperty(), errorConsumer);
-        this.baseMapManager = new BaseMapManager(tileManager, waypointsManager, newMapViewParameters);
-        this.routeManager = new RouteManager(routeBean, newMapViewParameters);
+        this.mapViewParameters.set(new MapViewParameters(12, 543200, 370650));
+        this.waypointsManager = new WaypointsManager(graph, mapViewParameters, routeBean.WaypointsListProperty(), errorConsumer);
+        this.baseMapManager = new BaseMapManager(tileManager, waypointsManager, mapViewParameters);
+        this.routeManager = new RouteManager(routeBean, mapViewParameters);
 
         Pane premierPane = this.baseMapManager.pane();
         Pane deuxiemePane = this.routeManager.pane();
@@ -60,7 +57,7 @@ public final class AnnotatedMapManager {
             double xEnWebMercator = positionActuelleDeLaSouris.getX();
             double yEnWebMercator = positionActuelleDeLaSouris.getY();
 
-            PointCh pointCh = this.mapViewParameters.pointAt2(xEnWebMercator, yEnWebMercator).toPointCh();
+            PointCh pointCh = this.mapViewParameters.get().pointAt2(xEnWebMercator, yEnWebMercator).toPointCh();
             double positionItineraire = this.routeBean.route().pointClosestTo(pointCh).position();
             this.position.set(positionItineraire);
 
