@@ -10,6 +10,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -50,6 +52,13 @@ public final class Stage9Test extends Application {
         RouteManager routeManager = new RouteManager(routeBean,mapViewParametersP);
 
         StackPane mainPane = new StackPane(baseMapManager.pane(), waypointsManager.pane(), routeManager.pane());
+
+        final Menu menu1 = new Menu("File");
+        final Menu menu2 = new Menu("Options");
+        final Menu menu3 = new Menu("Help");
+
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().addAll(menu1, menu2, menu3);
 
         mainPane.getStylesheets().add("map.css");
         primaryStage.setMinWidth(600);

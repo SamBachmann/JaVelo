@@ -5,6 +5,7 @@ import ch.epfl.javelo.routing.CityBikeCF;
 import ch.epfl.javelo.routing.CostFunction;
 import ch.epfl.javelo.routing.RouteComputer;
 import javafx.application.Application;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.nio.file.Path;
@@ -32,6 +33,11 @@ public final class JaVelo extends Application {
                 tileManager,
                 routeBean,
                 errorConsumer);
+
+        //BorderPane contenant le splitPane au centre et la barre de menu en haut.
+        BorderPane fenetreJaVelo = new BorderPane();
+
+        //MenuBar
 
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
