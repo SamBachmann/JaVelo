@@ -14,6 +14,14 @@ import javafx.scene.layout.StackPane;
 
 import java.util.function.Consumer;
 
+/**
+ * Classe gérant l'affichage de la carte annotée.
+ *
+ *  @author Samuel Bachmann (340373)
+ *  @author Cyrus Giblain (312042)
+ * <br>
+ * 25/05/2022
+ */
 public final class AnnotatedMapManager {
 
     private final BaseMapManager baseMapManager;
@@ -25,6 +33,14 @@ public final class AnnotatedMapManager {
     private final ObjectProperty<MapViewParameters> mapViewParameters = new SimpleObjectProperty<>();
     private final RouteBean routeBean;
 
+    /**
+     * Constructeur de AnnotatedMapManager
+     *
+     * @param graph         Le graph de JaVelo.
+     * @param tileManager   Le gestionnaire de tuiles.
+     * @param routeBean     Le bean qui contient les propriétés relatives à un itinéraire.
+     * @param errorConsumer Interface fonctionnelle qui un consommateur d'erreur.
+     */
     public AnnotatedMapManager(Graph graph, TileManager tileManager,
                                RouteBean routeBean, Consumer<String> errorConsumer) {
 
@@ -45,10 +61,21 @@ public final class AnnotatedMapManager {
         this.positionActuelleSouris = new SimpleObjectProperty<>();
     }
 
+    /**
+     * Méthode retournant le panneau contenant la carte annotée.
+     *
+     * @return Le pane du panneau contenant la carte associée.
+     */
     public Pane pane() {
         return this.stackPane;
     }
 
+    /**
+     * Méthode retournant la propriété contenant la position du pointeur de la souris
+     * le long de l'itinéraire.
+     *
+     * @return La propriété contenant la position du pointeur de la souris le long de l'itinéraire.
+     */
     public DoubleProperty mousePositionOnRouteProperty() {
 
         stackPane.setOnMouseMoved(event -> {
