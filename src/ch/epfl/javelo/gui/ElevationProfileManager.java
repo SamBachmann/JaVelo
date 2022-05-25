@@ -191,8 +191,8 @@ public final class ElevationProfileManager {
         int ecartAltitude = ELE_STEPS[9];
         int ecartColonnes = POS_STEPS[6];
 
-        double valeurminimaleElevation = 25;
-        double valeurminimaleColonnes = 50;
+        double valeurMinimaleElevation = 25;
+        double valeurMinimaleColonnes = 50;
 
         for (Integer step : ELE_STEPS) {
 
@@ -200,9 +200,9 @@ public final class ElevationProfileManager {
 
             double hauteurRectangleBleu = this.pane.getHeight() - insets.getBottom() - insets.getTop();
 
-            double ecartentreligne = Math.ceil(hauteurRectangleBleu) / nombreDeLignes;
+            double ecartEntreligne = Math.ceil(hauteurRectangleBleu) / nombreDeLignes;
 
-            if (ecartentreligne >= valeurminimaleElevation) {
+            if (ecartEntreligne >= valeurMinimaleElevation) {
                 ecartAltitude = step;
                 break;
             }
@@ -214,17 +214,15 @@ public final class ElevationProfileManager {
 
             double largeurRectangleBleu = this.pane.getWidth() - insets.getLeft() - insets.getRight();
 
-            double ecartentreColonnes = Math.ceil(largeurRectangleBleu) / nombreDeColonnes;
+            double ecartEntreColonnes = Math.ceil(largeurRectangleBleu) / nombreDeColonnes;
 
-            if (ecartentreColonnes >= valeurminimaleColonnes) {
+            if (ecartEntreColonnes >= valeurMinimaleColonnes) {
                 ecartColonnes = step;
                 break;
             }
         }
 
         double y = Math.ceil(profil.get().minElevation() / ecartAltitude) * ecartAltitude;
-        //System.out.println(y);
-        //System.out.println(profil.get().minElevation());
         double x = 0.0;
 
         grille.getElements().clear();
