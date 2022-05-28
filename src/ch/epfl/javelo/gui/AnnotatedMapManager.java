@@ -59,7 +59,47 @@ public final class AnnotatedMapManager {
         this.routeBean = routeBean;
         this.position = new SimpleDoubleProperty();
         this.positionActuelleSouris = new SimpleObjectProperty<>();
-    }
+
+            stackPane.setOnMouseMoved(event -> {
+
+                Point2D positionActuelleDeLaSouris = new Point2D(event.getX(), event.getY());
+                this.positionActuelleSouris.set(positionActuelleDeLaSouris);
+
+                double xEnWebMercator = positionActuelleDeLaSouris.getX();
+                double yEnWebMercator = positionActuelleDeLaSouris.getY();
+
+                PointCh pointCh = this.mapViewParameters.get().pointAt2(xEnWebMercator, yEnWebMercator).toPointCh();
+                if (this.routeBean.route() != null) {
+                    RoutePoint sourisItineraire = this.routeBean.route().pointClosestTo(pointCh);
+                    double positionItineraire = sourisItineraire.position();
+                    double distanceToReference = sourisItineraire.distanceToReference();
+                    PointCh routePointCh = sourisItineraire.point();
+                    PointWebMercator ptWebMercator = PointWebMercator.ofPointCh(routePointCh);
+                    double routePointChXEcran = this.mapViewParameters.get().viewX(ptWebMercator);
+                    double routePointChYEcran = this.mapViewParameters.get().viewY(ptWebMercator);
+                    Point2D point2DSurEcran = new Point2D(routePointChXEcran, routePointChYEcran);
+
+                    System.out.println(positionActuelleDeLaSouris.distance(point2DSurEcran));
+                    if (positionActuelleDeLaSouris.distance(point2DSurEcran) <= 15) {
+                        this.position.set(positionItineraire);
+                        routeBean.setHighlightedPosition(this.position.get());
+                    } else {
+                        this.position.set(Double.NaN);
+                        routeBean.setHighlightedPosition(this.position.get());
+                    }
+                }
+
+            });
+
+            stackPane.setOnMouseExited(observable -> {
+                this.position.set(Double.NaN);
+                routeBean.setHighlightedPosition(this.position.get());
+            });
+
+        this.mousePositionOnRouteProperty().addListener(observable -> {
+
+        });
+        }
 
     /**
      * Méthode retournant le panneau contenant la carte annotée.
@@ -77,35 +117,6 @@ public final class AnnotatedMapManager {
      * @return La propriété contenant la position du pointeur de la souris le long de l'itinéraire.
      */
     public DoubleProperty mousePositionOnRouteProperty() {
-
-        stackPane.setOnMouseMoved(event -> {
-
-            Point2D positionActuelleDeLaSouris = new Point2D(event.getX(), event.getY());
-            this.positionActuelleSouris.set(positionActuelleDeLaSouris);
-
-            double xEnWebMercator = positionActuelleDeLaSouris.getX();
-            double yEnWebMercator = positionActuelleDeLaSouris.getY();
-
-            PointCh pointCh = this.mapViewParameters.get().pointAt2(xEnWebMercator, yEnWebMercator).toPointCh();
-            RoutePoint sourisItineraire = this.routeBean.route().pointClosestTo(pointCh);
-            double positionItineraire = sourisItineraire.position();
-            double distanceToReference = sourisItineraire.distanceToReference();
-            PointCh routePointCh = sourisItineraire.point();
-            PointWebMercator ptWebMercator = PointWebMercator.ofPointCh(routePointCh);
-            double routePointChXEcran = this.mapViewParameters.get().viewX(ptWebMercator);
-            double routePointChYEcran = this.mapViewParameters.get().viewY(ptWebMercator);
-            Point2D point2DSurEcran = new Point2D(routePointChXEcran, routePointChYEcran);
-            if (positionActuelleDeLaSouris.distance(point2DSurEcran) <= 15) {
-                this.position.set(positionItineraire);
-            } else {
-                this.position.set(Double.NaN);
-            }
-
-        });
-
-        stackPane.setOnMouseExited(observable -> this.position.set(Double.NaN));
-
         return this.position;
-
     }
 }

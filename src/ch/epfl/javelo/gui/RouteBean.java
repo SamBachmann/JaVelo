@@ -21,7 +21,7 @@ public final class RouteBean {
     private final ObjectProperty<Route> route;
     private final ObjectProperty<ElevationProfile> elevationProfil;
     //Valeur de 1000 pour le test. A changer quand l'interaction sera prête
-    private DoubleProperty highlightedPosition = new SimpleDoubleProperty(1000);
+    private DoubleProperty highlightedPosition = new SimpleDoubleProperty(1500);
 
     /**
      * Constructeur de RouteBean
@@ -35,6 +35,7 @@ public final class RouteBean {
         this.waypointsList = FXCollections.observableArrayList();
 
         waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> {
+            System.out.println("la liste de waypoints a changé");
             List<Route> listeDeRoutes = new ArrayList<>();
             if (waypointsList.size() >= 2) {
                 for (int i = 0; i < waypointsList.size() - 1; ++i) {
