@@ -7,6 +7,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
@@ -44,7 +45,10 @@ public final class JaVelo extends Application {
 
         SplitPane splitPane;
 
-        System.out.println(routeBean.WaypointsListProperty().size());
+        if (annotatedMapManager.mousePositionOnRouteProperty().get() != Double.NaN) {
+            routeBean.highlightedPositionProperty().bind(annotatedMapManager.mousePositionOnRouteProperty());
+            System.out.println("PAS NAN");
+        }
 
         if (routeBean.WaypointsListProperty().size() >= 2) {
             System.out.println("liste de waypoint superieure a 2");
@@ -71,6 +75,7 @@ public final class JaVelo extends Application {
 
 
         splitPane = new SplitPane(annotatedMapManager.pane(), profileManager.pane());
+        splitPane.setOrientation(Orientation.VERTICAL);
         } else {
             splitPane = new SplitPane(annotatedMapManager.pane());
         }

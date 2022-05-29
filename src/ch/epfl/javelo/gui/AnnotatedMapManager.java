@@ -57,7 +57,7 @@ public final class AnnotatedMapManager {
         this.stackPane.getStylesheets().add("map.css");
 
         this.routeBean = routeBean;
-        this.position = new SimpleDoubleProperty();
+        this.position = new SimpleDoubleProperty(Double.NaN);
         this.positionActuelleSouris = new SimpleObjectProperty<>();
 
             stackPane.setOnMouseMoved(event -> {
@@ -82,10 +82,8 @@ public final class AnnotatedMapManager {
                     System.out.println(positionActuelleDeLaSouris.distance(point2DSurEcran));
                     if (positionActuelleDeLaSouris.distance(point2DSurEcran) <= 15) {
                         this.position.set(positionItineraire);
-                        routeBean.setHighlightedPosition(this.position.get());
                     } else {
                         this.position.set(Double.NaN);
-                        routeBean.setHighlightedPosition(this.position.get());
                     }
                 }
 
@@ -93,7 +91,6 @@ public final class AnnotatedMapManager {
 
             stackPane.setOnMouseExited(observable -> {
                 this.position.set(Double.NaN);
-                routeBean.setHighlightedPosition(this.position.get());
             });
 
         this.mousePositionOnRouteProperty().addListener(observable -> {

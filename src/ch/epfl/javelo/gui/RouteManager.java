@@ -69,9 +69,9 @@ public final class RouteManager {
         });
 
         routeBean.highlightedPositionProperty().addListener(observable -> {
-            //if (routeBean.highlightedPositionProperty().get() != Double.NaN) {
+            if (routeBean.highlightedPositionProperty().get() > 0) {
                 dessinCercle();
-            //}
+            }
         });
 
         pane.setOnMouseClicked(event -> {
@@ -142,15 +142,18 @@ public final class RouteManager {
 
         Route itineraire = routeBean.route();
 
-        if (itineraire != null && (routeBean.highlightedPositionProperty().get() != Double.NaN)) {
-            highlightPosition.setVisible(true);
+        if (itineraire != null) {
 
-            PointWebMercator pointWebMercator = PointWebMercator.ofPointCh(routeBean.route().pointAt(routeBean.highlightedPosition()));
-            highlightPosition.setCenterX(this.parametresCarte.get().viewX(pointWebMercator));
-            highlightPosition.setCenterY(this.parametresCarte.get().viewY(pointWebMercator));
+            if (routeBean.highlightedPositionProperty().get() != Double.NaN) {
+                highlightPosition.setVisible(true);
 
-        } else {
-            highlightPosition.setVisible(false);
+                PointWebMercator pointWebMercator = PointWebMercator.ofPointCh(routeBean.route().pointAt(routeBean.highlightedPosition()));
+                highlightPosition.setCenterX(this.parametresCarte.get().viewX(pointWebMercator));
+                highlightPosition.setCenterY(this.parametresCarte.get().viewY(pointWebMercator));
+
+            } else {
+                highlightPosition.setVisible(false);
+            }
         }
     }
 }
