@@ -15,6 +15,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,6 +27,7 @@ import java.util.function.Consumer;
 public final class JaVelo extends Application {
     private static final int PREF_WIDTH = 800;
     private static final int PREF_HEIGHT = 600;
+    private static final ErrorManager errorManager = new ErrorManager();
 
     public static void main(String[] args) { launch(args); }
 
@@ -37,8 +40,6 @@ public final class JaVelo extends Application {
         CostFunction costFunction = new CityBikeCF(graph);
 
         TileManager tileManager = new TileManager(cacheBasePath, tileServerHost);
-
-        ErrorManager errorManager = new ErrorManager();
         Consumer<String> errorConsumer = new ErrorConsumer();
 
         RouteComputer routeComputer = new RouteComputer(graph,costFunction);
@@ -59,6 +60,12 @@ public final class JaVelo extends Application {
             ligneSurProfil.bind(routeBean.highlightedPosition() > 0 ?
                     routeBean.highlightedPositionProperty() :
                     profileManager.mousePositionOnProfileProperty());
+        });
+
+        profileManager.mousePositionOnProfileProperty().addListener((observable, oldValue, newValue) -> {
+            if (Double.isNaN(((double) oldValue))){
+                routeBean.highlightedPositionProperty().bind(profileManager.mousePositionOnProfileProperty());
+            }
         });
         ligneSurProfil.bind(routeBean.highlightedPositionProperty());
 
@@ -87,11 +94,6 @@ public final class JaVelo extends Application {
 
         });
 
-
-
-        //BorderPane contenant le splitPane au centre et la barre de menu en haut.
-        BorderPane fenetreJaVelo = new BorderPane();
-
         //MenuBar
         MenuBar menuBar = new MenuBar();
         Menu menuFichiers = new Menu();
@@ -112,8 +114,13 @@ public final class JaVelo extends Application {
         menuBar.getMenus().add(menuFichiers);
         menuFichiers.getItems().add(optionExporterGPX);
 
+        Pane errorPane = errorManager.pane();
+        StackPane conteneur = new StackPane(carteEtProfil, errorPane);
+
+        //BorderPane contenant le splitPane au centre et la barre de menu en haut.
+        BorderPane fenetreJaVelo = new BorderPane();
         fenetreJaVelo.setTop(menuBar);
-        fenetreJaVelo.setCenter(carteEtProfil);
+        fenetreJaVelo.setCenter(conteneur);
         primaryStage.setMinWidth(PREF_WIDTH);
         primaryStage.setMinHeight(PREF_HEIGHT);
         primaryStage.setScene(new Scene(fenetreJaVelo));
@@ -126,8 +133,7 @@ public final class JaVelo extends Application {
             implements Consumer<String> {
         @Override
         public void accept(String s) {
-            ErrorManager errorManager = new ErrorManager();
-            errorManager.displayError(s);
+            JaVelo.errorManager.displayError(s);
         }
     }
 }
