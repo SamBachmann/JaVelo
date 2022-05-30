@@ -61,6 +61,12 @@ public final class JaVelo extends Application {
                     routeBean.highlightedPositionProperty() :
                     profileManager.mousePositionOnProfileProperty());
         });
+
+        profileManager.mousePositionOnProfileProperty().addListener((observable, oldValue, newValue) -> {
+            if (Double.isNaN(((double) oldValue))){
+                routeBean.highlightedPositionProperty().bind(profileManager.mousePositionOnProfileProperty());
+            }
+        });
         ligneSurProfil.bind(routeBean.highlightedPositionProperty());
 
 
