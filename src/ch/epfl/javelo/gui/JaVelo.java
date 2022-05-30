@@ -60,6 +60,8 @@ public final class JaVelo extends Application {
                 profileManager.mousePositionOnProfileProperty()
         );
 
+        routeBean.highlightedPositionProperty().bind(annotatedMapManager.mousePositionOnRouteProperty());
+
 
         SplitPane carteEtProfil = new SplitPane(annotatedMapManager.pane());
         carteEtProfil.setOrientation(Orientation.VERTICAL);
