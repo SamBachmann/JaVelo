@@ -108,7 +108,10 @@ public final class ElevationProfileManager {
         pane.setOnMouseExited(observable -> mousePositionOnProfileProperty.set(Double.NaN));
 
         //Redessin du profil si l'itinéraire change
-        profil.addListener((o, oV, nV) -> dessineProfil(profil, insets));
+        profil.addListener((o, oV, nV) -> {
+            dessineProfil(profil, insets);
+            affichageStats(profil, textVBox);
+        });
     }
 
     /**
@@ -257,8 +260,8 @@ public final class ElevationProfileManager {
                 grille.getElements().add(ligneExtremite2);
 
 
-                PathElement ligneextremite1 = new MoveTo(insets.getLeft(), yEnPixels);
-                grille.getElements().add(ligneextremite1);
+                //PathElement ligneextremite1 = new MoveTo(insets.getLeft(), yEnPixels);
+                //grille.getElements().add(ligneextremite1);
                 Text text2 = new Text();
                 text2.setFont(Font.font("Avenir", 10));
                 text2.getStyleClass().add("grid_label");

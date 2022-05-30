@@ -68,9 +68,9 @@ public final class RouteManager {
         });
 
         routeBean.highlightedPositionProperty().addListener(observable -> {
-            if (routeBean.highlightedPositionProperty().get() > 0) {
+            //if (routeBean.highlightedPositionProperty().get() > 0) {
                 dessinCercle();
-            }
+            //}
         });
 
         pane.setOnMouseClicked(event -> {
@@ -143,7 +143,7 @@ public final class RouteManager {
 
         if (itineraire != null) {
 
-            if (routeBean.highlightedPositionProperty().get() != Double.NaN) {
+            if (! Double.isNaN(routeBean.highlightedPositionProperty().get())) {
                 highlightPosition.setVisible(true);
 
                 PointWebMercator pointWebMercator = PointWebMercator.ofPointCh(routeBean.route().pointAt(routeBean.highlightedPosition()));

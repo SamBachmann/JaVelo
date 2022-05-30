@@ -69,8 +69,11 @@ public final class JaVelo extends Application {
         routeBean.elevationProfilProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue == null)
                 carteEtProfil.getItems().add(profileManager.pane());
-            else
+            else if (newValue != null)
                 carteEtProfil.getItems().set(1, profileManager.pane());
+            else
+                carteEtProfil.getItems().remove(profileManager.pane());
+
         });
 
 

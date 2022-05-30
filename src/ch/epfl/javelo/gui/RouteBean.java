@@ -12,6 +12,10 @@ import java.util.*;
  * Bean JavaFX qui contient les propriétés relatives à un itinéraire.
  * En particulier, appelle le constructeur de l'itinéraire
  *
+ *  @author Samuel Bachmann (340373)
+ *  @author Cyrus Giblain (312042)
+ * <br>
+ * 06/05/2022
  */
 public final class RouteBean {
 
@@ -21,7 +25,7 @@ public final class RouteBean {
     private final ObjectProperty<Route> route;
     private final ObjectProperty<ElevationProfile> elevationProfil;
 
-    private DoubleProperty highlightedPosition = new SimpleDoubleProperty(1500);
+    private final DoubleProperty highlightedPosition = new SimpleDoubleProperty();
 
     /**
      * Constructeur de RouteBean
