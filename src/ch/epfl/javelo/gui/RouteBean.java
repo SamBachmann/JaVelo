@@ -20,7 +20,7 @@ public final class RouteBean {
     public static final int DISTANCE_MAX_ECHANTILLONS = 5;
     private final ObjectProperty<Route> route;
     private final ObjectProperty<ElevationProfile> elevationProfil;
-    //Valeur de 1000 pour le test. A changer quand l'interaction sera prête
+
     private DoubleProperty highlightedPosition = new SimpleDoubleProperty(1500);
 
     /**
@@ -115,22 +115,45 @@ public final class RouteBean {
         this.highlightedPosition.set(highlightedPosition);
     }
 
+    /**
+     * Accesseur de la propriété contenant la route.
+     *
+     * @return La propriété contenant la route.
+     */
     public ReadOnlyObjectProperty<Route> routeProperty(){
         return route;
     }
 
+    /**
+     * Accesseur de la route calculée
+     *
+     * @return L'itinéraire calculé
+     */
     public Route route() {
         return route.get();
     }
 
+    /**
+     * Accesseur de la propriété contenant le profil de l'itinéraire.
+     *
+     * @return La propriété contenant le profil de l'itinéraire
+     */
     public ReadOnlyObjectProperty<ElevationProfile> elevationProfilProperty(){
         return elevationProfil;
     }
+
+    public ElevationProfile elevationProfile(){return elevationProfil.get();}
 
     public ObservableList<Waypoint> WaypointsListProperty() {
         return waypointsList;
     }
 
+    /**
+     * Retourne l'index du segment d'un point donné sans tenir compte des segments vide.
+     *
+     * @param position Une position sur l'intinéraire
+     * @return L'index du segment.
+     */
     public int indexOfNonEmptySegmentAt(double position) {
         int index = route().indexOfSegmentAt(position);
         for (int i = 0; i <= index; i += 1) {

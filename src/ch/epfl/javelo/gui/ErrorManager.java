@@ -72,7 +72,5 @@ public final class ErrorManager {
         }
         transition.play();
 
-
-
     }
 }

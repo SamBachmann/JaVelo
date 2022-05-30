@@ -27,8 +27,8 @@ public final class RouteManager {
     private final RouteBean routeBean;
     private final ObjectProperty<MapViewParameters> parametresCarte;
     private final Pane pane;
-    private Polyline dessinItineraire;
-    private Circle highlightPosition;
+    private final Polyline dessinItineraire;
+    private final Circle highlightPosition;
 
     public RouteManager (RouteBean routeBean,
                          ObjectProperty<MapViewParameters> parametresCarte){
@@ -45,7 +45,6 @@ public final class RouteManager {
         highlightPosition.setId("highlight");
         pane.getChildren().add(dessinItineraire);
         pane.getChildren().add(highlightPosition);
-
 
 
         routeBean.routeProperty().addListener(observable -> {
@@ -84,11 +83,11 @@ public final class RouteManager {
                     routeBean.route().pointAt(routeBean.highlightedPosition())
             );
 
-            double xCurseur = this.parametresCarte.get().viewX(pointWebMercatorCurseur);
-            double yCurseur = this.parametresCarte.get().viewY(pointWebMercatorCurseur);
+            double xPostionHighlighted = this.parametresCarte.get().viewX(pointWebMercatorCurseur);
+            double yPostionHighlighted = this.parametresCarte.get().viewY(pointWebMercatorCurseur);
 
-            if (xCurseur - RAYON_CERCLE <= xSouris && xSouris <= xCurseur + RAYON_CERCLE
-                    && yCurseur - RAYON_CERCLE <= ySouris && ySouris <= yCurseur + RAYON_CERCLE) {
+            if (xPostionHighlighted - RAYON_CERCLE <= xSouris && xSouris <= xPostionHighlighted + RAYON_CERCLE
+                    && yPostionHighlighted - RAYON_CERCLE <= ySouris && ySouris <= yPostionHighlighted + RAYON_CERCLE){
                 Waypoint newWaypoint = new Waypoint(pointWebMercatorCurseur.toPointCh(),
                         routeBean.route().nodeClosestTo(routeBean.highlightedPosition()));
 

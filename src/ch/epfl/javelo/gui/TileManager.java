@@ -31,7 +31,6 @@ public final class TileManager {
     private final Map<TileId, Image> cacheMemory;
 
     /**
-     *
      * Enregistrement représentant l'identité d'une tuile, qui contient le niveau de zoom,
      * son index en x et son index en y.
      *
@@ -66,7 +65,6 @@ public final class TileManager {
         this.path = path;
         this.nameOfTheServer = nameOfTheServer;
         this.cacheMemory = new LinkedHashMap<>(100, 0.75f, true);
-
     }
 
     /**
@@ -102,11 +100,11 @@ public final class TileManager {
                             System.out.println("IOException");
                     }
                 } else {
-                    URL u = new URL("https://" + this.nameOfTheServer + "/" + tileId.zoom() + "/" +
+                    URL url = new URL("https://" + this.nameOfTheServer + "/" + tileId.zoom() + "/" +
                                 tileId.indexX() + "/" + tileId.indexY() + ".png");
-                    URLConnection c = u.openConnection();
-                    c.setRequestProperty("User-Agent", "JaVelo");
-                    try (InputStream i = c.getInputStream()) {
+                    URLConnection connection = url.openConnection();
+                    connection.setRequestProperty("User-Agent", "JaVelo");
+                    try (InputStream i = connection.getInputStream()) {
 
                         Path pathDossier = Path.of(String.valueOf(tileId.zoom()))
                                 .resolve(String.valueOf(tileId.indexX()));

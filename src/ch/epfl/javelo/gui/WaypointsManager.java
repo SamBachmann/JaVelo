@@ -78,7 +78,6 @@ public final class WaypointsManager {
     }
 
 
-
     /**
     * Ajoute un Waypoint à la liste waypointsList, positionné sur le noeud le plus proche du point
     * passé en paramètre.
@@ -183,6 +182,5 @@ public final class WaypointsManager {
         marqueur.setLayoutX(xEcran);
         marqueur.setLayoutY(yEcran);
     }
-
 
 }

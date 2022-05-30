@@ -70,7 +70,6 @@ public final class BaseMapManager {
         });
 
         this.parametresCarte.addListener(observable -> redrawOnNextPulse());
-        //pane.setPickOnBounds(false);
 
         //interaction du zoom
         SimpleLongProperty minScrollTime = new SimpleLongProperty();

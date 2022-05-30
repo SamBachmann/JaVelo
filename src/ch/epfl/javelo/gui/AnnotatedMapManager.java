@@ -29,7 +29,7 @@ public final class AnnotatedMapManager {
     private final RouteManager routeManager;
     private final StackPane stackPane;
     private final DoubleProperty position;
-    private final ObjectProperty<Point2D> positionActuelleSouris;
+    private final ObjectProperty<Point2D> positionSouris;
     private final ObjectProperty<MapViewParameters> mapViewParameters = new SimpleObjectProperty<>();
     private final RouteBean routeBean;
 
@@ -49,53 +49,50 @@ public final class AnnotatedMapManager {
         this.baseMapManager = new BaseMapManager(tileManager, waypointsManager, mapViewParameters);
         this.routeManager = new RouteManager(routeBean, mapViewParameters);
 
-        Pane premierPane = this.baseMapManager.pane();
-        Pane deuxiemePane = this.routeManager.pane();
-        Pane troisiemePane = this.waypointsManager.pane();
+        Pane mapPane = this.baseMapManager.pane();
+        Pane routePane = this.routeManager.pane();
+        Pane waypointsPane = this.waypointsManager.pane();
 
-        this.stackPane = new StackPane(premierPane, deuxiemePane, troisiemePane);
+        this.stackPane = new StackPane(mapPane, routePane, waypointsPane);
         this.stackPane.getStylesheets().add("map.css");
 
         this.routeBean = routeBean;
         this.position = new SimpleDoubleProperty(Double.NaN);
-        this.positionActuelleSouris = new SimpleObjectProperty<>();
+        this.positionSouris = new SimpleObjectProperty<>();
 
-            stackPane.setOnMouseMoved(event -> {
+        stackPane.setOnMouseMoved(event -> {
 
-                Point2D positionActuelleDeLaSouris = new Point2D(event.getX(), event.getY());
-                this.positionActuelleSouris.set(positionActuelleDeLaSouris);
+            Point2D positionSouris = new Point2D(event.getX(), event.getY());
+            this.positionSouris.set(positionSouris);
 
-                double xEnWebMercator = positionActuelleDeLaSouris.getX();
-                double yEnWebMercator = positionActuelleDeLaSouris.getY();
+            double xEnWebMercator = positionSouris.getX();
+            double yEnWebMercator = positionSouris.getY();
 
-                PointCh pointCh = this.mapViewParameters.get().pointAt2(xEnWebMercator, yEnWebMercator).toPointCh();
-                if (this.routeBean.route() != null) {
-                    RoutePoint sourisItineraire = this.routeBean.route().pointClosestTo(pointCh);
-                    double positionItineraire = sourisItineraire.position();
-                    double distanceToReference = sourisItineraire.distanceToReference();
-                    PointCh routePointCh = sourisItineraire.point();
-                    PointWebMercator ptWebMercator = PointWebMercator.ofPointCh(routePointCh);
-                    double routePointChXEcran = this.mapViewParameters.get().viewX(ptWebMercator);
-                    double routePointChYEcran = this.mapViewParameters.get().viewY(ptWebMercator);
-                    Point2D point2DSurEcran = new Point2D(routePointChXEcran, routePointChYEcran);
+            PointCh pointCh = this.mapViewParameters.get().pointAt2(xEnWebMercator, yEnWebMercator).toPointCh();
+            if (this.routeBean.route() != null) {
+                RoutePoint sourisItineraire = this.routeBean.route().pointClosestTo(pointCh);
+                double positionItineraire = sourisItineraire.position();
+                PointCh routePointCh = sourisItineraire.point();
+                PointWebMercator ptWebMercator = PointWebMercator.ofPointCh(routePointCh);
+                double routePointChXEcran = this.mapViewParameters.get().viewX(ptWebMercator);
+                double routePointChYEcran = this.mapViewParameters.get().viewY(ptWebMercator);
+                Point2D point2DSurEcran = new Point2D(routePointChXEcran, routePointChYEcran);
 
-                    System.out.println(positionActuelleDeLaSouris.distance(point2DSurEcran));
-                    if (positionActuelleDeLaSouris.distance(point2DSurEcran) <= 15) {
-                        this.position.set(positionItineraire);
-                    } else {
-                        this.position.set(Double.NaN);
-                    }
+                //System.out.println(positionSouris.distance(point2DSurEcran));
+                if (positionSouris.distance(point2DSurEcran) <= 15) {
+                    this.position.set(positionItineraire);
+                } else {
+                    this.position.set(Double.NaN);
                 }
+            }
 
-            });
+        });
 
             stackPane.setOnMouseExited(observable -> {
                 this.position.set(Double.NaN);
             });
 
-        this.mousePositionOnRouteProperty().addListener(observable -> {
-
-        });
+        //this.mousePositionOnRouteProperty().addListener(observable -> {});
         }
 
     /**
@@ -109,7 +106,7 @@ public final class AnnotatedMapManager {
 
     /**
      * Méthode retournant la propriété contenant la position du pointeur de la souris
-     * le long de l'itinéraire.
+     * le long de l'itinéraire, distance donnée en mètres.
      *
      * @return La propriété contenant la position du pointeur de la souris le long de l'itinéraire.
      */

@@ -1,4 +1,4 @@
-/*
+
 package ch.epfl.sigcheck;
 
 // Attention : cette classe n'est *pas* un test JUnit, et son code n'est
@@ -19,4 +19,4 @@ final class SignatureChecks_11 {
     java.lang.String[] v02;
     javafx.stage.Stage v03;
 }
-*/
+
