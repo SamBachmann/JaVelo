@@ -84,7 +84,8 @@ public final class ElevationProfileManager {
         Text textVBox = new Text();
         vBox.getChildren().add(textVBox);
 
-        bindings(profil, positionProfil, line);
+        Insets insets = new Insets(10, 10, 20, 40);
+        bindings(profil, positionProfil, line, insets);
 
         //affichage des stats:
         affichageStats(profil, textVBox);
@@ -105,6 +106,9 @@ public final class ElevationProfileManager {
         } );
 
         pane.setOnMouseExited(observable -> mousePositionOnProfileProperty.set(Double.NaN));
+
+        //Redessin du profil si l'itinéraire change
+        profil.addListener((o, oV, nV) -> dessineProfil(profil, insets));
     }
 
     /**
@@ -137,8 +141,8 @@ public final class ElevationProfileManager {
      * @param line La ligne à afficher sur le profil.
      */
     private void bindings(ReadOnlyObjectProperty<ElevationProfile> profil, ReadOnlyDoubleProperty positionProfil,
-                          Line line) {
-        Insets insets = new Insets(10, 10, 20, 40);
+                          Line line, Insets insets) {
+
 
         rectangleBleu.bind(Bindings.createObjectBinding(() ->
                         new Rectangle2D(insets.getLeft(), insets.getTop(),

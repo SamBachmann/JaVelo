@@ -43,12 +43,13 @@ public final class JaVelo extends Application {
 
         RouteComputer routeComputer = new RouteComputer(graph,costFunction);
         RouteBean routeBean = new RouteBean(routeComputer);
-        DoubleProperty highlightProperty = new SimpleDoubleProperty(1500);
+        DoubleProperty highlightProperty = new SimpleDoubleProperty();
 
         AnnotatedMapManager annotatedMapManager = new AnnotatedMapManager(graph,
                 tileManager,
                 routeBean,
                 errorConsumer);
+
 
         ElevationProfileManager profileManager = new ElevationProfileManager(
                 routeBean.elevationProfilProperty(),
@@ -59,8 +60,17 @@ public final class JaVelo extends Application {
                 profileManager.mousePositionOnProfileProperty()
         );
 
-        SplitPane carteEtProfil = new SplitPane(annotatedMapManager.pane(), profileManager.pane());
+
+        SplitPane carteEtProfil = new SplitPane(annotatedMapManager.pane());
         carteEtProfil.setOrientation(Orientation.VERTICAL);
+
+        routeBean.elevationProfilProperty().addListener((observable, oldValue, newValue) -> {
+            if (oldValue == null)
+                carteEtProfil.getItems().add(profileManager.pane());
+            else
+                carteEtProfil.getItems().set(1, profileManager.pane());
+        });
+
 
 
         //BorderPane contenant le splitPane au centre et la barre de menu en haut.
