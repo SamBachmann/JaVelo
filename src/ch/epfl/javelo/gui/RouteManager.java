@@ -38,6 +38,7 @@ public final class RouteManager {
         this.pane = new Pane();
         this.dessinItineraire = new Polyline();
         this.highlightPosition = new Circle();
+        highlightPosition.setVisible(false);
 
         pane.setPickOnBounds(false);
         dessinItineraire.setId("route");
@@ -67,11 +68,7 @@ public final class RouteManager {
             }
         });
 
-        routeBean.highlightedPositionProperty().addListener(observable -> {
-            //if (routeBean.highlightedPositionProperty().get() > 0) {
-                dessinCercle();
-            //}
-        });
+        routeBean.highlightedPositionProperty().addListener(observable -> dessinCercle());
 
         pane.setOnMouseClicked(event -> {
 

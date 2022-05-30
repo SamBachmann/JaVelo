@@ -43,7 +43,7 @@ public final class JaVelo extends Application {
 
         RouteComputer routeComputer = new RouteComputer(graph,costFunction);
         RouteBean routeBean = new RouteBean(routeComputer);
-        DoubleProperty highlightProperty = new SimpleDoubleProperty();
+        DoubleProperty ligneSurProfil = new SimpleDoubleProperty();
 
         AnnotatedMapManager annotatedMapManager = new AnnotatedMapManager(graph,
                 tileManager,
@@ -53,17 +53,21 @@ public final class JaVelo extends Application {
 
         ElevationProfileManager profileManager = new ElevationProfileManager(
                 routeBean.elevationProfilProperty(),
-                highlightProperty);
+                ligneSurProfil);
 
-        highlightProperty.bind(annotatedMapManager.mousePositionOnRouteProperty().get() > 0 ?
-                annotatedMapManager.mousePositionOnRouteProperty() :
-                profileManager.mousePositionOnProfileProperty()
-        );
+        routeBean.highlightedPositionProperty().addListener((observable, oldValue, newValue) -> {
+            ligneSurProfil.bind(routeBean.highlightedPosition() > 0 ?
+                    routeBean.highlightedPositionProperty() :
+                    profileManager.mousePositionOnProfileProperty());
+        });
+        ligneSurProfil.bind(routeBean.highlightedPositionProperty());
+
 
         routeBean.highlightedPositionProperty().bind(annotatedMapManager.mousePositionOnRouteProperty());
 
 
         SplitPane carteEtProfil = new SplitPane(annotatedMapManager.pane());
+        SplitPane.setResizableWithParent(profileManager.pane(), false);
         carteEtProfil.setOrientation(Orientation.VERTICAL);
 
         routeBean.elevationProfilProperty().addListener((observable, oldValue, newValue) -> {

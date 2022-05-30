@@ -36,7 +36,7 @@ public final class ElevationProfileManager {
     private final ObjectProperty<Transform> screenToWorld = new SimpleObjectProperty<>();
     private final ObjectProperty<Transform> worldToScreen = new SimpleObjectProperty<>();
     private final ObjectProperty<Rectangle2D> rectangleBleu = new SimpleObjectProperty<>();
-    private final DoubleProperty mousePositionOnProfileProperty = new SimpleDoubleProperty();
+    private final DoubleProperty mousePositionOnProfileProperty = new SimpleDoubleProperty(Double.NaN);
     private final Polygon dessinProfil;
     private final Path grille;
     private final Group textConteneur;
