@@ -62,6 +62,13 @@ public final class JaVelo extends Application {
         });
         ligneSurProfil.bind(routeBean.highlightedPositionProperty());
 
+        profileManager.mousePositionOnProfileProperty().addListener(observable -> {
+            System.out.println("ligneProfil change");
+            if (!Double.isNaN(profileManager.mousePositionOnProfileProperty().get())) {
+                routeBean.highlightedPositionProperty().bind(profileManager.mousePositionOnProfileProperty());
+            }
+        });
+
 
         routeBean.highlightedPositionProperty().bind(annotatedMapManager.mousePositionOnRouteProperty());
 
