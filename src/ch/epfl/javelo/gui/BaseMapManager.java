@@ -75,16 +75,17 @@ public final class BaseMapManager {
         SimpleLongProperty minScrollTime = new SimpleLongProperty();
 
         pane.setOnScroll(event -> {
+
             int zoom = this.parametresCarte.get().zoom();
+
             if (event.getDeltaY() == 0d) return;
             long currentTime = System.currentTimeMillis();
             if (currentTime < minScrollTime.get()) return;
             minScrollTime.set(currentTime + 200);
             int zoomDelta = (int) Math.signum(event.getDeltaY());
-            System.out.println("zoom delta : " + zoomDelta);
 
             int newZoom = Math2.clamp(ZOOM_MIN_VALUE, zoom + zoomDelta, ZOOM_MAX_VALUE);
-            System.out.println(newZoom);
+
 
             if (newZoom > 8 && newZoom <19) {
                 PointWebMercator pointclic = parametresCarte.get().pointAt2(event.getX(), event.getY());

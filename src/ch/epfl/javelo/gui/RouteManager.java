@@ -89,7 +89,7 @@ public final class RouteManager {
                         routeBean.route().nodeClosestTo(routeBean.highlightedPosition()));
 
                 routeBean.WaypointsListProperty().add(
-                        routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition())+ 1, newWaypoint
+                        routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition()) + 1, newWaypoint
                 );
 
             }
