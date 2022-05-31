@@ -82,7 +82,6 @@ public final class AnnotatedMapManager {
                 double routePointChYEcran = this.mapViewParameters.get().viewY(ptWebMercator);
                 Point2D point2DSurEcran = new Point2D(routePointChXEcran, routePointChYEcran);
 
-                //System.out.println(positionSouris.distance(point2DSurEcran));
                 if (positionSouris.distance(point2DSurEcran) <= 15) {
                     this.position.set(positionItineraire);
                 } else {
@@ -95,8 +94,6 @@ public final class AnnotatedMapManager {
             stackPane.setOnMouseExited(observable -> {
                 this.position.set(Double.NaN);
             });
-
-        //this.mousePositionOnRouteProperty().addListener(observable -> {});
         }
 
     /**
