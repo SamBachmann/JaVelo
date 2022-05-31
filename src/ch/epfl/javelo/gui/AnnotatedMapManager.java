@@ -24,9 +24,6 @@ import java.util.function.Consumer;
  */
 public final class AnnotatedMapManager {
 
-    private final BaseMapManager baseMapManager;
-    private final WaypointsManager waypointsManager;
-    private final RouteManager routeManager;
     private final StackPane stackPane;
     private final DoubleProperty position;
     private final ObjectProperty<Point2D> positionSouris;
@@ -45,13 +42,20 @@ public final class AnnotatedMapManager {
                                RouteBean routeBean, Consumer<String> errorConsumer) {
 
         this.mapViewParameters.set(new MapViewParameters(12, 543200, 370650));
-        this.waypointsManager = new WaypointsManager(graph, mapViewParameters, routeBean.WaypointsListProperty(), errorConsumer);
-        this.baseMapManager = new BaseMapManager(tileManager, waypointsManager, mapViewParameters);
-        this.routeManager = new RouteManager(routeBean, mapViewParameters);
+        WaypointsManager waypointsManager = new WaypointsManager(
+                graph,
+                mapViewParameters,
+                routeBean.WaypointsListProperty(),
+                errorConsumer);
+        BaseMapManager baseMapManager = new BaseMapManager(
+                tileManager,
+                waypointsManager,
+                mapViewParameters);
+        RouteManager routeManager = new RouteManager(routeBean, mapViewParameters);
 
-        Pane mapPane = this.baseMapManager.pane();
-        Pane routePane = this.routeManager.pane();
-        Pane waypointsPane = this.waypointsManager.pane();
+        Pane mapPane = baseMapManager.pane();
+        Pane routePane = routeManager.pane();
+        Pane waypointsPane = waypointsManager.pane();
 
         this.stackPane = new StackPane(mapPane, routePane, waypointsPane);
         this.stackPane.getStylesheets().add("map.css");
