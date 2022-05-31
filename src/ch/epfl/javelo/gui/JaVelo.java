@@ -24,6 +24,10 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 
+/**
+ * Application JAVELO
+ *
+ */
 public final class JaVelo extends Application {
     private static final int PREF_WIDTH = 800;
     private static final int PREF_HEIGHT = 600;
@@ -81,7 +85,7 @@ public final class JaVelo extends Application {
         MenuBar menuBar = new MenuBar();
         Menu menuFichiers = new Menu();
         MenuItem optionExporterGPX = new MenuItem();
-        //optionExporterGPX.disableProperty().bind();
+        optionExporterGPX.disableProperty().bind(Bindings.isNull(routeBean.routeProperty()));
 
         optionExporterGPX.setOnAction(e -> {
             try {

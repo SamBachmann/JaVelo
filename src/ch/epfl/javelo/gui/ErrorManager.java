@@ -18,7 +18,6 @@ import javafx.util.Duration;
  * 24/05/2022
  */
 public final class ErrorManager {
-    private final Pane pane;
     private final VBox vBoxErreurs;
     private final Text texteErreur;
     private final Animation transition;
@@ -27,17 +26,16 @@ public final class ErrorManager {
      * Constructeur d'ErrorManager.
      */
     public ErrorManager(){
-        this.pane = new Pane();
-        this.pane.setMouseTransparent(true);
-        this.vBoxErreurs = new VBox();
-        vBoxErreurs.getStylesheets().add("error.css");
-        this.pane.getChildren().add(vBoxErreurs);
 
-        FadeTransition ft1 = new FadeTransition(Duration.millis(200), pane);
+        this.vBoxErreurs = new VBox();
+        vBoxErreurs.setMouseTransparent(true);
+        vBoxErreurs.getStylesheets().add("error.css");
+
+        FadeTransition ft1 = new FadeTransition(Duration.millis(200), vBoxErreurs);
         ft1.setFromValue(0);
         ft1.setToValue(0.8);
         PauseTransition pause2sec = new PauseTransition(Duration.seconds(2));
-        FadeTransition ft2 = new FadeTransition(Duration.millis(500), pane);
+        FadeTransition ft2 = new FadeTransition(Duration.millis(500), vBoxErreurs);
         ft2.setFromValue(0.8);
         ft2.setToValue(0);
 
@@ -53,7 +51,7 @@ public final class ErrorManager {
      * @return Le panneau affichant les messages d'erreurs.
      */
     public Pane pane(){
-        return this.pane;
+        return this.vBoxErreurs;
     }
 
     /**
@@ -62,7 +60,7 @@ public final class ErrorManager {
      * @param messageErreur Le message d'erreur à afficher à l'écran.
      */
     public void displayError(String messageErreur){
-        pane.setVisible(true);
+        vBoxErreurs.setVisible(true);
         java.awt.Toolkit.getDefaultToolkit().beep();
 
         this.texteErreur.setText(messageErreur);
