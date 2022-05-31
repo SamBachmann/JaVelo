@@ -39,7 +39,7 @@ public final class RouteBean {
         this.waypointsList = FXCollections.observableArrayList();
 
         waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> {
-            System.out.println("la liste de waypoints a changé");
+
             List<Route> listeDeRoutes = new ArrayList<>();
             if (waypointsList.size() >= 2) {
                 for (int i = 0; i < waypointsList.size() - 1; ++i) {
@@ -47,20 +47,20 @@ public final class RouteBean {
                     int endNodeIndex = waypointsList.get(i + 1).nodeId();
                     RouteNodes routeNodes = new RouteNodes(startNodeIndex, endNodeIndex);
 
-                    Route routeX;
+                    Route segment;
 
                     if (cacheItineraires.containsKey(routeNodes)) {
-                        routeX = cacheItineraires.get(routeNodes);
-                        listeDeRoutes.add(routeX);
+                        segment = cacheItineraires.get(routeNodes);
+                        listeDeRoutes.add(segment);
                     } else {
                         if (cacheItineraires.size() >= 100) {
                             Iterator<RouteNodes> iterator = cacheItineraires.keySet().iterator();
                             cacheItineraires.remove(iterator.next());
                         }
-                        routeX = routeComputer.bestRouteBetween(startNodeIndex, endNodeIndex);
-                        if (routeX != null) {
-                            listeDeRoutes.add(routeX);
-                            cacheItineraires.put(routeNodes, routeX);
+                        segment = routeComputer.bestRouteBetween(startNodeIndex, endNodeIndex);
+                        if (segment != null) {
+                            listeDeRoutes.add(segment);
+                            cacheItineraires.put(routeNodes, segment);
                         }
                         else {
                             listeDeRoutes.clear();
@@ -81,6 +81,7 @@ public final class RouteBean {
 
             }else {
                 this.route.set(null);
+                this.elevationProfil.set(null);
             }
 
         });

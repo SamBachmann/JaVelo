@@ -33,8 +33,8 @@ import java.util.List;
 public final class ElevationProfileManager {
     private final BorderPane borderPane;
     private final Pane pane;
-    private final ObjectProperty<Transform> screenToWorld = new SimpleObjectProperty<>();
-    private final ObjectProperty<Transform> worldToScreen = new SimpleObjectProperty<>();
+    private final ObjectProperty<Transform> screenToWorld = new SimpleObjectProperty<>(new Affine());
+    private final ObjectProperty<Transform> worldToScreen = new SimpleObjectProperty<>(new Affine());
     private final ObjectProperty<Rectangle2D> rectangleBleu = new SimpleObjectProperty<>();
     private final DoubleProperty mousePositionOnProfileProperty = new SimpleDoubleProperty(Double.NaN);
     private final Polygon dessinProfil;
@@ -259,9 +259,6 @@ public final class ElevationProfileManager {
                 PathElement ligneExtremite2 = new LineTo(rectangleBleu.get().getMaxX(), yEnPixels);
                 grille.getElements().add(ligneExtremite2);
 
-
-                //PathElement ligneextremite1 = new MoveTo(insets.getLeft(), yEnPixels);
-                //grille.getElements().add(ligneextremite1);
                 Text text2 = new Text();
                 text2.setFont(Font.font("Avenir", 10));
                 text2.getStyleClass().add("grid_label");

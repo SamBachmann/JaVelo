@@ -6,6 +6,7 @@ import ch.epfl.javelo.routing.CostFunction;
 import ch.epfl.javelo.routing.GpxGenerator;
 import ch.epfl.javelo.routing.RouteComputer;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Orientation;
@@ -22,12 +23,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.function.Consumer;
 
 public final class JaVelo extends Application {
     private static final int PREF_WIDTH = 800;
     private static final int PREF_HEIGHT = 600;
-    private static final ErrorManager errorManager = new ErrorManager();
 
     public static void main(String[] args) { launch(args); }
 
@@ -38,9 +37,9 @@ public final class JaVelo extends Application {
         Path cacheBasePath = Path.of("osm-cache");
         String tileServerHost = "tile.openstreetmap.org";
         CostFunction costFunction = new CityBikeCF(graph);
+        ErrorManager errorManager = new ErrorManager();
 
         TileManager tileManager = new TileManager(cacheBasePath, tileServerHost);
-        Consumer<String> errorConsumer = new ErrorConsumer();
 
         RouteComputer routeComputer = new RouteComputer(graph,costFunction);
         RouteBean routeBean = new RouteBean(routeComputer);
@@ -49,29 +48,20 @@ public final class JaVelo extends Application {
         AnnotatedMapManager annotatedMapManager = new AnnotatedMapManager(graph,
                 tileManager,
                 routeBean,
-                errorConsumer);
+                errorManager::displayError);
 
 
         ElevationProfileManager profileManager = new ElevationProfileManager(
                 routeBean.elevationProfilProperty(),
                 ligneSurProfil);
 
-        routeBean.highlightedPositionProperty().addListener((observable, oldValue, newValue) -> {
-            ligneSurProfil.bind(routeBean.highlightedPosition() > 0 ?
-                    routeBean.highlightedPositionProperty() :
-                    profileManager.mousePositionOnProfileProperty());
-        });
 
-        profileManager.mousePositionOnProfileProperty().addListener((observable, oldValue, newValue) -> {
-            if (Double.isNaN(((double) oldValue))){
-                routeBean.highlightedPositionProperty().bind(profileManager.mousePositionOnProfileProperty());
-            }
-        });
+        routeBean.highlightedPositionProperty().bind(Bindings
+                .when(annotatedMapManager.mousePositionOnRouteProperty().greaterThanOrEqualTo(0))
+                .then(annotatedMapManager.mousePositionOnRouteProperty())
+                .otherwise(profileManager.mousePositionOnProfileProperty()));
+
         ligneSurProfil.bind(routeBean.highlightedPositionProperty());
-
-
-        routeBean.highlightedPositionProperty().bind(annotatedMapManager.mousePositionOnRouteProperty());
-
 
         SplitPane carteEtProfil = new SplitPane(annotatedMapManager.pane());
         SplitPane.setResizableWithParent(profileManager.pane(), false);
@@ -103,7 +93,6 @@ public final class JaVelo extends Application {
 
         menuFichiers.setText("Fichier");
         optionExporterGPX.setText("Exporter GPX");
-
         menuBar.getMenus().add(menuFichiers);
         menuFichiers.getItems().add(optionExporterGPX);
 
@@ -122,11 +111,4 @@ public final class JaVelo extends Application {
 
     }
 
-    private static final class ErrorConsumer
-            implements Consumer<String> {
-        @Override
-        public void accept(String s) {
-            JaVelo.errorManager.displayError(s);
-        }
-    }
 }

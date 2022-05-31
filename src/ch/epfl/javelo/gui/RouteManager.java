@@ -125,6 +125,7 @@ public final class RouteManager {
             }
         }else{
             dessinItineraire.setVisible(false);
+            highlightPosition.setVisible(false);
         }
 
         dessinItineraire.getPoints().setAll(listPoints);
