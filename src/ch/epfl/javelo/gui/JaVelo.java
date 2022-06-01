@@ -27,14 +27,22 @@ import java.nio.file.Path;
 /**
  * Application JAVELO
  *
+ *  @author Samuel Bachmann (340373)
+ *  @author Cyrus Giblain (312042)
+ * <br>
+ * 30/05/2022
  */
 public final class JaVelo extends Application {
     private static final int PREF_WIDTH = 800;
     private static final int PREF_HEIGHT = 600;
+    public static final int INDEX_PROFIL_PANE = 1;
 
     public static void main(String[] args) { launch(args); }
 
     @Override
+    /**
+     * Méthode start lancée depuis main, lance toute l'application  Javelo
+     */
     public void start(Stage primaryStage) throws Exception {
 
         Graph graph = Graph.loadFrom(Path.of("javelo-data"));
@@ -54,11 +62,9 @@ public final class JaVelo extends Application {
                 routeBean,
                 errorManager::displayError);
 
-
         ElevationProfileManager profileManager = new ElevationProfileManager(
                 routeBean.elevationProfilProperty(),
                 ligneSurProfil);
-
 
         routeBean.highlightedPositionProperty().bind(Bindings
                 .when(annotatedMapManager.mousePositionOnRouteProperty().greaterThanOrEqualTo(0))
@@ -75,10 +81,9 @@ public final class JaVelo extends Application {
             if (oldValue == null)
                 carteEtProfil.getItems().add(profileManager.pane());
             else if (newValue != null)
-                carteEtProfil.getItems().set(1, profileManager.pane());
+                carteEtProfil.getItems().set(INDEX_PROFIL_PANE, profileManager.pane());
             else
                 carteEtProfil.getItems().remove(profileManager.pane());
-
         });
 
         //MenuBar
@@ -112,6 +117,5 @@ public final class JaVelo extends Application {
         primaryStage.setScene(new Scene(fenetreJaVelo));
         primaryStage.setTitle("JaVelo");
         primaryStage.show();
-
     }
 }

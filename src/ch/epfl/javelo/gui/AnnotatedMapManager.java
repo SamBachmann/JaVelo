@@ -23,7 +23,9 @@ import java.util.function.Consumer;
  * 25/05/2022
  */
 public final class AnnotatedMapManager {
-
+    private static final MapViewParameters MAP_BASE_LAUSANNE = new MapViewParameters
+            (12, 543200, 370650);
+    private static final int DISTANCE_PROXIMITE_SOURIS = 15;
     private final StackPane stackPane;
     private final DoubleProperty position;
     private final ObjectProperty<Point2D> positionSouris;
@@ -41,7 +43,7 @@ public final class AnnotatedMapManager {
     public AnnotatedMapManager(Graph graph, TileManager tileManager,
                                RouteBean routeBean, Consumer<String> errorConsumer) {
 
-        this.mapViewParameters.set(new MapViewParameters(12, 543200, 370650));
+        this.mapViewParameters.set(MAP_BASE_LAUSANNE);
         WaypointsManager waypointsManager = new WaypointsManager(
                 graph,
                 mapViewParameters,
@@ -64,6 +66,7 @@ public final class AnnotatedMapManager {
         this.position = new SimpleDoubleProperty(Double.NaN);
         this.positionSouris = new SimpleObjectProperty<>();
 
+
         stackPane.setOnMouseMoved(event -> {
 
             Point2D positionSouris = new Point2D(event.getX(), event.getY());
@@ -82,13 +85,12 @@ public final class AnnotatedMapManager {
                 double routePointChYEcran = this.mapViewParameters.get().viewY(ptWebMercator);
                 Point2D point2DSurEcran = new Point2D(routePointChXEcran, routePointChYEcran);
 
-                if (positionSouris.distance(point2DSurEcran) <= 15) {
+                if (positionSouris.distance(point2DSurEcran) <= DISTANCE_PROXIMITE_SOURIS) {
                     this.position.set(positionItineraire);
                 } else {
                     this.position.set(Double.NaN);
                 }
             }
-
         });
 
             stackPane.setOnMouseExited(observable -> {
