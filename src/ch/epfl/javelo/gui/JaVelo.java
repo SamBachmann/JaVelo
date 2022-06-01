@@ -114,5 +114,4 @@ public final class JaVelo extends Application {
         primaryStage.show();
 
     }
-
 }

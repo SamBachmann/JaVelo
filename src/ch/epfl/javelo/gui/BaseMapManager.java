@@ -87,7 +87,7 @@ public final class BaseMapManager {
             int newZoom = Math2.clamp(ZOOM_MIN_VALUE, zoom + zoomDelta, ZOOM_MAX_VALUE);
 
 
-            if (newZoom > 8 && newZoom <19) {
+            if (newZoom > ZOOM_MIN_VALUE && newZoom <ZOOM_MAX_VALUE) {
                 PointWebMercator pointclic = parametresCarte.get().pointAt2(event.getX(), event.getY());
                 double decalageX = pointclic.xAtZoomLevel(zoom) - parametresCarte.get().xHautGauche();
                 double decalageY = pointclic.yAtZoomLevel(zoom) - parametresCarte.get().yHautGauche();
