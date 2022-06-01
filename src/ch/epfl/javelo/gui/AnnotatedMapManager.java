@@ -73,10 +73,12 @@ public final class AnnotatedMapManager {
                 double xEnWebMercator = positionSouris.getX();
                 double yEnWebMercator = positionSouris.getY();
 
-                try{
-                    PointCh pointChSouris = this.mapViewParameters.get()
+
+                PointCh pointChSouris = this.mapViewParameters.get()
                             .pointAt2(xEnWebMercator, yEnWebMercator)
                             .toPointCh();
+
+                if (pointChSouris != null) {
                     RoutePoint sourisItineraire = routeBean.route().pointClosestTo(pointChSouris);
                     double positionItineraire = sourisItineraire.position();
                     PointCh routePointCh = sourisItineraire.point();
@@ -90,10 +92,9 @@ public final class AnnotatedMapManager {
                     } else {
                         this.position.set(Double.NaN);
                     }
-                }catch (NullPointerException ignored){
-
+                } else {
+                    this.position.set(Double.NaN);
                 }
-
             }
         });
 

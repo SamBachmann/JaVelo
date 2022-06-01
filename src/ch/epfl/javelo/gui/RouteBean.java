@@ -21,11 +21,12 @@ public final class RouteBean {
 
     private final ObservableList<Waypoint> waypointsList;
 
-    public static final int DISTANCE_MAX_ECHANTILLONS = 5;
+    private static final int DISTANCE_MAX_ECHANTILLONS = 5;
+    private static final int TAILLE_MAX_CACHE_ITINERAIRE = 100;
     private final ObjectProperty<Route> route;
     private final ObjectProperty<ElevationProfile> elevationProfil;
     private final Map< RouteNodes, Route> cacheItineraires =
-            new LinkedHashMap<>(100, 0.75f, true);
+            new LinkedHashMap<>(TAILLE_MAX_CACHE_ITINERAIRE, 0.75f, true);
 
     private final DoubleProperty highlightedPosition = new SimpleDoubleProperty();
 
@@ -55,7 +56,7 @@ public final class RouteBean {
                         segment = cacheItineraires.get(routeNodes);
                         listeDeRoutes.add(segment);
                     } else {
-                        if (cacheItineraires.size() >= 100) {
+                        if (cacheItineraires.size() >= TAILLE_MAX_CACHE_ITINERAIRE) {
                             Iterator<RouteNodes> iterator = cacheItineraires.keySet().iterator();
                             cacheItineraires.remove(iterator.next());
                         }
