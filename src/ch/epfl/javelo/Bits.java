@@ -42,7 +42,7 @@ public final class Bits {
      * @param value Le vecteur de bits dont on veut extraire une plage de bits.
      * @param start La valeur de départ (comprise) de la plage de bits.
      * @param length La longueur de la plage de bits sélectionnés.
-     * @return La séquence de bits sélectionnée (non-signée)
+     * @return La séquence de bits sélectionnée (non signée)
      */
     public static int extractUnsigned(int value, int start, int length){
         Preconditions.checkArgument(start >= 0 && start < 32

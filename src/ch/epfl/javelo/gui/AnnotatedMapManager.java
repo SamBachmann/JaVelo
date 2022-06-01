@@ -30,7 +30,6 @@ public final class AnnotatedMapManager {
     private final DoubleProperty position;
     private final ObjectProperty<Point2D> positionSouris;
     private final ObjectProperty<MapViewParameters> mapViewParameters = new SimpleObjectProperty<>();
-    private final RouteBean routeBean;
 
     /**
      * Constructeur de AnnotatedMapManager
@@ -38,7 +37,7 @@ public final class AnnotatedMapManager {
      * @param graph         Le graph de JaVelo.
      * @param tileManager   Le gestionnaire de tuiles.
      * @param routeBean     Le bean qui contient les propriétés relatives à un itinéraire.
-     * @param errorConsumer Interface fonctionnelle qui un consommateur d'erreur.
+     * @param errorConsumer Interface fonctionnelle qui est un consommateur d'erreur.
      */
     public AnnotatedMapManager(Graph graph, TileManager tileManager,
                                RouteBean routeBean, Consumer<String> errorConsumer) {
@@ -61,8 +60,6 @@ public final class AnnotatedMapManager {
 
         this.stackPane = new StackPane(mapPane, routePane, waypointsPane);
         this.stackPane.getStylesheets().add("map.css");
-
-        this.routeBean = routeBean;
         this.position = new SimpleDoubleProperty(Double.NaN);
         this.positionSouris = new SimpleObjectProperty<>();
 
@@ -72,30 +69,35 @@ public final class AnnotatedMapManager {
             Point2D positionSouris = new Point2D(event.getX(), event.getY());
             this.positionSouris.set(positionSouris);
 
-            double xEnWebMercator = positionSouris.getX();
-            double yEnWebMercator = positionSouris.getY();
+            if (routeBean.route() != null) {
+                double xEnWebMercator = positionSouris.getX();
+                double yEnWebMercator = positionSouris.getY();
 
-            PointCh pointCh = this.mapViewParameters.get().pointAt2(xEnWebMercator, yEnWebMercator).toPointCh();
-            if (this.routeBean.route() != null) {
-                RoutePoint sourisItineraire = this.routeBean.route().pointClosestTo(pointCh);
-                double positionItineraire = sourisItineraire.position();
-                PointCh routePointCh = sourisItineraire.point();
-                PointWebMercator ptWebMercator = PointWebMercator.ofPointCh(routePointCh);
-                double routePointChXEcran = this.mapViewParameters.get().viewX(ptWebMercator);
-                double routePointChYEcran = this.mapViewParameters.get().viewY(ptWebMercator);
-                Point2D point2DSurEcran = new Point2D(routePointChXEcran, routePointChYEcran);
+                try{
+                    PointCh pointChSouris = this.mapViewParameters.get()
+                            .pointAt2(xEnWebMercator, yEnWebMercator)
+                            .toPointCh();
+                    RoutePoint sourisItineraire = routeBean.route().pointClosestTo(pointChSouris);
+                    double positionItineraire = sourisItineraire.position();
+                    PointCh routePointCh = sourisItineraire.point();
+                    PointWebMercator ptWebMercator = PointWebMercator.ofPointCh(routePointCh);
+                    double routePointChXEcran = this.mapViewParameters.get().viewX(ptWebMercator);
+                    double routePointChYEcran = this.mapViewParameters.get().viewY(ptWebMercator);
+                    Point2D point2DSurEcran = new Point2D(routePointChXEcran, routePointChYEcran);
 
-                if (positionSouris.distance(point2DSurEcran) <= DISTANCE_PROXIMITE_SOURIS) {
-                    this.position.set(positionItineraire);
-                } else {
-                    this.position.set(Double.NaN);
+                    if (positionSouris.distance(point2DSurEcran) <= DISTANCE_PROXIMITE_SOURIS) {
+                        this.position.set(positionItineraire);
+                    } else {
+                        this.position.set(Double.NaN);
+                    }
+                }catch (NullPointerException ignored){
+
                 }
+
             }
         });
 
-            stackPane.setOnMouseExited(observable -> {
-                this.position.set(Double.NaN);
-            });
+            stackPane.setOnMouseExited(observable -> this.position.set(Double.NaN));
         }
 
     /**

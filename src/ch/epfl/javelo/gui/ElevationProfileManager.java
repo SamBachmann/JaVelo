@@ -45,8 +45,8 @@ public final class ElevationProfileManager {
     private static final int[] ELE_STEPS = { 5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000 };
     private static final int MAX_ECART_ALTITUDE = ELE_STEPS[ELE_STEPS.length - 1];
     private static final int Max_ECART_COLONNES = POS_STEPS[POS_STEPS.length - 1];
-    double NB_MIN_PIXELS_ENTRE_LIGNES = 25;
-    double NB_MIN_PIXELS_ENTRE_COLLONES = 50;
+    private static final double NB_MIN_PIXELS_ENTRE_LIGNES = 25;
+    private static final double NB_MIN_PIXELS_ENTRE_COLLONES = 50;
 
 
     /**

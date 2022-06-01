@@ -24,6 +24,8 @@ public final class RouteBean {
     public static final int DISTANCE_MAX_ECHANTILLONS = 5;
     private final ObjectProperty<Route> route;
     private final ObjectProperty<ElevationProfile> elevationProfil;
+    private final Map< RouteNodes, Route> cacheItineraires =
+            new LinkedHashMap<>(100, 0.75f, true);
 
     private final DoubleProperty highlightedPosition = new SimpleDoubleProperty();
 
@@ -65,7 +67,7 @@ public final class RouteBean {
                         else {
                             listeDeRoutes.clear();
                             this.route.set(null);
-                            this.highlightedPosition.set(Double.NaN);
+                            //this.highlightedPosition.set(Double.NaN);
                             this.elevationProfil.set(null);
                             break;
                         }
@@ -86,9 +88,6 @@ public final class RouteBean {
 
         });
     }
-    private final Map< RouteNodes, Route> cacheItineraires =
-            new LinkedHashMap<>(100, 0.75f, true);
-
 
     /**
      * Enregistrement imbriqué représentant un itinéraire par ses noeuds de départ et d'arrivée.
@@ -114,10 +113,6 @@ public final class RouteBean {
      */
     public double highlightedPosition(){
         return highlightedPosition.get();
-    }
-
-    public void setHighlightedPosition(double highlightedPosition) {
-        this.highlightedPosition.set(highlightedPosition);
     }
 
     /**

@@ -62,9 +62,7 @@ public final class WaypointsManager {
 
         });
 
-        waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> {
-            creationMarqueurs();
-        });
+        waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> creationMarqueurs());
 
     }
 

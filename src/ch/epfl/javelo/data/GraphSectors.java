@@ -4,7 +4,6 @@ import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.SwissBounds;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public record GraphSectors(ByteBuffer buffer ) {
         yMin = Math2.clamp(0,yMin,SECTEURS_PAR_COTE);
         yMax = Math2.clamp(0,yMax,SECTEURS_PAR_COTE);
         // calculer les index des secteurs
-        List<Integer> listIndexSector = new ArrayList<Integer>();
+        List<Integer> listIndexSector = new ArrayList<>();
         for (int x = xMin; x < xMax; ++x){
             for (int y = yMin; y < yMax; ++y){
                 listIndexSector.add(x + 128 * y);

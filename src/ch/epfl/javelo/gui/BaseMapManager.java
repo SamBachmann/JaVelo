@@ -25,10 +25,9 @@ import java.io.IOException;
  */
 public final class BaseMapManager {
 
-    public static final int TAILLE_TUILLE = 256;
+    private static final int TAILLE_TUILE = 256;
     private final static int ZOOM_MIN_VALUE = 8;
     private final static int ZOOM_MAX_VALUE = 19;
-
 
     private final TileManager tileManager;
     private final ObjectProperty<MapViewParameters> parametresCarte;
@@ -36,7 +35,6 @@ public final class BaseMapManager {
     private final Pane pane;
     private final Canvas canvas;
     private boolean redrawNeeded;
-
 
     /**
      * Constructeur du gestionnaire du fond de carte.
@@ -51,8 +49,8 @@ public final class BaseMapManager {
         this.tileManager = tileManager;
         this.parametresCarte = parametresCarte;
 
-        canvas = new Canvas();
-        pane = new Pane();
+        this.canvas = new Canvas();
+        this.pane = new Pane();
 
         this.canvas.widthProperty().bind(pane.widthProperty());
         this.canvas.heightProperty().bind(pane.heightProperty());
@@ -84,10 +82,9 @@ public final class BaseMapManager {
             minScrollTime.set(currentTime + 200);
             int zoomDelta = (int) Math.signum(event.getDeltaY());
 
-            int newZoom = Math2.clamp(ZOOM_MIN_VALUE, zoom + zoomDelta, ZOOM_MAX_VALUE);
+            int newZoom = zoom + zoomDelta;
 
-
-            if (newZoom > ZOOM_MIN_VALUE && newZoom <ZOOM_MAX_VALUE) {
+            if (newZoom >= ZOOM_MIN_VALUE && newZoom <= ZOOM_MAX_VALUE) {
                 PointWebMercator pointclic = parametresCarte.get().pointAt2(event.getX(), event.getY());
                 double decalageX = pointclic.xAtZoomLevel(zoom) - parametresCarte.get().xHautGauche();
                 double decalageY = pointclic.yAtZoomLevel(zoom) - parametresCarte.get().yHautGauche();
@@ -119,7 +116,8 @@ public final class BaseMapManager {
             Point2D difference =  point2DSouris.subtract(pointBaseDrag.get());
             pointBaseDrag.set(point2DSouris);
             Point2D newTopLeft = parametresCarte.get().topLeft().subtract(difference);
-            MapViewParameters newParameters = this.parametresCarte.get().withMinXY(newTopLeft.getX(),newTopLeft.getY());
+            MapViewParameters newParameters = this.parametresCarte.get()
+                    .withMinXY(newTopLeft.getX(),newTopLeft.getY());
             this.parametresCarte.set(newParameters);
         });
 
@@ -138,20 +136,20 @@ public final class BaseMapManager {
         int zoom = this.parametresCarte.get().zoom();
         int indexXHautGauche = (int) this.parametresCarte.get().xHautGauche();
         int indexYHautGauche = (int) this.parametresCarte.get().yHautGauche();
-        int indexXTuileHautGauche = Math.floorDiv(indexXHautGauche, TAILLE_TUILLE);
-        int indexYTuileHautGauche = Math.floorDiv(indexYHautGauche, TAILLE_TUILLE);
+        int indexXTuileHautGauche = Math.floorDiv(indexXHautGauche, TAILLE_TUILE);
+        int indexYTuileHautGauche = Math.floorDiv(indexYHautGauche, TAILLE_TUILE);
 
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
-        int nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), TAILLE_TUILLE);
-        int nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), TAILLE_TUILLE);
+        int nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), TAILLE_TUILE);
+        int nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), TAILLE_TUILE);
 
-        if (this.parametresCarte.get().xHautGauche() - indexXTuileHautGauche * TAILLE_TUILLE > 0) {
-            nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), TAILLE_TUILLE) + 1;
+        if (this.parametresCarte.get().xHautGauche() - indexXTuileHautGauche * TAILLE_TUILE > 0) {
+            nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), TAILLE_TUILE) + 1;
         }
 
-        if (this.parametresCarte.get().yHautGauche() - indexYTuileHautGauche * TAILLE_TUILLE > 0) {
-            nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), TAILLE_TUILLE) + 1;
+        if (this.parametresCarte.get().yHautGauche() - indexYTuileHautGauche * TAILLE_TUILE > 0) {
+            nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), TAILLE_TUILE) + 1;
         }
 
         for (int i = 0; i < nombreDeTuilesEnX; ++i) {
@@ -161,10 +159,10 @@ public final class BaseMapManager {
                 try {
                     if (TileManager.TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
                         Image image = this.tileManager.imageForTileAt(tileId);
-                        double departX = this.parametresCarte.get().xHautGauche() - (indexXTuileHautGauche) * TAILLE_TUILLE;
-                        double departY = this.parametresCarte.get().yHautGauche() - (indexYTuileHautGauche) * TAILLE_TUILLE;
+                        double departX = this.parametresCarte.get().xHautGauche() - (indexXTuileHautGauche) * TAILLE_TUILE;
+                        double departY = this.parametresCarte.get().yHautGauche() - (indexYTuileHautGauche) * TAILLE_TUILE;
                         graphicsContext.drawImage(image,
-                                i * TAILLE_TUILLE - departX, j * TAILLE_TUILLE - departY);
+                                i * TAILLE_TUILE - departX, j * TAILLE_TUILE - departY);
                     }
                 } catch (IOException ignored) {
                 }
