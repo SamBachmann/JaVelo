@@ -26,6 +26,7 @@ import java.util.Map;
  */
 public final class TileManager {
 
+    private static final int INITIAL_CAPACITY = 100;
     private final Path path;
     private final String nameOfTheServer;
     private final Map<TileId, Image> cacheMemory;
@@ -33,11 +34,10 @@ public final class TileManager {
     /**
      * Enregistrement représentant l'identité d'une tuile, qui contient le niveau de zoom,
      * son index en x et son index en y.
-     *
-     *  @author Samuel Bachmann (340373)
-     *  @author Cyrus Giblain (312042)
-     * <br>
-     * 05/05/2022
+
+     * @param zoom Le niveau de zoom d'une tuile
+     * @param indexX L'index en x de la tuile.
+     * @param indexY L'index de y de la tuile.
      */
     public record TileId(int zoom, int indexX, int indexY) {
 
@@ -64,7 +64,7 @@ public final class TileManager {
 
         this.path = path;
         this.nameOfTheServer = nameOfTheServer;
-        this.cacheMemory = new LinkedHashMap<>(100, 0.75f, true);
+        this.cacheMemory = new LinkedHashMap<>(INITIAL_CAPACITY, 0.75f, true);
     }
 
     /**
@@ -96,8 +96,7 @@ public final class TileManager {
                         Image image = new Image(inputStream);
                         cacheMemory.put(tileId, image);
                         imageFinale = image;
-                    } catch (IOException e) {
-                            System.out.println("IOException");
+                    } catch (IOException ignored) {
                     }
                 } else {
                     URL url = new URL("https://" + this.nameOfTheServer + "/" + tileId.zoom() + "/" +

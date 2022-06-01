@@ -27,15 +27,16 @@ import java.util.Locale;
  * 25/04/2022
  */
 public final class GpxGenerator {
+
     //Constructeur privé puisque la classe est non-instanciable.
     private GpxGenerator(){}
 
     /**
      * Crée le document GPX décrivant un itinéraire, à l'aide d'une route et d'un profil.
      *
-     * @param itineraire L'itinéraire dont on veut le document GPX
-     * @param profileItineraire Le profil de cet itinéraire
-     * @return Le document au format GPX créé
+     * @param itineraire L'itinéraire dont on veut le document GPX.
+     * @param profileItineraire Le profil de cet itinéraire.
+     * @return Le document au format GPX créé.
      */
     public static Document createGpx (Route itineraire, ElevationProfile profileItineraire ){
 

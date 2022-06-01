@@ -104,7 +104,6 @@ public final class RouteComputer {
         }
 
         // Aucun itinéraire trouvé
-        System.out.println("L'itinéraire n'existe pas");
         return null;
     }
 

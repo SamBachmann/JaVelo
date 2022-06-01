@@ -39,10 +39,10 @@ public final class JaVelo extends Application {
 
     public static void main(String[] args) { launch(args); }
 
-    @Override
     /**
-     * Méthode start lancée depuis main, lance toute l'application  Javelo
+     * Méthode start lancée depuis main, lance toute l'application Javelo
      */
+    @Override
     public void start(Stage primaryStage) throws Exception {
 
         Graph graph = Graph.loadFrom(Path.of("javelo-data"));
@@ -110,6 +110,7 @@ public final class JaVelo extends Application {
 
         //BorderPane contenant le splitPane au centre et la barre de menu en haut.
         BorderPane fenetreJaVelo = new BorderPane();
+
         fenetreJaVelo.setTop(menuBar);
         fenetreJaVelo.setCenter(conteneur);
         primaryStage.setMinWidth(PREF_WIDTH);

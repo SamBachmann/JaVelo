@@ -18,6 +18,11 @@ import javafx.util.Duration;
  * 24/05/2022
  */
 public final class ErrorManager {
+    private static final double PRESQUE_OPAQUE = 0.8;
+    private static final int DUREE_PAUSE = 2;
+    private static final int DUREE_APPARITION = 200;
+    private static final int OPPACITE_TRANSPARENTE = 0;
+    private static final int DUREE_DISPARITION = 500;
     private final VBox vBoxErreurs;
     private final Text texteErreur;
     private final Animation transition;
@@ -31,13 +36,14 @@ public final class ErrorManager {
         vBoxErreurs.setMouseTransparent(true);
         vBoxErreurs.getStylesheets().add("error.css");
 
-        FadeTransition ft1 = new FadeTransition(Duration.millis(200), vBoxErreurs);
-        ft1.setFromValue(0);
-        ft1.setToValue(0.8);
-        PauseTransition pause2sec = new PauseTransition(Duration.seconds(2));
-        FadeTransition ft2 = new FadeTransition(Duration.millis(500), vBoxErreurs);
-        ft2.setFromValue(0.8);
-        ft2.setToValue(0);
+        FadeTransition ft1 = new FadeTransition(Duration.millis(DUREE_APPARITION), vBoxErreurs);
+        ft1.setFromValue(OPPACITE_TRANSPARENTE);
+
+        ft1.setToValue(PRESQUE_OPAQUE);
+        PauseTransition pause2sec = new PauseTransition(Duration.seconds(DUREE_PAUSE));
+        FadeTransition ft2 = new FadeTransition(Duration.millis(DUREE_DISPARITION), vBoxErreurs);
+        ft2.setFromValue(PRESQUE_OPAQUE);
+        ft2.setToValue(OPPACITE_TRANSPARENTE);
 
         this.transition = new SequentialTransition(ft1, pause2sec, ft2);
 

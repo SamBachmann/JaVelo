@@ -19,6 +19,7 @@ import java.util.*;
  */
 public final class RouteBean {
 
+    private static final int NOMBRE_WAYPOINTS_MIN_ITINERAIRE = 2;
     private final ObservableList<Waypoint> waypointsList;
 
     private static final int DISTANCE_MAX_ECHANTILLONS = 5;
@@ -44,7 +45,7 @@ public final class RouteBean {
         waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> {
 
             List<Route> listeDeRoutes = new ArrayList<>();
-            if (waypointsList.size() >= 2) {
+            if (waypointsList.size() >= NOMBRE_WAYPOINTS_MIN_ITINERAIRE) {
                 for (int i = 0; i < waypointsList.size() - 1; ++i) {
                     int startNodeIndex = waypointsList.get(i).nodeId();
                     int endNodeIndex = waypointsList.get(i + 1).nodeId();
@@ -68,7 +69,6 @@ public final class RouteBean {
                         else {
                             listeDeRoutes.clear();
                             this.route.set(null);
-                            //this.highlightedPosition.set(Double.NaN);
                             this.elevationProfil.set(null);
                             break;
                         }
@@ -91,10 +91,10 @@ public final class RouteBean {
     }
 
     /**
-     * Enregistrement imbriqué représentant un itinéraire par ses noeuds de départ et d'arrivée.
+     * Enregistrement imbriqué représentant un itinéraire par ses nœuds de départ et d'arrivée.
      *
-     * @param startNodeIndex L'index du noeud Javelo de départ.
-     * @param endNodeIndex L'index du noeud Javelo de départ.
+     * @param startNodeIndex L'index du nœud Javelo de départ.
+     * @param endNodeIndex L'index du nœud Javelo de départ.
      */
     private record RouteNodes(int startNodeIndex, int endNodeIndex) {}
 
@@ -110,7 +110,7 @@ public final class RouteBean {
     /**
      * Accesseur de la position mise en évidence, en metre sur l'itinéraire.
      *
-     * @return La position le long de l'itinéraire
+     * @return La position le long de l'itinéraire.
      */
     public double highlightedPosition(){
         return highlightedPosition.get();
@@ -152,7 +152,7 @@ public final class RouteBean {
     /**
      * Retourne l'index du segment d'un point donné sans tenir compte des segments vide.
      *
-     * @param position Une position sur l'intinéraire
+     * @param position Une position sur l'itinéraire
      * @return L'index du segment.
      */
     public int indexOfNonEmptySegmentAt(double position) {

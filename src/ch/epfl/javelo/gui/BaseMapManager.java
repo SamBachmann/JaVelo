@@ -28,6 +28,7 @@ public final class BaseMapManager {
     private static final int TAILLE_TUILE = 256;
     private final static int ZOOM_MIN_VALUE = 8;
     private final static int ZOOM_MAX_VALUE = 19;
+    private static final int DELTA_AJOUT_TUILE = 1;
 
     private final TileManager tileManager;
     private final ObjectProperty<MapViewParameters> parametresCarte;
@@ -85,17 +86,17 @@ public final class BaseMapManager {
             int newZoom = zoom + zoomDelta;
 
             if (newZoom >= ZOOM_MIN_VALUE && newZoom <= ZOOM_MAX_VALUE) {
-                PointWebMercator pointclic = parametresCarte.get().pointAt2(event.getX(), event.getY());
-                double decalageX = pointclic.xAtZoomLevel(zoom) - parametresCarte.get().xHautGauche();
-                double decalageY = pointclic.yAtZoomLevel(zoom) - parametresCarte.get().yHautGauche();
+                PointWebMercator pointClic = parametresCarte.get().pointAt2(event.getX(), event.getY());
+                double decalageX = pointClic.xAtZoomLevel(zoom) - parametresCarte.get().xHautGauche();
+                double decalageY = pointClic.yAtZoomLevel(zoom) - parametresCarte.get().yHautGauche();
 
-                double newX = pointclic.xAtZoomLevel(zoom) - Math.scalb(decalageX, -zoomDelta);
-                double newY = pointclic.yAtZoomLevel(zoom) - Math.scalb(decalageY, -zoomDelta);
+                double newX = pointClic.xAtZoomLevel(zoom) - Math.scalb(decalageX, -zoomDelta);
+                double newY = pointClic.yAtZoomLevel(zoom) - Math.scalb(decalageY, -zoomDelta);
 
-                double newXzoom = Math.scalb(newX, zoomDelta);
-                double newYzoom = Math.scalb(newY, zoomDelta);
+                double newXZoom = Math.scalb(newX, zoomDelta);
+                double newYZoom = Math.scalb(newY, zoomDelta);
 
-                MapViewParameters newMapViewParameters = new MapViewParameters(newZoom, newXzoom, newYzoom);
+                MapViewParameters newMapViewParameters = new MapViewParameters(newZoom, newXZoom, newYZoom);
                 this.parametresCarte.set(newMapViewParameters);
             }
 
@@ -145,24 +146,24 @@ public final class BaseMapManager {
         int nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), TAILLE_TUILE);
 
         if (this.parametresCarte.get().xHautGauche() - indexXTuileHautGauche * TAILLE_TUILE > 0) {
-            nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), TAILLE_TUILE) + 1;
+            nombreDeTuilesEnX = Math2.ceilDiv((int) canvas.getWidth(), TAILLE_TUILE) + DELTA_AJOUT_TUILE;
         }
 
         if (this.parametresCarte.get().yHautGauche() - indexYTuileHautGauche * TAILLE_TUILE > 0) {
-            nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), TAILLE_TUILE) + 1;
+            nombreDeTuilesEnY = Math2.ceilDiv((int) canvas.getHeight(), TAILLE_TUILE) + DELTA_AJOUT_TUILE;
         }
 
-        for (int i = 0; i < nombreDeTuilesEnX; ++i) {
-            for (int j = 0; j < nombreDeTuilesEnY; ++j) {
-                TileManager.TileId tileId = new TileManager.TileId(zoom, indexXTuileHautGauche + i,
-                        indexYTuileHautGauche + j);
+        for (int x = 0; x < nombreDeTuilesEnX; ++x) {
+            for (int y = 0; y < nombreDeTuilesEnY; ++y) {
+                TileManager.TileId tileId = new TileManager.TileId(zoom, indexXTuileHautGauche + x,
+                        indexYTuileHautGauche + y);
                 try {
                     if (TileManager.TileId.isValid(tileId.zoom(), tileId.indexX(), tileId.indexY())) {
                         Image image = this.tileManager.imageForTileAt(tileId);
-                        double departX = this.parametresCarte.get().xHautGauche() - (indexXTuileHautGauche) * TAILLE_TUILE;
-                        double departY = this.parametresCarte.get().yHautGauche() - (indexYTuileHautGauche) * TAILLE_TUILE;
+                        double departX = this.parametresCarte.get().xHautGauche() - indexXTuileHautGauche*TAILLE_TUILE;
+                        double departY = this.parametresCarte.get().yHautGauche() - indexYTuileHautGauche*TAILLE_TUILE;
                         graphicsContext.drawImage(image,
-                                i * TAILLE_TUILE - departX, j * TAILLE_TUILE - departY);
+                                x * TAILLE_TUILE - departX, y * TAILLE_TUILE - departY);
                     }
                 } catch (IOException ignored) {
                 }

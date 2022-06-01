@@ -59,7 +59,6 @@ public final class WaypointsManager {
                 Group marqueur = (Group) waypointPane.getChildren().get(i);
                 setPositionMarqueur(positionDeplacee, marqueur);
             }
-
         });
 
         waypointsList.addListener((ListChangeListener<? super Waypoint>) observable -> creationMarqueurs());
@@ -106,10 +105,10 @@ public final class WaypointsManager {
             Group marqueur = createGroup(i);
             setPositionMarqueur(positionMarqueur, marqueur);
 
-            // Déplacer le visuel, mais pas de création de nouveau waypoint avant le relase
+            // Déplacer le visuel, mais pas de création de nouveau waypoint avant le release
             marqueur.setOnMouseDragged(event -> {
-                PointWebMercator positionActuelle = parametresCarte.
-                        get()
+                PointWebMercator positionActuelle = parametresCarte
+                        .get()
                         .pointAt2(event.getSceneX(), event.getSceneY());
                 setPositionMarqueur(positionActuelle, marqueur);
             });

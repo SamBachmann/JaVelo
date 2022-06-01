@@ -23,6 +23,7 @@ import java.util.List;
 public final class RouteManager {
 
     public static final int RAYON_CERCLE = 5;
+    private static final int DECALAGE_AJOUT_SEGMENT_WAYPOINT = 1;
 
     private final RouteBean routeBean;
     private final ObjectProperty<MapViewParameters> parametresCarte;
@@ -83,14 +84,17 @@ public final class RouteManager {
             double xPostionHighlighted = this.parametresCarte.get().viewX(pointWebMercatorCurseur);
             double yPostionHighlighted = this.parametresCarte.get().viewY(pointWebMercatorCurseur);
 
-            if (xPostionHighlighted - RAYON_CERCLE <= xSouris && xSouris <= xPostionHighlighted + RAYON_CERCLE
-                    && yPostionHighlighted - RAYON_CERCLE <= ySouris && ySouris <= yPostionHighlighted + RAYON_CERCLE){
+            if (xPostionHighlighted - RAYON_CERCLE <= xSouris
+                    && xSouris <= xPostionHighlighted + RAYON_CERCLE
+                    && yPostionHighlighted - RAYON_CERCLE <= ySouris
+                    && ySouris <= yPostionHighlighted + RAYON_CERCLE){
+
                 Waypoint newWaypoint = new Waypoint(pointWebMercatorCurseur.toPointCh(),
                         routeBean.route().nodeClosestTo(routeBean.highlightedPosition()));
 
                 routeBean.WaypointsListProperty().add(
-                        routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition()) + 1, newWaypoint
-                );
+                        routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition())
+                                + DECALAGE_AJOUT_SEGMENT_WAYPOINT, newWaypoint);
 
             }
 
@@ -144,7 +148,8 @@ public final class RouteManager {
             if (! Double.isNaN(routeBean.highlightedPositionProperty().get())) {
                 highlightPosition.setVisible(true);
 
-                PointWebMercator pointWebMercator = PointWebMercator.ofPointCh(routeBean.route().pointAt(routeBean.highlightedPosition()));
+                PointWebMercator pointWebMercator = PointWebMercator.ofPointCh
+                    (routeBean.route().pointAt(routeBean.highlightedPosition()));
                 highlightPosition.setCenterX(this.parametresCarte.get().viewX(pointWebMercator));
                 highlightPosition.setCenterY(this.parametresCarte.get().viewY(pointWebMercator));
 

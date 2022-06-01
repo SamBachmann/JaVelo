@@ -47,10 +47,11 @@ public final class ElevationProfileManager {
     private static final int Max_ECART_COLONNES = POS_STEPS[POS_STEPS.length - 1];
     private static final double NB_MIN_PIXELS_ENTRE_LIGNES = 25;
     private static final double NB_MIN_PIXELS_ENTRE_COLLONES = 50;
+    private static final Insets insets = new Insets(10, 10, 20, 40);
 
 
     /**
-     * Constructeur d'ElevationProfileManager
+     * Constructeur d'ElevationProfileManager.
      *
      * @param profil         Propriété contenant le profil de l'itinéraire.
      * @param positionProfil Propriété contenant la position en évidence.
@@ -84,14 +85,14 @@ public final class ElevationProfileManager {
         Text textVBox = new Text();
         vBox.getChildren().add(textVBox);
 
-        Insets insets = new Insets(10, 10, 20, 40);
-        bindings(profil, positionProfil, line, insets);
+        
+        bindings(profil, positionProfil, line);
 
-        //affichage des stats:
+        //affichage des stats :
         affichageStats(profil, textVBox);
 
-        //Interactions entre la souris et le pane
-        pane.setOnMouseMoved(event ->{
+        //Interactions entre la souris et le pane.
+        pane.setOnMouseMoved(event -> {
             // vérifier la position de la souris.
             if (rectangleBleu.get().getMinX() < event.getX() && event.getX() < rectangleBleu.get().getMaxX()
             && rectangleBleu.get().getMinY() < event.getY() && event.getY() < rectangleBleu.get().getMaxY() ){
@@ -101,21 +102,20 @@ public final class ElevationProfileManager {
             }else{
                 mousePositionOnProfileProperty.set(Double.NaN);
             }
-
-
+            
         } );
 
         pane.setOnMouseExited(observable -> mousePositionOnProfileProperty.set(Double.NaN));
 
-        //Redessin du profil si l'itinéraire change
+        //Redessin du profil si l'itinéraire change.
         profil.addListener((o, oV, nV) -> {
-            dessineProfil(profil, insets);
+            dessineProfil(profil);
             affichageStats(profil, textVBox);
         });
     }
 
     /**
-     * Méthode privée appellée depuis le constructeur qui affiche les statitiques d'un itinéraire dans une Vbox.
+     * Méthode privée appelée depuis le constructeur qui affiche les statistiques d'un itinéraire dans une Vbox.
      *
      * @param profil Propriété contenant le profil de l'itinéraire.
      * @param textVBox La vBox dans laquelle le texte sera affiché.
@@ -138,13 +138,12 @@ public final class ElevationProfileManager {
     /**
      * Crée les liens de binding de la position en évidence sur le profil en long et du
      * rectangle contenant l'affichage du profil.
-     *
-     * @param profil La propriété contenant le profil
+     *  @param profil La propriété contenant le profil
      * @param positionProfil La propriété contenant la position sur le profil, qu'on bind avec la ligne
      * @param line La ligne à afficher sur le profil.
      */
     private void bindings(ReadOnlyObjectProperty<ElevationProfile> profil, ReadOnlyDoubleProperty positionProfil,
-                          Line line, Insets insets) {
+                          Line line) {
 
 
         rectangleBleu.bind(Bindings.createObjectBinding(() ->
@@ -153,9 +152,9 @@ public final class ElevationProfileManager {
                                 Math.max(pane.getHeight() - insets.getTop() - insets.getBottom(), 0)),
                 pane.widthProperty(),
                 pane.heightProperty()));
-        dessineProfil(profil, insets);
+        dessineProfil(profil);
 
-        rectangleBleu.addListener((observable, oldValue, newValue) -> dessineProfil(profil, insets));
+        rectangleBleu.addListener((observable, oldValue, newValue) -> dessineProfil(profil));
 
 
         line.layoutXProperty().bind(Bindings.createDoubleBinding(()->
@@ -174,20 +173,19 @@ public final class ElevationProfileManager {
      * décalages du profil sur sa fenêtre.
      *
      * @param profil Le profil à dessiner.
-     * @param insets Les marges latérales et verticales autour du profil.
      */
-    private void dessineProfil(ReadOnlyObjectProperty<ElevationProfile> profil, Insets insets) {
+    private void dessineProfil(ReadOnlyObjectProperty<ElevationProfile> profil) {
         if (profil.get() != null) {
-            double deltaYworld = profil.get().minElevation() - profil.get().maxElevation();
-            double deltaXworld = profil.get().length();
+            double deltaYWorld = profil.get().minElevation() - profil.get().maxElevation();
+            double deltaXWorld = profil.get().length();
 
-            double coeffX = deltaXworld / rectangleBleu.get().getWidth();
-            double coeffY = deltaYworld / (rectangleBleu.get().getHeight());
+            double coefficientX = deltaXWorld / rectangleBleu.get().getWidth();
+            double coefficientY = deltaYWorld / (rectangleBleu.get().getHeight());
 
             //Fonctions de transformations écran-réalité
             Affine screenToWorld = new Affine();
             screenToWorld.prependTranslation(-rectangleBleu.get().getMinX(), -rectangleBleu.get().getMinY());
-            screenToWorld.prependScale(coeffX, coeffY);
+            screenToWorld.prependScale(coefficientX, coefficientY);
             screenToWorld.prependTranslation(0, profil.get().maxElevation());
             this.screenToWorld.set(screenToWorld);
 
