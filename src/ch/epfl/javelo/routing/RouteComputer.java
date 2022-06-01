@@ -61,8 +61,6 @@ public final class RouteComputer {
 
         // initialisation des tableaux.
         Arrays.fill(distance, VALEUR_NON_ATTRIBUEE);
-        Arrays.fill(predecesseur, 0);
-
 
         int noeudActuelId;
         PointCh destination = graph.nodePoint(endNodeId);
