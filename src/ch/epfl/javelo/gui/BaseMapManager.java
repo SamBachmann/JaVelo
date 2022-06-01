@@ -1,6 +1,7 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.Math2;
+import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -123,12 +124,12 @@ public final class BaseMapManager {
         });
 
         pane.setOnMouseClicked(event -> {
+
             if (event.isStillSincePress()){
                 waypointsManager.addWaypoint(event.getX(), event.getY());
             }
         });
     }
-
 
     /**
      * Méthode privée qui permet de dessiner la carte.

@@ -105,7 +105,7 @@ public final class TileManager {
                     connection.setRequestProperty("User-Agent", "JaVelo");
                     try (InputStream i = connection.getInputStream()) {
 
-                        Path pathDossier = Path.of(String.valueOf(tileId.zoom()))
+                        Path pathDossier = path.resolve(String.valueOf(tileId.zoom()))
                                 .resolve(String.valueOf(tileId.indexX()));
                         Path pathImage = pathDossier.resolve(tileId.indexY() + ".png");
                         Files.createDirectories(pathDossier);

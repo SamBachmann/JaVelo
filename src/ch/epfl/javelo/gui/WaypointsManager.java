@@ -85,11 +85,15 @@ public final class WaypointsManager {
     public void addWaypoint ( double x, double y){
         PointWebMercator pointDonne = parametresCarte.get().pointAt2(x, y);
         PointCh pointDonneEnCH = pointDonne.toPointCh();
-        int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
-        if (nodeNewWaypoint == NO_NODE) {
-            errorHandler.accept(MESSAGE_ERREUR);
+        if (pointDonneEnCH != null) {
+            int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
+            if (nodeNewWaypoint == NO_NODE) {
+                errorHandler.accept(MESSAGE_ERREUR);
+            } else {
+                waypointsList.add(new Waypoint(pointDonneEnCH, nodeNewWaypoint));
+            }
         } else {
-            waypointsList.add(new Waypoint(pointDonneEnCH, nodeNewWaypoint));
+            errorHandler.accept(MESSAGE_ERREUR);
         }
     }
     /**
