@@ -127,14 +127,19 @@ public final class WaypointsManager {
                     //Cas du relachement de drag
                     PointWebMercator positionPostDrag = parametresCarte.get().pointAt2(e.getSceneX(), e.getSceneY());
                     PointCh pointDonneEnCH = positionPostDrag.toPointCh();
-                    int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
-                    if (nodeNewWaypoint != NO_NODE) {
-                        int index = waypointsList.indexOf(waypoint);
-                        Waypoint newWaypoint = new Waypoint(pointDonneEnCH, nodeNewWaypoint);
+                    if (pointDonneEnCH != null) {
+                        int nodeNewWaypoint = graph.nodeClosestTo(pointDonneEnCH, DISTANCE_RECHERCHE);
+                        if (nodeNewWaypoint != NO_NODE) {
+                            int index = waypointsList.indexOf(waypoint);
+                            Waypoint newWaypoint = new Waypoint(pointDonneEnCH, nodeNewWaypoint);
 
-                        waypointsList.set(index, newWaypoint);
+                            waypointsList.set(index, newWaypoint);
 
-                    }else{
+                        } else {
+                            errorHandler.accept(MESSAGE_ERREUR);
+                            creationMarqueurs();
+                        }
+                    }else {
                         errorHandler.accept(MESSAGE_ERREUR);
                         creationMarqueurs();
                     }
