@@ -1,12 +1,8 @@
-# JaVelo
-Repository for the PPOO JaVelo project
+# JaVelo Projet
+Repository of the Oriented-Objet java semester projet 
 
+Javelo is a java application for planning cycling routes in Switzerland.  
+Programmed in java with java-fx for the gui. We used the OpenStreetMap Tiles for the map and SwissALTI3D data for the altimetric representation of Switzerland
 
-Cyrus: <br>
-- 3.2
-- 3.4
+For more information, see https://cs108.epfl.ch/p/00_introduction.html and feel free to contact us !
 
-Samuel:<br>
-- 3.3
-- 3.5
-- 3.6
