@@ -79,19 +79,24 @@ public final class AnnotatedMapManager {
                             .toPointCh();
 
                 if (pointChSouris != null) {
-                    RoutePoint sourisItineraire = routeBean.route().pointClosestTo(pointChSouris);
-                    double positionItineraire = sourisItineraire.position();
-                    PointCh routePointCh = sourisItineraire.point();
-                    PointWebMercator ptWebMercator = PointWebMercator.ofPointCh(routePointCh);
-                    double routePointChXEcran = this.mapViewParameters.get().viewX(ptWebMercator);
-                    double routePointChYEcran = this.mapViewParameters.get().viewY(ptWebMercator);
-                    Point2D point2DSurEcran = new Point2D(routePointChXEcran, routePointChYEcran);
+                    //Problème ici, lance parfois des exceptions pour une cause incompréensible...
+                    try {
+                        RoutePoint sourisItineraire = routeBean.route().pointClosestTo(pointChSouris);
+                        double positionItineraire = sourisItineraire.position();
+                        PointCh routePointCh = sourisItineraire.point();
+                        PointWebMercator ptWebMercator = PointWebMercator.ofPointCh(routePointCh);
+                        double routePointChXEcran = this.mapViewParameters.get().viewX(ptWebMercator);
+                        double routePointChYEcran = this.mapViewParameters.get().viewY(ptWebMercator);
+                        Point2D point2DSurEcran = new Point2D(routePointChXEcran, routePointChYEcran);
 
-                    if (positionSouris.distance(point2DSurEcran) <= DISTANCE_PROXIMITE_SOURIS) {
-                        this.position.set(positionItineraire);
-                    } else {
-                        this.position.set(Double.NaN);
+                        if (positionSouris.distance(point2DSurEcran) <= DISTANCE_PROXIMITE_SOURIS) {
+                            this.position.set(positionItineraire);
+                        } else {
+                            this.position.set(Double.NaN);
+                        }
+                    } catch (IllegalArgumentException ignored){
                     }
+
                 } else {
                     this.position.set(Double.NaN);
                 }
